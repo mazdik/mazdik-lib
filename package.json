@@ -1,0 +1,14 @@
+{
+    "name": "test",
+    "version": "0.0.1",
+    "description": "test",
+    "scripts": {
+        "s": "serve",
+        "b": "tsc",
+        "b:w": "tsc --watch"
+    },
+    "devDependencies": {
+        "serve": "^11.2.0",
+        "typescript": "^3.7.3"
+    }
+}
