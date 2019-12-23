@@ -23,13 +23,13 @@
       <button id="close-button" class="dt-button dt-blue" style="float: right;">Close</button>
     </template>
   </web-modal>
-```
 
-```js
+  <script type="text/javascript">
     document.addEventListener('DOMContentLoaded', function (event) {
       const dialog = document.querySelector('#modal');
       document.querySelector('#button').addEventListener('click', () => dialog.show());
     });
+  </script>
 ```
 
 ### CSS
