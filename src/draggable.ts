@@ -10,8 +10,8 @@ export class Draggable {
   private lastPageY: number;
 
   private globalListeners = new Map<string, {
-    handler: (event: Event) => void,
-    options?: AddEventListenerOptions | boolean
+    handler: (event: Event) => void;
+    options?: AddEventListenerOptions | boolean;
   }>();
 
   constructor(private element: HTMLElement) {
@@ -33,20 +33,20 @@ export class Draggable {
       const evt = getEvent(event);
       this.initDrag(evt.pageX, evt.pageY);
       this.addEventListeners(event);
-      this.element.dispatchEvent(new CustomEvent('dragStart', {detail: event}));
+      this.element.dispatchEvent(new CustomEvent('dragStart', { detail: event }));
     }
   }
 
   onMousemove(event: MouseEvent | TouchEvent): void {
     const evt = getEvent(event);
     this.onDrag(evt.pageX, evt.pageY);
-    this.element.dispatchEvent(new CustomEvent('dragMove', {detail: event}));
+    this.element.dispatchEvent(new CustomEvent('dragMove', { detail: event }));
   }
 
   onMouseup(event: MouseEvent | TouchEvent): void {
     this.endDrag();
     this.removeEventListeners();
-    this.element.dispatchEvent(new CustomEvent('dragEnd', {detail: event}));
+    this.element.dispatchEvent(new CustomEvent('dragEnd', { detail: event }));
   }
 
   addEventListeners(event: MouseEvent | TouchEvent) {

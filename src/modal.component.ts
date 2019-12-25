@@ -87,9 +87,6 @@ export class ModalComponent extends HTMLElement {
     this.resizableDirective = new Resizable(this.modalRoot);
   }
 
-  connectedCallback() {
-  }
-
   disconnectedCallback() {
     this.removeEventListeners();
 

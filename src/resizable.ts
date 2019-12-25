@@ -26,12 +26,12 @@ export class Resizable {
   private maxHeight: number;
 
   private startListeners = new Map<string, {
-    handler: (event: Event) => void,
-    options?: AddEventListenerOptions | boolean
+    handler: (event: Event) => void;
+    options?: AddEventListenerOptions | boolean;
   }>();
   private globalListeners = new Map<string, {
-    handler: (event: Event) => void,
-    options?: AddEventListenerOptions | boolean
+    handler: (event: Event) => void;
+    options?: AddEventListenerOptions | boolean;
   }>();
 
   constructor(private element: HTMLElement) {
@@ -167,7 +167,7 @@ export class Resizable {
     this.resizingSE = false;
     this.element.classList.remove('resizing');
     const resizableEvent: ResizableEvent = { event: getEvent(event), width: this.newWidth, height: this.newHeight };
-    this.element.dispatchEvent(new CustomEvent('resizeEnd', {detail: resizableEvent}));
+    this.element.dispatchEvent(new CustomEvent('resizeEnd', { detail: resizableEvent }));
   }
 
   resizeWidth(event: MouseEvent | Touch) {
@@ -180,7 +180,7 @@ export class Resizable {
           this.element.style.width = `${this.newWidth}px`;
         }
         const resizableEvent: ResizableEvent = { event, width: this.newWidth, height: this.newHeight, direction: 'horizontal' };
-        this.element.dispatchEvent(new CustomEvent('resizing', {detail: resizableEvent}));
+        this.element.dispatchEvent(new CustomEvent('resizing', { detail: resizableEvent }));
       }
     }
   }
@@ -195,7 +195,7 @@ export class Resizable {
           this.element.style.height = `${this.newHeight}px`;
         }
         const resizableEvent: ResizableEvent = { event, width: this.newWidth, height: this.newHeight, direction: 'vertical' };
-        this.element.dispatchEvent(new CustomEvent('resizing', {detail: resizableEvent}));
+        this.element.dispatchEvent(new CustomEvent('resizing', { detail: resizableEvent }));
       }
     }
   }
