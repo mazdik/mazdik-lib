@@ -55,10 +55,6 @@ export class Resizable {
     this.maxHeight = parseFloat(computedStyle.maxHeight);
   }
 
-  init(): void {
-    this.addEventListeners();
-  }
-
   destroy(): void {
     this.removeEventListeners();
   }
