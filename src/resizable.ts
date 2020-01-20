@@ -9,11 +9,6 @@ export interface ResizableEvent {
 
 export class Resizable {
 
-  south: boolean = true;
-  east: boolean = true;
-  southEast: boolean = true;
-  ghost: boolean;
-
   private newWidth: number;
   private newHeight: number;
   private resizingS: boolean; // south
@@ -34,12 +29,16 @@ export class Resizable {
     options?: AddEventListenerOptions | boolean;
   }>();
 
-  constructor(private element: HTMLElement) {
+  constructor(private element: HTMLElement,
+    private south: boolean = true,
+    private east: boolean = true,
+    private southEast: boolean = true,
+    private ghost: boolean = false) {
+
     this.viewInit();
-    this.addEventListeners();
   }
 
-  viewInit(): void {
+  private viewInit(): void {
     if (this.south) {
       this.createHandle('resize-handle-s');
     }
@@ -54,6 +53,10 @@ export class Resizable {
     this.maxWidth = parseFloat(computedStyle.maxWidth);
     this.minHeight = parseFloat(computedStyle.minHeight);
     this.maxHeight = parseFloat(computedStyle.maxHeight);
+  }
+
+  init(): void {
+    this.addEventListeners();
   }
 
   destroy(): void {

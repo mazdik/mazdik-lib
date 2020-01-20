@@ -183,6 +183,7 @@ export class ModalComponent extends HTMLElement {
 
   show() {
     this.addEventListeners();
+    this.resizableDirective.addEventListeners();
     this.center();
     this.visible = true;
     setTimeout(() => {
@@ -196,6 +197,7 @@ export class ModalComponent extends HTMLElement {
 
   hide() {
     this.removeEventListeners();
+    this.resizableDirective.destroy();
     this.visible = false;
     this.dispatchEvent(new CustomEvent('closeModal'));
     this.focusLastModal();

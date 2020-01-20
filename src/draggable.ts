@@ -2,9 +2,6 @@ import { isLeftButton, getEvent } from './dom-utils';
 
 export class Draggable {
 
-  dragX: boolean = true;
-  dragY: boolean = true;
-
   private isDragging: boolean;
   private lastPageX: number;
   private lastPageY: number;
@@ -14,7 +11,9 @@ export class Draggable {
     options?: AddEventListenerOptions | boolean;
   }>();
 
-  constructor(private element: HTMLElement) {
+  constructor(private element: HTMLElement,
+    private dragX: boolean = true,
+    private dragY: boolean = true) {
   }
 
   start(dragEventTarget: MouseEvent | TouchEvent): void {
