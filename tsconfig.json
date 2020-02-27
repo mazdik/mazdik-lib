@@ -1,22 +1,6 @@
 {
+  "extends": "./tsconfig.base.json",
   "compilerOptions": {
-    "target": "es2018",
-    "module": "esnext",
-    "declaration": true,
-    "outDir": "dist",
-    "sourceMap": false,
-    "lib": [
-      "es2018",
-      "dom"
-    ],
-    "baseUrl": ".",
-    "paths": {
-      "@mazdik-js/*": ["packages/*/dist/bundle.js"]
-    }
-  },
-  "exclude": [
-    "node_modules",
-    "dist",
-    "**/*.spec.ts"
-  ]
+    "noEmit": true
+  }
 }

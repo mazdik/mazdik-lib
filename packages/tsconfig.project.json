@@ -1,0 +1,11 @@
+{
+  "files": [],
+  "references": [
+    {
+      "path": "./resizable/tsconfig.package.json"
+    },
+    {
+      "path": "./web-modal/tsconfig.package.json"
+    }
+  ]
+}

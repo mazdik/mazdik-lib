@@ -1,17 +1,20 @@
 {
-    "name": "@mazdik-js/web-modal",
-    "version": "0.0.1",
-    "main": "./dist/bundle.js",
-    "types": "./dist/index.d.ts",
-    "publishConfig": {
-      "access": "public"
-    },
-    "scripts": {
-        "s": "serve",
-        "w": "webpack --watch",
-        "b": "webpack"
-    },
-    "dependencies": {
-      "@mazdik-js/resizable": "0.0.1"
-    }
+  "name": "@mazdik-js/web-modal",
+  "version": "0.1.0",
+  "main": "./lib/index.js",
+  "types": "./lib/index.d.ts",
+  "files": [
+    "lib",
+    "src"
+  ],
+  "scripts": {
+    "build": "tsc -b ./tsconfig.package.json",
+    "prepublish": "npm run build"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "@mazdik-js/resizable": "0.1.0"
+  }
 }

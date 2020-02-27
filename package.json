@@ -15,10 +15,10 @@
   "scripts": {
     "lerna": "lerna",
     "bootstrap": "lerna bootstrap",
-    "publish": "lerna publish --contents dist",
+    "publish": "lerna publish --contents lib",
     "lint": "eslint --ext .js,.ts ./packages/*/src/**/*",
-    "s": "lerna run --scope @mazdik-js/web-modal s --stream",
-    "w": "lerna run w --stream",
-    "b": "lerna run --scope @mazdik-js/web-modal b --stream"
+    "build": "tsc --build packages/tsconfig.project.json",
+    "watch": "tsc --build --watch packages/tsconfig.project.json",
+    "s": "lerna run --scope @mazdik-js/web-modal s --stream"
   }
 }
