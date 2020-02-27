@@ -1,6 +1,11 @@
 {
     "name": "@mazdik-js/web-modal",
     "version": "0.0.1",
+    "main": "./dist/bundle.js",
+    "types": "./dist/index.d.ts",
+    "publishConfig": {
+      "access": "public"
+    },
     "scripts": {
         "s": "serve",
         "w": "webpack --watch",

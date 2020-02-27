@@ -17,7 +17,7 @@
     "bootstrap": "lerna bootstrap",
     "publish": "lerna publish --contents dist",
     "lint": "eslint --ext .js,.ts ./packages/*/src/**/*",
-    "s": "lerna run --scope web-modal s --stream",
+    "s": "lerna run --scope @mazdik-js/web-modal s --stream",
     "w": "lerna run w --stream",
     "b": "lerna run b --stream"
   }

@@ -1,4 +1,4 @@
-import { isLeftButton, getEvent } from '../../common/dom-utils';
+import { isLeftButton, getEvent } from './dom-utils';
 
 export interface ResizableEvent {
   width: number;
