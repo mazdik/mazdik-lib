@@ -3,7 +3,7 @@
     "target": "es2018",
     "module": "esnext",
     "declaration": true,
-    "outDir": "dist",
+    "moduleResolution": "node",
     "sourceMap": false,
     "lib": [
       "es2018",
