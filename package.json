@@ -19,6 +19,6 @@
     "lint": "eslint --ext .js,.ts ./packages/*/src/**/*",
     "s": "lerna run --scope @mazdik-js/web-modal s --stream",
     "w": "lerna run w --stream",
-    "b": "lerna run b --stream"
+    "b": "lerna run --scope @mazdik-js/web-modal b --stream"
   }
 }

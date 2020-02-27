@@ -10,5 +10,8 @@
         "s": "serve",
         "w": "webpack --watch",
         "b": "webpack"
+    },
+    "dependencies": {
+      "@mazdik-js/resizable": "0.0.1"
     }
 }

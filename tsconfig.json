@@ -8,7 +8,11 @@
     "lib": [
       "es2018",
       "dom"
-    ]
+    ],
+    "baseUrl": ".",
+    "paths": {
+      "@mazdik-js/*": ["packages/*/dist/bundle.js"]
+    }
   },
   "exclude": [
     "node_modules",

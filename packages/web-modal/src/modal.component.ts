@@ -1,6 +1,6 @@
 import { maxZIndex } from './dom-utils';
 import { Draggable } from './draggable';
-import { Resizable, ResizableEvent } from './resizable';
+import { Resizable, ResizableEvent } from '@mazdik-js/resizable';
 
 interface Listener {
   eventName: string;
