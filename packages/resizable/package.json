@@ -1,8 +1,7 @@
 {
-    "name": "@mazdik-js/web-modal",
+    "name": "@mazdik-js/resizable",
     "version": "0.0.1",
     "scripts": {
-        "s": "serve",
         "w": "webpack --watch",
         "b": "webpack"
     }
