@@ -1,0 +1,10 @@
+{
+    "name": "web-modal",
+    "version": "0.0.1",
+    "description": "web-modal",
+    "scripts": {
+        "s": "serve",
+        "w": "webpack --watch",
+        "b": "webpack"
+    }
+}

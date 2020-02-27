@@ -1,21 +1,24 @@
 {
-    "name": "test",
-    "version": "0.0.1",
-    "description": "test",
-    "scripts": {
-        "s": "serve",
-        "l": "eslint --ext .js,.ts src",
-        "w": "webpack --watch",
-        "b": "webpack"
-    },
-    "devDependencies": {
-        "@typescript-eslint/eslint-plugin": "^2.13.0",
-        "@typescript-eslint/parser": "^2.13.0",
-        "eslint": "^6.8.0",
-        "serve": "^11.2.0",
-        "ts-loader": "^6.2.1",
-        "typescript": "^3.7.3",
-        "webpack": "^4.41.4",
-        "webpack-cli": "^3.3.10"
-    }
+  "name": "root",
+  "private": true,
+  "devDependencies": {
+    "lerna": "^3.20.2",
+    "@typescript-eslint/eslint-plugin": "^2.13.0",
+    "@typescript-eslint/parser": "^2.13.0",
+    "eslint": "^6.8.0",
+    "serve": "^11.2.0",
+    "ts-loader": "^6.2.1",
+    "typescript": "^3.7.3",
+    "webpack": "^4.41.4",
+    "webpack-cli": "^3.3.10"
+  },
+  "scripts": {
+    "lerna": "lerna",
+    "bootstrap": "lerna bootstrap",
+    "publish": "lerna publish --contents dist",
+    "lint": "eslint --ext .js,.ts ./packages/*/src/**/*",
+    "s": "lerna run --scope web-modal s --stream",
+    "w": "lerna run w --stream",
+    "b": "lerna run b --stream"
+  }
 }
