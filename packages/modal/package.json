@@ -1,5 +1,5 @@
 {
-  "name": "@mazdik-js/web-modal",
+  "name": "@mazdik-lib/modal",
   "version": "0.1.0",
   "main": "./lib/index.js",
   "types": "./lib/index.d.ts",
@@ -15,6 +15,6 @@
     "access": "public"
   },
   "dependencies": {
-    "@mazdik-js/resizable": "0.1.0"
+    "@mazdik-lib/resizable": "0.1.0"
   }
 }

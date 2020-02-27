@@ -1,5 +1,5 @@
 {
-  "name": "@mazdik-lib/resizable",
+  "name": "@mazdik-lib/web",
   "version": "0.1.0",
   "main": "./lib/index.js",
   "types": "./lib/index.d.ts",
@@ -9,9 +9,10 @@
   ],
   "scripts": {
     "build": "tsc -b ./tsconfig.package.json",
-    "prepublish": "npm run build"
+    "prepublish": "npm run build",
+    "wb": "webpack"
   },
-  "publishConfig": {
-    "access": "public"
+  "dependencies": {
+    "@mazdik-lib/modal": "0.1.0"
   }
 }

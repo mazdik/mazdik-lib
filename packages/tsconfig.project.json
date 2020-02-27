@@ -5,7 +5,10 @@
       "path": "./resizable/tsconfig.package.json"
     },
     {
-      "path": "./web-modal/tsconfig.package.json"
+      "path": "./modal/tsconfig.package.json"
+    },
+    {
+      "path": "./web/tsconfig.package.json"
     }
   ]
 }

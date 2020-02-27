@@ -19,6 +19,8 @@
     "lint": "eslint --ext .js,.ts ./packages/*/src/**/*",
     "build": "tsc --build packages/tsconfig.project.json",
     "watch": "tsc --build --watch packages/tsconfig.project.json",
-    "s": "lerna run --scope @mazdik-js/web-modal s --stream"
+    "serve": "serve packages/web",
+    "wb": "lerna run wb",
+    "s": "lerna run --scope @mazdik-lib/modal s --stream"
   }
 }
