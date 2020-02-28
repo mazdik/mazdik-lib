@@ -2,6 +2,12 @@
   "files": [],
   "references": [
     {
+      "path": "./common/tsconfig.package.json"
+    },
+    {
+      "path": "./draggable/tsconfig.package.json"
+    },
+    {
       "path": "./resizable/tsconfig.package.json"
     },
     {

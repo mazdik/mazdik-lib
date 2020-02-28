@@ -1,5 +1,5 @@
 {
-  "name": "@mazdik-lib/resizable",
+  "name": "@mazdik-lib/common",
   "version": "0.1.0",
   "main": "./lib/index.js",
   "types": "./lib/index.d.ts",
@@ -13,8 +13,5 @@
   },
   "publishConfig": {
     "access": "public"
-  },
-  "dependencies": {
-    "@mazdik-lib/common": "0.1.0"
   }
 }

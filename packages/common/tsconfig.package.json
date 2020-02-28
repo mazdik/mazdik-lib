@@ -5,11 +5,7 @@
     "rootDir": "./src",
     "composite": true
   },
-  "references": [
-    {
-      "path": "../common/tsconfig.package.json"
-    }
-  ],
+  "references": [],
   "include": [
     "src"
   ],

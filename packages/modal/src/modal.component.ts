@@ -1,5 +1,5 @@
-import { maxZIndex } from './dom-utils';
-import { Draggable } from './draggable';
+import { maxZIndex } from '@mazdik-lib/common';
+import { Draggable } from '@mazdik-lib/draggable';
 import { Resizable, ResizableEvent } from '@mazdik-lib/resizable';
 
 interface Listener {
