@@ -5,6 +5,7 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 module.exports = {
   mode: 'production',
   entry: './src/index.ts',
+  devtool: 'inline-source-map',
   output: {
     path: path.resolve(__dirname, 'lib'),
     filename: 'bundle.js'
@@ -23,6 +24,10 @@ module.exports = {
         test: /\.css$/i,
         use: [MiniCssExtractPlugin.loader, 'css-loader'],
       },
+      {
+        test: /\.html$/i,
+        loader: 'html-loader',
+      },
     ]
   },
   plugins: [
@@ -30,5 +35,9 @@ module.exports = {
         template: './src/index.html'
     }),
     new MiniCssExtractPlugin()
-]
+  ],
+  performance: {
+    maxEntrypointSize: 1512000,
+    maxAssetSize: 1512000
+  }
 }

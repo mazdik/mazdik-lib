@@ -1,8 +1,7 @@
 import { ModalComponent } from '@mazdik-lib/modal';
+import html from './nested.html';
 
-export default `
-    <h1>This is nested.<h1>
-`;
+export default html;
 
 export function page() {
   // Nested modals demo

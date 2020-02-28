@@ -11,7 +11,7 @@
     <a href="javascript:void(0);" class="icon">&#9776;</a>
   </div>
   <div class="sidenav">
-    <a href="/" data-chunk="home" data-title="Home">Home</a>
+    <a href="/" data-chunk="basic" data-title="Home">Home</a>
     <a href="#basic" data-chunk="basic" data-title="Basic demo">Basic demo</a>
     <a href="#nested" data-chunk="nested" data-title="Nested modals demo">Nested modals demo</a>
     <a href="#panels" data-chunk="panels" data-title="Panels demo">Panels demo</a>
@@ -19,135 +19,6 @@
 
   <div class="main">
     <main></main>
-
-    <p id="basic">Basic demo</p>
-
-    <button id="button" class="dt-button">Open modal</button>
-    <web-modal id="modal">
-      <template select="app-modal-header">
-        <span>Modal</span>
-      </template>
-      <template select="app-modal-body">
-        <h3>MODAL DIALOG</h3>
-        <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry.
-          Lorem Ipsum has been the industry’s standard dummy text ever since the 1500s.</p>
-      </template>
-      <template select="app-modal-footer">
-        <button class="dt-button dt-red">Delete</button>&nbsp;
-        <button class="dt-button dt-green">Save</button>
-        <button id="close-button" class="dt-button dt-blue" style="float: right;">Close</button>
-      </template>
-    </web-modal>
-
-    <p id="nested">Nested modals demo</p>
-
-    <button id="button1" class="dt-button">Open modal</button>
-    <web-modal id="modal1" class="nested-modal-demo1">
-      <template select="app-modal-header">
-        <span>Modal 1</span>
-      </template>
-      <template select="app-modal-body">
-        <h3>MODAL DIALOG</h3>
-        <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry.
-          Lorem Ipsum has been the industry’s standard dummy text ever since the 1500s.</p>
-
-          <button id="button2" class="dt-button">Open modal</button>
-          <web-modal id="modal2" class="nested-modal-demo2">
-              <template select="app-modal-header">
-                <span>Modal 2</span>
-              </template>
-              <template select="app-modal-body">
-                <h3>MODAL DIALOG</h3>
-                <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry.
-                  Lorem Ipsum has been the industry’s standard dummy text ever since the 1500s.</p>
-
-                  <button id="button3" class="dt-button">Open modal</button>
-                  <web-modal id="modal3" class="nested-modal-demo3">
-                      <template select="app-modal-header">
-                        <span>Modal 3</span>
-                      </template>
-                      <template select="app-modal-body">
-                        <h3>MODAL DIALOG</h3>
-                        <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry.
-                          Lorem Ipsum has been the industry’s standard dummy text ever since the 1500s.</p>
-                      </template>
-                      <template select="app-modal-footer">
-                        <button class="dt-button dt-red">Delete</button>&nbsp;
-                        <button class="dt-button dt-green">Save</button>
-                        <button id="close-button3" class="dt-button dt-blue" style="float: right;">Close</button>
-                      </template>
-                    </web-modal>
-
-              </template>
-              <template select="app-modal-footer">
-                <button class="dt-button dt-red">Delete</button>&nbsp;
-                <button class="dt-button dt-green">Save</button>
-                <button id="close-button2" class="dt-button dt-blue" style="float: right;">Close</button>
-              </template>
-            </web-modal>
-
-      </template>
-      <template select="app-modal-footer">
-        <button class="dt-button dt-red">Delete</button>&nbsp;
-        <button class="dt-button dt-green">Save</button>
-        <button id="close-button1" class="dt-button dt-blue" style="float: right;">Close</button>
-      </template>
-    </web-modal>
-
-    <p id="panels">Panels demo</p>
-
-    <button id="button-panel1" class="dt-button">Open panel 1</button>
-    <button id="button-panel2" class="dt-button">Open panel 2</button>
-    <button id="button-panel3" class="dt-button">Open panel 3</button>
-
-    <web-modal id="panel1" class="panel-demo1">
-        <template select="app-modal-header">
-          <span>Panel 1</span>
-        </template>
-        <template select="app-modal-body">
-          <h3>MODAL DIALOG</h3>
-          <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry.
-            Lorem Ipsum has been the industry’s standard dummy text ever since the 1500s.</p>
-        </template>
-        <template select="app-modal-footer">
-          <button class="dt-button dt-red">Delete</button>&nbsp;
-          <button class="dt-button dt-green">Save</button>
-          <button id="close-panel1" class="dt-button dt-blue" style="float: right;">Close</button>
-        </template>
-      </web-modal>
-
-      <web-modal id="panel2" class="panel-demo2">
-          <template select="app-modal-header">
-            <span>Panel 2</span>
-          </template>
-          <template select="app-modal-body">
-            <h3>MODAL DIALOG</h3>
-            <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry.
-              Lorem Ipsum has been the industry’s standard dummy text ever since the 1500s.</p>
-          </template>
-          <template select="app-modal-footer">
-            <button class="dt-button dt-red">Delete</button>&nbsp;
-            <button class="dt-button dt-green">Save</button>
-            <button id="close-panel2" class="dt-button dt-blue" style="float: right;">Close</button>
-          </template>
-        </web-modal>
-
-        <web-modal id="panel3" class="panel-demo3">
-            <template select="app-modal-header">
-              <span>Panel 3</span>
-            </template>
-            <template select="app-modal-body">
-              <h3>MODAL DIALOG</h3>
-              <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry.
-                Lorem Ipsum has been the industry’s standard dummy text ever since the 1500s.</p>
-            </template>
-            <template select="app-modal-footer">
-              <button class="dt-button dt-red">Delete</button>&nbsp;
-              <button class="dt-button dt-green">Save</button>
-              <button id="close-panel3" class="dt-button dt-blue" style="float: right;">Close</button>
-            </template>
-          </web-modal>
-
   </div>
 </body>
 </html>

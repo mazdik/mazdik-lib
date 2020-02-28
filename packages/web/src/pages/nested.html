@@ -1,0 +1,54 @@
+<p>Nested modals demo</p>
+
+<button id="button1" class="dt-button">Open modal</button>
+<web-modal id="modal1" class="nested-modal-demo1">
+  <template select="app-modal-header">
+    <span>Modal 1</span>
+  </template>
+  <template select="app-modal-body">
+    <h3>MODAL DIALOG</h3>
+    <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+      Lorem Ipsum has been the industry’s standard dummy text ever since the 1500s.</p>
+
+      <button id="button2" class="dt-button">Open modal</button>
+      <web-modal id="modal2" class="nested-modal-demo2">
+          <template select="app-modal-header">
+            <span>Modal 2</span>
+          </template>
+          <template select="app-modal-body">
+            <h3>MODAL DIALOG</h3>
+            <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+              Lorem Ipsum has been the industry’s standard dummy text ever since the 1500s.</p>
+
+              <button id="button3" class="dt-button">Open modal</button>
+              <web-modal id="modal3" class="nested-modal-demo3">
+                  <template select="app-modal-header">
+                    <span>Modal 3</span>
+                  </template>
+                  <template select="app-modal-body">
+                    <h3>MODAL DIALOG</h3>
+                    <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+                      Lorem Ipsum has been the industry’s standard dummy text ever since the 1500s.</p>
+                  </template>
+                  <template select="app-modal-footer">
+                    <button class="dt-button dt-red">Delete</button>&nbsp;
+                    <button class="dt-button dt-green">Save</button>
+                    <button id="close-button3" class="dt-button dt-blue" style="float: right;">Close</button>
+                  </template>
+                </web-modal>
+
+          </template>
+          <template select="app-modal-footer">
+            <button class="dt-button dt-red">Delete</button>&nbsp;
+            <button class="dt-button dt-green">Save</button>
+            <button id="close-button2" class="dt-button dt-blue" style="float: right;">Close</button>
+          </template>
+        </web-modal>
+
+  </template>
+  <template select="app-modal-footer">
+    <button class="dt-button dt-red">Delete</button>&nbsp;
+    <button class="dt-button dt-green">Save</button>
+    <button id="close-button1" class="dt-button dt-blue" style="float: right;">Close</button>
+  </template>
+</web-modal>

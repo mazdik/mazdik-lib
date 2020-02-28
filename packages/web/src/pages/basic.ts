@@ -1,8 +1,7 @@
 import { ModalComponent } from '@mazdik-lib/modal';
+import html from './basic.html';
 
-export default `
-    <h1>This is basic.<h1>
-`;
+export default html;
 
 export function page() {
     // Basic demo

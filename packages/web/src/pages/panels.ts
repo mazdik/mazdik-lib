@@ -1,8 +1,7 @@
 import { ModalComponent } from '@mazdik-lib/modal';
+import html from './panels.html';
 
-export default `
-    <h1>This is panels.<h1>
-`;
+export default html;
 
 export function page() {
   // Panels demo

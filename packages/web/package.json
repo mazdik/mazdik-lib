@@ -10,8 +10,9 @@
   "scripts": {
     "build": "tsc -b ./tsconfig.package.json",
     "prepublish": "npm run build",
+    "s": "webpack-dev-server",
     "w": "webpack --watch",
-    "wb": "webpack"
+    "b": "webpack"
   },
   "dependencies": {
     "@mazdik-lib/modal": "0.1.0"

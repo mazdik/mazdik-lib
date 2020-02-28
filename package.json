@@ -6,14 +6,15 @@
     "@typescript-eslint/parser": "^2.13.0",
     "css-loader": "^3.4.2",
     "eslint": "^6.8.0",
+    "html-loader": "^0.5.5",
     "html-webpack-plugin": "^3.2.0",
     "lerna": "^3.20.2",
     "mini-css-extract-plugin": "^0.9.0",
-    "serve": "^11.2.0",
     "ts-loader": "^6.2.1",
     "typescript": "^3.7.3",
     "webpack": "^4.41.4",
-    "webpack-cli": "^3.3.10"
+    "webpack-cli": "^3.3.10",
+    "webpack-dev-server": "^3.10.3"
   },
   "scripts": {
     "lerna": "lerna",
@@ -22,9 +23,8 @@
     "lint": "eslint --ext .js,.ts ./packages/*/src/**/*",
     "build": "tsc --build packages/tsconfig.project.json",
     "watch": "tsc --build --watch packages/tsconfig.project.json",
-    "serve": "serve packages/web/lib",
     "w": "lerna run w --stream",
-    "wb": "lerna run wb",
-    "s": "lerna run --scope @mazdik-lib/modal s --stream"
+    "b": "lerna run b",
+    "s": "lerna run --scope @mazdik-lib/web s --stream"
   }
 }
