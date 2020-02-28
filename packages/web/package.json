@@ -10,6 +10,7 @@
   "scripts": {
     "build": "tsc -b ./tsconfig.package.json",
     "prepublish": "npm run build",
+    "w": "webpack --watch",
     "wb": "webpack"
   },
   "dependencies": {

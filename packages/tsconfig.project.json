@@ -12,9 +12,6 @@
     },
     {
       "path": "./modal/tsconfig.package.json"
-    },
-    {
-      "path": "./web/tsconfig.package.json"
     }
   ]
 }

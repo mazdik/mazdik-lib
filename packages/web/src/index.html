@@ -1,28 +1,24 @@
 <html lang="en">
-
 <head>
   <title>Demo modal</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-
-  <link href="styles/app.css" rel="stylesheet">
-  <link href="styles/modal.component.css" rel="stylesheet">
-  <script type="module" src="lib/bundle.js"></script>
 </head>
-
 <body>
   <div class="topnav" id="myTopnav">
     <a href="javascript:void(0);">Modal</a>
     <a href="javascript:void(0);" class="icon">&#9776;</a>
   </div>
   <div class="sidenav">
-    <a href="#basic">Basic demo</a>
-    <a href="#nested">Nested modals demo</a>
-    <a href="#panels">Panels demo</a>
+    <a href="/" data-chunk="home" data-title="Home">Home</a>
+    <a href="#basic" data-chunk="basic" data-title="Basic demo">Basic demo</a>
+    <a href="#nested" data-chunk="nested" data-title="Nested modals demo">Nested modals demo</a>
+    <a href="#panels" data-chunk="panels" data-title="Panels demo">Panels demo</a>
   </div>
 
   <div class="main">
+    <main></main>
 
     <p id="basic">Basic demo</p>
 
@@ -153,7 +149,5 @@
           </web-modal>
 
   </div>
-
 </body>
-
 </html>
