@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "target": "es2018",
+    "module": "esnext",
+    "declaration": true,
+    "moduleResolution": "node",
+    "sourceMap": false,
+    "lib": [
+      "es2018",
+      "dom"
+    ]
+  }
+}

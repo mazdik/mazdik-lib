@@ -1,4 +1,4 @@
-import { isLeftButton, getEvent } from './dom-utils';
+import { isLeftButton, getEvent } from '@mazdik-lib/common';
 
 export interface ResizableEvent {
   width: number;
