@@ -98,7 +98,7 @@ export class ModalComponent extends HTMLElement {
     return ['open'];
   }
 
-  attributeChangedCallback(name: string, newValue: any, oldValue: any) {
+  attributeChangedCallback(name: string, oldValue: string, newValue: string) {
     switch (name) {
       case 'open':
         this.open ? this.show() : this.hide();
@@ -322,9 +322,9 @@ export class ModalComponent extends HTMLElement {
   }
 
   onKeyDown(event): void {
-    event.preventDefault();
-    event.stopPropagation();
     if (event.key == 'Escape') {
+      event.preventDefault();
+      event.stopPropagation();
       this.hide();
     }
   }
