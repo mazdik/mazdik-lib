@@ -17,12 +17,12 @@ document.addEventListener('DOMContentLoaded', () => {
   const main: HTMLElement = document.querySelector('main');
   const links: HTMLElement[] = Array.from(document.querySelectorAll('.sidenav > a'));
 
-  setPage(main, location.hash.slice(1) || 'basic', '');
+  setPage(main, location.hash.slice(1) || 'modal-basic', '');
 
   links.forEach((link) => {
     link.addEventListener('click', async (e: MouseEvent) => {
         e.preventDefault();
-        setPage(main, link.dataset.chunk, link.dataset.title);
+        setPage(main, link.dataset.chunk, link.innerText);
       });
   });
 

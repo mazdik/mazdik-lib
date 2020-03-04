@@ -1,5 +1,5 @@
 import { ModalComponent } from '@mazdik-lib/modal';
-import html from './panels.html';
+import html from './modal-panels.html';
 
 export default html;
 

@@ -1,5 +1,5 @@
 import { ModalComponent } from '@mazdik-lib/modal';
-import html from './nested.html';
+import html from './modal-nested.html';
 
 export default html;
 

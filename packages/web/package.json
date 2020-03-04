@@ -15,6 +15,7 @@
     "b": "webpack"
   },
   "dependencies": {
-    "@mazdik-lib/modal": "0.1.0"
+    "@mazdik-lib/modal": "0.1.0",
+    "@mazdik-lib/select-list": "0.1.0"
   }
 }
