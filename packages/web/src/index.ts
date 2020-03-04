@@ -1,5 +1,5 @@
 import './styles/app.css';
-import './styles/modal.component.css';
+import './styles/all.css';
 import '@mazdik-lib/modal';
 
 async function setPage(main: HTMLElement, name: string, title: string) {

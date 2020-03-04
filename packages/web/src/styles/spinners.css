@@ -1,0 +1,33 @@
+.dt-loader {
+  box-sizing: border-box;
+  display: inline-block;
+  border: .25rem solid var(--dt-color-secondary-lightest);
+  border-radius: 50%;
+  border-top: .25rem solid var(--dt-color-primary);
+  width: 1.125rem;
+  height: 1.125rem;
+  animation: spin 2s linear infinite;
+  vertical-align: middle;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* spinner 2 */
+.dt-spinner {
+  box-sizing: border-box;
+  height: 3.75rem;
+  width: 3.75rem;
+  border-radius: 50%;
+  box-shadow: 0 -1.25rem 0 1.5rem var(--dt-color-primary) inset;
+  animation: spin 1s infinite linear;
+}
+
+.dt-spinner {
+  position: absolute;
+  top: calc(50% - 1.875rem);
+  left: calc(50% - 1.875rem);
+  z-index: 1000;
+}

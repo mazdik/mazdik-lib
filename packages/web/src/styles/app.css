@@ -128,21 +128,6 @@ body {
   padding: 54px 20px 20px 20px;
 }
 
-/* button */
-.dt-button {
-  background-color: #5b9bd5;
-  border: none;
-  color: white;
-  padding: .5rem 1rem;
-  cursor: pointer;
-  user-select: none;
-  outline: 0;
-}
-.dt-green {background-color: #4CAF50;} /* Green */
-.dt-blue {background-color: #008CBA;} /* Blue */
-.dt-red {background-color: #f44336;} /* Red */
-.dt-orange {background-color: #ff9800;} /* Orange */
-
 /* PanelDemoComponent */
 .panel-demo1 .ui-modal-header { background-color: red !important; }
 .panel-demo2 .ui-modal-header { background-color: #4CAF50 !important; }
@@ -158,3 +143,7 @@ body {
 .nested-modal-demo3 .ui-modal {
   width: 31.25rem;
 }
+
+/* SelectListDemoComponent */
+.select-list-demo {display: flex;}
+.select-list-demo .sl-column {margin-right: 1.875rem; width: 15.625rem; padding: .625rem; border: 1px solid #eee; border-radius: .0625rem;}

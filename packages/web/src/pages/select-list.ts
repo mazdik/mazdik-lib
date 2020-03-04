@@ -1,3 +1,4 @@
+import '@mazdik-lib/select-list';
 import { SelectListComponent } from '@mazdik-lib/select-list';
 import html from './select-list.html';
 

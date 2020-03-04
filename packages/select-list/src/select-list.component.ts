@@ -8,12 +8,12 @@ interface SelectItem {
 function getTemplate() {
   return `
   <input class="dt-input dt-form-group"
-        #filterInput
+        id="filterInput"
         placeholder="{{searchMessage}}"
         [value]="searchFilterText"
         (input)="onInputFilter($event)">
 
-  <ul class="dt-list-menu dt-list-menu-scroll">
+  <ul class="dt-list-menu dt-list-menu-scroll" id="list-menu">
       <li class="dt-list-menu-item" *ngIf="multiple" (click)="onCheckboxAllClick($event)">
         <span class="dt-checkbox">
           <input type="checkbox"
@@ -47,9 +47,9 @@ function getTemplate() {
 
   <div class="dt-list-divider"></div>
   <div class="dt-list-menu-row">
-    <button class="dt-button dt-button-sm" (click)="onClickOk($event)" *ngIf="multiple">OK</button>
-    <button class="dt-button dt-button-sm" (click)="onClickCancel($event)">{{cancelMessage}}</button>
-    <button class="dt-button dt-button-sm" (click)="onClickClear($event)">{{clearMessage}}</button>
+    <button class="dt-button dt-button-sm" id="okButton" (click)="onClickOk($event)" *ngIf="multiple">OK</button>
+    <button class="dt-button dt-button-sm" id="cancelButton" (click)="onClickCancel($event)">{{cancelMessage}}</button>
+    <button class="dt-button dt-button-sm" id="clearButton" (click)="onClickClear($event)">{{clearMessage}}</button>
   </div>
   `;
 }

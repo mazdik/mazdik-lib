@@ -1,0 +1,29 @@
+.dt-input-group {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
+  width: 100%;
+}
+
+.dt-input-group input:not(:last-child) {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  border-right: 0;
+}
+
+.dt-input-group input {
+  position: relative;
+  width: 1%;
+  margin-bottom: 0;
+  flex: 1 1 auto;
+}
+
+.dt-input-group input:focus {
+  box-shadow: none;
+}
+
+.dt-input-group button:last-child {
+  border-top-right-radius: .1875rem;
+  border-bottom-right-radius: .1875rem;
+}
