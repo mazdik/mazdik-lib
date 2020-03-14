@@ -4,3 +4,4 @@ node_modules/
 /packages/*/*.tgz
 /packages/*/lib/
 *.tsbuildinfo
+package-lock.json
