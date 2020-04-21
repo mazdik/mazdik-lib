@@ -47,3 +47,7 @@
   overflow-y: auto;
   max-height: 12.5rem;
 }
+
+.dt-list-menu-item i {
+  margin-right: 0.3rem;
+}

@@ -25,26 +25,6 @@ function getTemplate() {
         </span>
       </li>
       <li class="dt-list-divider"></li>
-
-      <ng-container *ngIf="!multiple">
-        <li class="dt-list-menu-item"
-          *ngFor="let option of viewOptions"
-          (click)="setSelected($event, option.id)"
-          [ngClass]="{'active': isSelected(option.id)}">
-          <i class="dt-icon" [class.dt-icon-ok]="isSelected(option.id)"></i>&nbsp;&nbsp;{{option.name}}
-        </li>
-      </ng-container>
-
-      <ng-container *ngIf="multiple">
-        <li class="dt-list-menu-item"
-          *ngFor="let option of viewOptions"
-          (click)="setSelected($event, option.id)">
-          <span class="dt-checkbox">
-              <input type="checkbox" [checked]="isSelected(option.id)"/>
-              <label>{{option.name}}</label>
-          </span>
-        </li>
-      </ng-container>
   </ul>
 
   <div class="dt-list-divider"></div>
@@ -54,6 +34,26 @@ function getTemplate() {
     <button class="dt-button dt-button-sm" id="clearButton"></button>
   </div>
   `;
+}
+
+function getTemplateSingle(option: SelectItem, active: boolean) {
+  const cls = active ? 'active' : '';
+  const icon = active ? 'dt-icon-ok' : '';
+  return `
+  <li class="dt-list-menu-item ${cls}" data-id="${option.id}">
+    <i class="dt-icon ${icon}"></i>${option.name}
+  </li>`;
+}
+
+function getTemplateMultiple(option: SelectItem, active: boolean) {
+  const checked = active ? 'checked' : '';
+  return `
+  <li class="dt-list-menu-item" data-id="${option.id}">
+    <span class="dt-checkbox">
+      <input type="checkbox" ${checked}/>
+      <label>${option.name}</label>
+    </span>
+  </li>`;
 }
 
 export class SelectListComponent extends HTMLElement {
@@ -84,6 +84,7 @@ export class SelectListComponent extends HTMLElement {
     if (val === true) {
       this.setFocus();
       this.searchFilterText = null;
+      this.filterInput.value = '';
     }
   }
   private _isOpen: boolean;
@@ -113,13 +114,7 @@ export class SelectListComponent extends HTMLElement {
     this.cancelButton = this.querySelector('#cancelButton');
     this.clearButton = this.querySelector('#clearButton');
 
-    this.filterInput.placeholder = this.searchMessage;
-    this.okButton.textContent = 'OK';
-    this.cancelButton.textContent = this.cancelMessage;
-    this.clearButton.textContent = this.clearMessage;
-    if (!this.multiple) {
-      this.okButton.style.display = 'none';
-    }
+    this.addEventListeners();
   }
 
   disconnectedCallback() {
@@ -147,6 +142,11 @@ export class SelectListComponent extends HTMLElement {
         eventName: 'click',
         target: this.clearButton,
         handler: this.onClickClear.bind(this)
+      },
+      {
+        eventName: 'click',
+        target: this.listMenu,
+        handler: this.onClickListMenu.bind(this)
       },
     ];
 
@@ -271,22 +271,39 @@ export class SelectListComponent extends HTMLElement {
   }
 
   private render() {
-    this.listMenu.append(...this.getListContent());
+    this.filterInput.placeholder = this.searchMessage;
+    this.okButton.textContent = 'OK';
+    this.cancelButton.textContent = this.cancelMessage;
+    this.clearButton.textContent = this.clearMessage;
+    if (!this.multiple) {
+      this.okButton.style.display = 'none';
+    }
+
+    const listContent = this.getListContent().join('');
+    this.listMenu.insertAdjacentHTML('beforeend', listContent);
   }
 
-  private getListContent() {
+  private getListContent(): string[] {
     const result = [];
     this.viewOptions.forEach(option => {
-      const element = document.createElement('li');
-      element.textContent = option.name;
-      element.className = 'dt-list-menu-item';
-      element.addEventListener('click', (event) => {
-        this.setSelected(event, option.id)
-        console.log(this.selectedOptions);
-      });
+      let element;
+      if (this.multiple) {
+        element = getTemplateMultiple(option, this.isSelected(option.id));
+      } else {
+        element = getTemplateSingle(option, this.isSelected(option.id));
+      }
       result.push(element);
     });
     return result;
+  }
+
+  onClickListMenu(event: MouseEvent) {
+    const target = event.target as HTMLElement;
+    if (target.tagName === 'LI' && target.dataset.id) {
+      const id = parseInt(target.dataset.id, 10);
+      this.setSelected(event, id);
+      console.log(id);
+    }
   }
 
 }
