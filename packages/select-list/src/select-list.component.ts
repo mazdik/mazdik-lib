@@ -297,12 +297,55 @@ export class SelectListComponent extends HTMLElement {
     return result;
   }
 
-  onClickListMenu(event: MouseEvent) {
-    const target = event.target as HTMLElement;
-    if (target.tagName === 'LI' && target.dataset.id) {
-      const id = parseInt(target.dataset.id, 10);
+  private getDataId(target: HTMLElement): number {
+    const el = target.tagName === 'LI' ? target : target.closest('li');
+    return (el && el.dataset.id) ? parseInt(el.dataset.id, 10): null;
+  }
+
+  private onClickListMenu(event: MouseEvent) {
+    const id = this.getDataId(event.target as HTMLElement);
+    if (id) { // TODO
       this.setSelected(event, id);
       console.log(id);
+      this.refreshSelected();
+    }
+  }
+
+  private refreshSelected() {
+    const children = Array.from(this.listMenu.children);
+    children.forEach((element: HTMLElement) => {
+      const id = this.getDataId(element);
+      if (this.isSelected(id)) {
+        this.addActiveStyles(element);
+      } else {
+        this.removeActiveStyles(element);
+      }
+    });
+  }
+
+  private addActiveStyles(element: HTMLElement) {
+    if (!element.firstElementChild) {
+      return;
+    }
+    if (this.multiple) {
+      const input = element.firstElementChild.firstElementChild as HTMLInputElement;
+      input.checked = true;
+    } else {
+      element.classList.add('active');
+      element.firstElementChild.classList.add('dt-icon-ok');
+    }
+  }
+
+  private removeActiveStyles(element: HTMLElement) {
+    if (!element.firstElementChild) {
+      return;
+    }
+    if (this.multiple) {
+      const input = element.firstElementChild.firstElementChild as HTMLInputElement;
+      input.checked = false;
+    } else {
+      element.classList.remove('active');
+      element.firstElementChild.classList.remove('dt-icon-ok');
     }
   }
 
