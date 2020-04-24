@@ -16,7 +16,7 @@ export function page() {
     {id: 6, name: 'Select 6'},
   ];
   selectList1.multiple = true;
-  selectList1.model = [2];
+  selectList1.model = [2, 4];
   selectList1.options = options;
   //selectList1.isOpen = true;
 }

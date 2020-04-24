@@ -14,19 +14,15 @@ interface Listener {
 function getTemplate() {
   return `
   <input class="dt-input dt-form-group" id="filterInput">
-
   <ul class="dt-list-menu dt-list-menu-scroll" id="listMenu">
-      <li class="dt-list-menu-item" *ngIf="multiple" (click)="onCheckboxAllClick($event)">
-        <span class="dt-checkbox">
-          <input type="checkbox"
-                [checked]="allSelected"
-                [indeterminate]="partiallySelected"/>
-          <label>{{selectAllMessage}}</label>
-        </span>
-      </li>
-      <li class="dt-list-divider"></li>
+    <li class="dt-list-menu-item" id="selectAll" data-id="-1">
+      <span class="dt-checkbox">
+        <input type="checkbox" id="checkboxAll"/>
+        <label></label>
+      </span>
+    </li>
+    <li class="dt-list-divider"></li>
   </ul>
-
   <div class="dt-list-divider"></div>
   <div class="dt-list-menu-row">
     <button class="dt-button dt-button-sm" id="okButton"></button>
@@ -90,6 +86,8 @@ export class SelectListComponent extends HTMLElement {
   private _isOpen: boolean;
 
   private filterInput: HTMLInputElement;
+  private selectAll: HTMLElement;
+  private checkboxAll: HTMLInputElement;
   private listMenu: HTMLElement;
   private okButton: HTMLButtonElement;
   private cancelButton: HTMLButtonElement;
@@ -109,6 +107,8 @@ export class SelectListComponent extends HTMLElement {
     this.appendChild(template.content.cloneNode(true));
 
     this.filterInput = this.querySelector('#filterInput');
+    this.selectAll = this.querySelector('#selectAll');
+    this.checkboxAll = this.querySelector('#checkboxAll');
     this.listMenu = this.querySelector('#listMenu');
     this.okButton = this.querySelector('#okButton');
     this.cancelButton = this.querySelector('#cancelButton');
@@ -179,11 +179,18 @@ export class SelectListComponent extends HTMLElement {
     }
   }
 
-  setSelected(event: MouseEvent, value: any) {
-    event.stopPropagation();
+  setSelected(value: any) {
     this.setSelectedOptions(value);
     if (!this.multiple) {
       this.selectionChangeEmit();
+    }
+  }
+
+  setSelectedAll() {
+    if (this.allSelected) {
+      this.selectedOptions = [];
+    } else {
+      this.checkAll();
     }
   }
 
@@ -215,6 +222,7 @@ export class SelectListComponent extends HTMLElement {
     event.stopPropagation();
     this.selectedOptions = this.model.slice(0);
     this.dispatchEvent(new CustomEvent('selectionCancel', { detail: true }));
+    this.refreshStyles();
   }
 
   onClickClear(event: MouseEvent) {
@@ -223,6 +231,7 @@ export class SelectListComponent extends HTMLElement {
       this.selectedOptions = [];
     }
     this.selectionChangeEmit();
+    this.refreshStyles();
   }
 
   get allSelected(): boolean {
@@ -234,15 +243,6 @@ export class SelectListComponent extends HTMLElement {
 
   get partiallySelected(): boolean {
     return this.selectedOptions.length !== 0 && !this.allSelected;
-  }
-
-  onCheckboxAllClick(event: MouseEvent) {
-    event.stopPropagation();
-    if (this.allSelected) {
-      this.selectedOptions = [];
-    } else {
-      this.checkAll();
-    }
   }
 
   selectionChangeEmit() {
@@ -275,12 +275,14 @@ export class SelectListComponent extends HTMLElement {
     this.okButton.textContent = 'OK';
     this.cancelButton.textContent = this.cancelMessage;
     this.clearButton.textContent = this.clearMessage;
+    this.checkboxAll.nextElementSibling.textContent = this.selectAllMessage;
     if (!this.multiple) {
       this.okButton.style.display = 'none';
+      this.selectAll.style.display = 'none';
     }
-
     const listContent = this.getListContent().join('');
     this.listMenu.insertAdjacentHTML('beforeend', listContent);
+    this.refreshStyles();
   }
 
   private getListContent(): string[] {
@@ -304,14 +306,18 @@ export class SelectListComponent extends HTMLElement {
 
   private onClickListMenu(event: MouseEvent) {
     const id = this.getDataId(event.target as HTMLElement);
-    if (id) { // TODO
-      this.setSelected(event, id);
-      console.log(id);
-      this.refreshSelected();
+    if (id !== null && id !== undefined) {
+      event.stopPropagation();
+      if (id < 0) {
+        this.setSelectedAll();
+      } else {
+        this.setSelected(id);
+      }
+      this.refreshStyles();
     }
   }
 
-  private refreshSelected() {
+  private refreshStyles() {
     const children = Array.from(this.listMenu.children);
     children.forEach((element: HTMLElement) => {
       const id = this.getDataId(element);
@@ -321,6 +327,8 @@ export class SelectListComponent extends HTMLElement {
         this.removeActiveStyles(element);
       }
     });
+    this.checkboxAll.checked = this.allSelected;
+    this.checkboxAll.indeterminate = this.partiallySelected;
   }
 
   private addActiveStyles(element: HTMLElement) {
