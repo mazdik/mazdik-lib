@@ -32,21 +32,18 @@ function getTemplate() {
   `;
 }
 
-function getTemplateSingle(option: SelectItem, active: boolean) {
-  const cls = active ? 'active' : '';
-  const icon = active ? 'dt-icon-ok' : '';
+function getTemplateSingle(option: SelectItem) {
   return `
-  <li class="dt-list-menu-item ${cls}" data-id="${option.id}">
-    <i class="dt-icon ${icon}"></i>${option.name}
+  <li class="dt-list-menu-item" data-id="${option.id}">
+    <i class="dt-icon"></i>${option.name}
   </li>`;
 }
 
-function getTemplateMultiple(option: SelectItem, active: boolean) {
-  const checked = active ? 'checked' : '';
+function getTemplateMultiple(option: SelectItem) {
   return `
   <li class="dt-list-menu-item" data-id="${option.id}">
     <span class="dt-checkbox">
-      <input type="checkbox" ${checked}/>
+      <input type="checkbox"/>
       <label>${option.name}</label>
     </span>
   </li>`;
@@ -63,6 +60,7 @@ export class SelectListComponent extends HTMLElement {
   get options(): SelectItem[] { return this._options; }
   set options(val: SelectItem[]) {
     this._options = val;
+    this.contentInit();
     this.render();
   }
   private _options: SelectItem[];
@@ -71,6 +69,7 @@ export class SelectListComponent extends HTMLElement {
   set model(val: any[]) {
     this._model = val;
     this.selectedOptions = (val && val.length) ? val.slice(0) : [];
+    this.refreshStyles();
   }
   private _model: any[] = [];
 
@@ -114,6 +113,7 @@ export class SelectListComponent extends HTMLElement {
     this.cancelButton = this.querySelector('#cancelButton');
     this.clearButton = this.querySelector('#clearButton');
 
+    this.contentInit();
     this.addEventListeners();
   }
 
@@ -159,10 +159,6 @@ export class SelectListComponent extends HTMLElement {
     this.listeners.forEach(x => {
       x.target.removeEventListener(x.eventName, x.handler);
     });
-  }
-
-  ngAfterViewInit() {
-    this.setFocus();
   }
 
   setSelectedOptions(value: any) {
@@ -257,6 +253,7 @@ export class SelectListComponent extends HTMLElement {
   onInputFilter(event: InputEvent) {
     this.searchFilterText = (event.target as HTMLInputElement).value;
     this.filteredOptions = this.filterOptionsByName(this.searchFilterText);
+    this.render();
   }
 
   get viewOptions(): SelectItem[] {
@@ -270,7 +267,7 @@ export class SelectListComponent extends HTMLElement {
     return this.options.filter(val => val.name.toLowerCase().indexOf(value.toLowerCase()) > -1);
   }
 
-  private render() {
+  private contentInit() {
     this.filterInput.placeholder = this.searchMessage;
     this.okButton.textContent = 'OK';
     this.cancelButton.textContent = this.cancelMessage;
@@ -280,19 +277,23 @@ export class SelectListComponent extends HTMLElement {
       this.okButton.style.display = 'none';
       this.selectAll.style.display = 'none';
     }
-    const listContent = this.getListContent().join('');
+  }
+
+  private render() {
+    this.removeListContent();
+    const listContent = this.createListContent().join('');
     this.listMenu.insertAdjacentHTML('beforeend', listContent);
     this.refreshStyles();
   }
 
-  private getListContent(): string[] {
+  private createListContent(): string[] {
     const result = [];
     this.viewOptions.forEach(option => {
       let element;
       if (this.multiple) {
-        element = getTemplateMultiple(option, this.isSelected(option.id));
+        element = getTemplateMultiple(option);
       } else {
-        element = getTemplateSingle(option, this.isSelected(option.id));
+        element = getTemplateSingle(option);
       }
       result.push(element);
     });
@@ -302,6 +303,10 @@ export class SelectListComponent extends HTMLElement {
   private getDataId(target: HTMLElement): number {
     const el = target.tagName === 'LI' ? target : target.closest('li');
     return (el && el.dataset.id) ? parseInt(el.dataset.id, 10): null;
+  }
+
+  private get listContent(): Element[] {
+    return Array.from(this.listMenu.children);
   }
 
   private onClickListMenu(event: MouseEvent) {
@@ -318,8 +323,7 @@ export class SelectListComponent extends HTMLElement {
   }
 
   private refreshStyles() {
-    const children = Array.from(this.listMenu.children);
-    children.forEach((element: HTMLElement) => {
+    this.listContent.forEach((element: HTMLElement) => {
       const id = this.getDataId(element);
       if (this.isSelected(id)) {
         this.addActiveStyles(element);
@@ -336,8 +340,7 @@ export class SelectListComponent extends HTMLElement {
       return;
     }
     if (this.multiple) {
-      const input = element.firstElementChild.firstElementChild as HTMLInputElement;
-      input.checked = true;
+      this.setInputChecked(element, true);
     } else {
       element.classList.add('active');
       element.firstElementChild.classList.add('dt-icon-ok');
@@ -349,12 +352,25 @@ export class SelectListComponent extends HTMLElement {
       return;
     }
     if (this.multiple) {
-      const input = element.firstElementChild.firstElementChild as HTMLInputElement;
-      input.checked = false;
+      this.setInputChecked(element, false);
     } else {
       element.classList.remove('active');
       element.firstElementChild.classList.remove('dt-icon-ok');
     }
+  }
+
+  private setInputChecked(element: HTMLElement, checked: boolean) {
+    const input = element.firstElementChild.firstElementChild as HTMLInputElement;
+    input.checked = checked;
+  }
+
+  private removeListContent() {
+    this.listContent.forEach((element: HTMLElement) => {
+      const id = this.getDataId(element);
+      if (id !== null && id !== undefined && id !== -1) {
+        element.remove();
+      }
+    });
   }
 
 }
