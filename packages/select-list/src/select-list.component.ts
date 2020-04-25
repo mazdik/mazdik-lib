@@ -1,7 +1,15 @@
 export interface SelectItem {
-  id: any;
+  id: string;
   name: string;
-  parentId?: any;
+  parentId?: string;
+}
+
+export interface SelectListSettings {
+  multiple: boolean;
+  selectAllMessage?: string;
+  cancelMessage?: string;
+  clearMessage?: string;
+  searchMessage?: string;
 }
 
 interface Listener {
@@ -51,27 +59,31 @@ function getTemplateMultiple(option: SelectItem) {
 
 export class SelectListComponent extends HTMLElement {
 
-  multiple: boolean;
-  selectAllMessage: string = 'Select all';
-  cancelMessage: string = 'Cancel';
-  clearMessage: string = 'Clear';
-  searchMessage: string = 'Search...';
+  set settings(val: SelectListSettings) {
+    if (val) {
+      this.multiple = val.multiple;
+      this.selectAllMessage = val.selectAllMessage || this.selectAllMessage;
+      this.cancelMessage = val.cancelMessage || this.cancelMessage;
+      this.clearMessage = val.clearMessage || this.clearMessage;
+      this.searchMessage = val.searchMessage || this.searchMessage;
+    }
+    this.contentInit();
+  }
 
   get options(): SelectItem[] { return this._options; }
   set options(val: SelectItem[]) {
     this._options = val;
-    this.contentInit();
     this.render();
   }
   private _options: SelectItem[];
 
-  get model(): any[] { return this._model; }
-  set model(val: any[]) {
+  get model(): string[] { return this._model; }
+  set model(val: string[]) {
     this._model = val;
     this.selectedOptions = (val && val.length) ? val.slice(0) : [];
     this.refreshStyles();
   }
-  private _model: any[] = [];
+  private _model: string[] = [];
 
   get isOpen(): boolean { return this._isOpen; }
   set isOpen(val: boolean) {
@@ -84,6 +96,12 @@ export class SelectListComponent extends HTMLElement {
   }
   private _isOpen: boolean;
 
+  private multiple: boolean;
+  private selectAllMessage: string = 'Select all';
+  private cancelMessage: string = 'Cancel';
+  private clearMessage: string = 'Clear';
+  private searchMessage: string = 'Search...';
+
   private filterInput: HTMLInputElement;
   private selectAll: HTMLElement;
   private checkboxAll: HTMLInputElement;
@@ -93,7 +111,7 @@ export class SelectListComponent extends HTMLElement {
   private clearButton: HTMLButtonElement;
 
   private searchFilterText: string = null;
-  private selectedOptions: any[] = [];
+  private selectedOptions: string[] = [];
   private filteredOptions: SelectItem[];
 
   private listeners: Listener[] = [];
@@ -161,7 +179,7 @@ export class SelectListComponent extends HTMLElement {
     });
   }
 
-  setSelectedOptions(value: any) {
+  setSelectedOptions(value: string) {
     const index = this.selectedOptions.indexOf(value);
     if (index > -1) {
       this.selectedOptions.splice(index, 1);
@@ -175,7 +193,7 @@ export class SelectListComponent extends HTMLElement {
     }
   }
 
-  setSelected(value: any) {
+  setSelected(value: string) {
     this.setSelectedOptions(value);
     if (!this.multiple) {
       this.selectionChangeEmit();
@@ -197,7 +215,7 @@ export class SelectListComponent extends HTMLElement {
     }
   }
 
-  isSelected(value: any): boolean {
+  isSelected(value: string): boolean {
     return this.selectedOptions.indexOf(value) > -1;
   }
 
@@ -273,10 +291,8 @@ export class SelectListComponent extends HTMLElement {
     this.cancelButton.textContent = this.cancelMessage;
     this.clearButton.textContent = this.clearMessage;
     this.checkboxAll.nextElementSibling.textContent = this.selectAllMessage;
-    if (!this.multiple) {
-      this.okButton.style.display = 'none';
-      this.selectAll.style.display = 'none';
-    }
+    this.okButton.style.display = this.multiple ? 'block' : 'none';
+    this.selectAll.style.display = this.multiple ? 'block' : 'none';
   }
 
   private render() {
@@ -300,9 +316,9 @@ export class SelectListComponent extends HTMLElement {
     return result;
   }
 
-  private getDataId(target: HTMLElement): number {
+  private getDataId(target: HTMLElement): string {
     const el = target.tagName === 'LI' ? target : target.closest('li');
-    return (el && el.dataset.id) ? parseInt(el.dataset.id, 10): null;
+    return (el && el.dataset.id) ? el.dataset.id: null;
   }
 
   private get listContent(): Element[] {
@@ -313,7 +329,7 @@ export class SelectListComponent extends HTMLElement {
     const id = this.getDataId(event.target as HTMLElement);
     if (id !== null && id !== undefined) {
       event.stopPropagation();
-      if (id < 0) {
+      if (id === '-1') {
         this.setSelectedAll();
       } else {
         this.setSelected(id);
@@ -367,7 +383,7 @@ export class SelectListComponent extends HTMLElement {
   private removeListContent() {
     this.listContent.forEach((element: HTMLElement) => {
       const id = this.getDataId(element);
-      if (id !== null && id !== undefined && id !== -1) {
+      if (id !== null && id !== undefined && id !== '-1') {
         element.remove();
       }
     });
