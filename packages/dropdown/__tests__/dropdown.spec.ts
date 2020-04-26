@@ -54,31 +54,25 @@ describe('DropDown', () => {
     expect(component.dropdown.isOpen).toBe(false);
   });
 
-  // it('should be able to observe when opening', () => {
-  //   fixture.addEventListener('open', (ev) => {
-  //     console.log(ev);
-  //   });
+  it('should be able to observe when opening', () => {
+    const spy = jest.fn(x => x.detail);
+    fixture.addEventListener('open', spy);
 
-  //   const spy = jasmine.createSpy('changed spy');
-  //   component.dropdown.isOpenSource$.subscribe(spy);
+    component.dropdown.openDropdown();
+    expect(spy).toHaveBeenCalledTimes(1);
+    // expect(spy).toHaveBeenCalledWith(true);
+    expect(component.dropdown.isOpen).toBe(true);
+  });
 
-  //   component.dropdown.openDropdown();
-  //   expect(spy).toHaveBeenCalledTimes(1);
-  //   expect(spy).toHaveBeenCalledWith(true);
-  // });
+  it('should be able to observe when closing', () => {
+    const spy = jest.fn(x => x.detail);
+    fixture.addEventListener('open', spy);
 
-  // it('should be able to observe when closing', () => {
-  //   fixture.addEventListener('open', (ev) => {
-  //     console.log(ev);
-  //   });
-
-  //   const spy = jasmine.createSpy('changed spy');
-  //   component.dropdown.isOpenSource$.subscribe(spy);
-
-  //   component.dropdown.isOpen = true;
-  //   component.dropdown.closeDropdown();
-  //   expect(spy).toHaveBeenCalledTimes(1);
-  //   expect(spy).toHaveBeenCalledWith(false);
-  // });
+    component.dropdown.isOpen = true;
+    component.dropdown.closeDropdown();
+    expect(spy).toHaveBeenCalledTimes(1);
+    // expect(spy).toHaveBeenCalledWith(false);
+    expect(component.dropdown.isOpen).toBe(false);
+  });
 
 });

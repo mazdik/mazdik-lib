@@ -1,4 +1,6 @@
 module.exports = {
   preset: 'ts-jest',
-  testEnvironment: 'node',
+  moduleNameMapper: {
+    '@mazdik-lib/(.+)$': '<rootDir>packages/$1/src',
+  }
 };
