@@ -31,6 +31,9 @@
 .dt-list-menu-row {
   display: flex;
   justify-content: space-between;
+  margin-top: .1875rem;
+  padding-top: .1875rem;
+  border-top: .0625rem solid var(--dt-color-secondary-lighter);
 }
 
 .dt-list-menu-row button {

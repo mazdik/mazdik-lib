@@ -31,7 +31,6 @@ function getTemplate() {
     </li>
     <li class="dt-list-divider"></li>
   </ul>
-  <div class="dt-list-divider"></div>
   <div class="dt-list-menu-row">
     <button class="dt-button dt-button-sm" id="okButton"></button>
     <button class="dt-button dt-button-sm" id="cancelButton"></button>
