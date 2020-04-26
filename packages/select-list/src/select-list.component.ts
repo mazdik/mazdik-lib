@@ -19,22 +19,22 @@ interface Listener {
   options?: AddEventListenerOptions | boolean;
 }
 
-function getTemplate() {
+function getTemplate(id: string) {
   return `
-  <input class="dt-input dt-form-group" id="filterInput">
-  <ul class="dt-list-menu dt-list-menu-scroll" id="listMenu">
-    <li class="dt-list-menu-item" id="selectAll" data-id="-1">
+  <input class="dt-input dt-form-group" id="filterInput${id}">
+  <ul class="dt-list-menu dt-list-menu-scroll" id="listMenu${id}">
+    <li class="dt-list-menu-item" id="selectAll${id}" data-id="-1">
       <span class="dt-checkbox">
-        <input type="checkbox" id="checkboxAll"/>
+        <input type="checkbox" id="checkboxAll${id}"/>
         <label></label>
       </span>
     </li>
     <li class="dt-list-divider"></li>
   </ul>
   <div class="dt-list-menu-row">
-    <button class="dt-button dt-button-sm" id="okButton"></button>
-    <button class="dt-button dt-button-sm" id="cancelButton"></button>
-    <button class="dt-button dt-button-sm" id="clearButton"></button>
+    <button class="dt-button dt-button-sm" id="okButton${id}"></button>
+    <button class="dt-button dt-button-sm" id="cancelButton${id}"></button>
+    <button class="dt-button dt-button-sm" id="clearButton${id}"></button>
   </div>
   `;
 }
@@ -117,18 +117,18 @@ export class SelectListComponent extends HTMLElement {
 
   constructor() {
     super();
-
+    const id = (~~(Math.random()*1e3)).toString();
     const template = document.createElement('template');
-    template.innerHTML = getTemplate();
+    template.innerHTML = getTemplate(id);
     this.appendChild(template.content.cloneNode(true));
 
-    this.filterInput = this.querySelector('#filterInput');
-    this.selectAll = this.querySelector('#selectAll');
-    this.checkboxAll = this.querySelector('#checkboxAll');
-    this.listMenu = this.querySelector('#listMenu');
-    this.okButton = this.querySelector('#okButton');
-    this.cancelButton = this.querySelector('#cancelButton');
-    this.clearButton = this.querySelector('#clearButton');
+    this.filterInput = this.querySelector('#filterInput'+id);
+    this.selectAll = this.querySelector('#selectAll'+id);
+    this.checkboxAll = this.querySelector('#checkboxAll'+id);
+    this.listMenu = this.querySelector('#listMenu'+id);
+    this.okButton = this.querySelector('#okButton'+id);
+    this.cancelButton = this.querySelector('#cancelButton'+id);
+    this.clearButton = this.querySelector('#clearButton'+id);
 
     this.contentInit();
     this.addEventListeners();
