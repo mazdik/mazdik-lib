@@ -18,6 +18,9 @@
     },
     {
       "path": "./dropdown/tsconfig.package.json"
+    },
+    {
+      "path": "./dropdown-select/tsconfig.package.json"
     }
   ]
 }
