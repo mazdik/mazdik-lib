@@ -22,9 +22,6 @@ export function page() {
   };
   selectList1.options = options;
   selectList1.model = ['2', '4'];
-  setTimeout(() => {
-    selectList1.isOpen = true;
-  }, 2000);
 
   selectList2.options = options;
   selectList2.model = ['3'];

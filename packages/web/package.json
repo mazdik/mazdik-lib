@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "@mazdik-lib/modal": "0.1.0",
-    "@mazdik-lib/select-list": "0.1.0"
+    "@mazdik-lib/select-list": "0.1.0",
+    "@mazdik-lib/dropdown-select": "0.1.0"
   }
 }

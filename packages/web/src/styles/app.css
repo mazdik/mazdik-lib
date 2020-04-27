@@ -147,3 +147,7 @@ body {
 /* SelectListDemoComponent */
 .select-list-demo {display: flex;}
 .select-list-demo .sl-column {margin-right: 1.875rem; width: 15.625rem; padding: .625rem; border: 1px solid #eee; border-radius: .0625rem;}
+
+/* DropdownSelectDemoComponent */
+.dropdown-select-demo {display: flex;}
+.dropdown-select-demo .sl-column {margin-right: 1.875rem; width: 15.625rem;}

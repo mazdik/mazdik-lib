@@ -1,8 +1,13 @@
 import { DropDown } from '@mazdik-lib/dropdown';
 import '@mazdik-lib/select-list';
-import { SelectItem } from '@mazdik-lib/select-list';
+import { SelectListComponent } from '@mazdik-lib/select-list';
 
 // TODO
+export interface SelectItem {
+  id: string;
+  name: string;
+  parentId?: string;
+}
 interface Listener {
   eventName: string;
   target: HTMLElement | Window;
@@ -12,7 +17,7 @@ interface Listener {
 
 function getTemplate(id: string) {
   return `
-  <div class="dt-input-group" (click)="open($event)">
+  <div class="dt-input-group" id="inputGroup${id}" (click)="open($event)">
   <input class="dt-input dt-select-input"
          readonly="readonly"
          value="{{selectedName}}"
@@ -23,21 +28,8 @@ function getTemplate(id: string) {
     <i class="dt-icon desc" *ngIf="!dropdown.isOpen"></i>
   </button>
 </div>
-<div class="dt-dropdown-select-list" *ngIf="dropdown.isOpen">
-  <app-select-list
-      [options]="options"
-      [selected]="selectedOptions"
-      [multiple]="multiple"
-      [isOpen]="dropdown.isOpen"
-      [selectAllMessage]="selectAllMessage"
-      [cancelMessage]="cancelMessage"
-      [clearMessage]="clearMessage"
-      [searchMessage]="searchInputPlaceholder"
-      [enableSelectAll]="enableSelectAll"
-      [enableFilterInput]="enableFilterInput"
-      (selectionChange)="onSelectionChange($event)"
-      (selectionCancel)="onSelectionCancel()">
-  </app-select-list>
+<div class="dt-dropdown-select-list" id="dropdownContent${id}">
+  <web-select-list id="selectList${id}"></web-select-list>
 </div>
   `;
 }
@@ -50,15 +42,26 @@ export class DropdownSelectComponent extends HTMLElement {
   cancelMessage: string = 'Cancel';
   clearMessage: string = 'Clear';
   placeholder: string = 'Select';
-  searchInputPlaceholder: string = 'Search...';
+  searchMessage: string = 'Search...';
   selectedMessage: string = 'Selected';
   enableSelectAll: boolean = true;
   enableFilterInput: boolean = true;
+
+  set settings(val: any) {
+    if (val) {
+      this.multiple = val.multiple;
+      this.selectAllMessage = val.selectAllMessage || this.selectAllMessage;
+      this.cancelMessage = val.cancelMessage || this.cancelMessage;
+      this.clearMessage = val.clearMessage || this.clearMessage;
+      this.searchMessage = val.searchMessage || this.searchMessage;
+    }
+  }
 
   get options(): SelectItem[] { return this._options; }
   set options(val: SelectItem[]) {
     this._options = val;
     this.selectedName = this.getName(this.selectedOptions);
+    this.selectList.options = val;
   }
   private _options: SelectItem[];
 
@@ -72,11 +75,16 @@ export class DropdownSelectComponent extends HTMLElement {
       }
     }
     this.selectedName = this.getName(this.selectedOptions);
+    this.selectList.model = this.selectedOptions;
   }
 
-  selectedOptions: SelectItem[] = [];
+  selectedOptions: string[] = [];
   selectedName: string;
-  dropdown: DropDown;
+
+  private dropdown: DropDown;
+  private selectList: SelectListComponent;
+  private inputGroup: HTMLElement;
+  private dropdownContent: HTMLElement;
 
   private listeners: Listener[] = [];
 
@@ -87,22 +95,42 @@ export class DropdownSelectComponent extends HTMLElement {
     template.innerHTML = getTemplate(id);
     this.appendChild(template.content.cloneNode(true));
 
-    this.classList.add('dt-dropdown-select'); // TODO
+    this.classList.add('dt-dropdown-select');
+    this.dropdown = new DropDown(this);
+    this.selectList = document.querySelector('#selectList'+id) as SelectListComponent;
+    this.inputGroup = this.querySelector('#inputGroup'+id);
+    this.dropdownContent = this.querySelector('#dropdownContent'+id);
+
+    this.dropdownContent.style.display = this.dropdown.isOpen ? 'block' : 'none';
 
     this.addEventListeners();
   }
 
   disconnectedCallback() {
+    this.dropdown.removeEventListeners();
+
     this.listeners.forEach(x => {
       x.target.removeEventListener(x.eventName, x.handler);
     });
-    this.dropdown.removeEventListeners();
   }
 
   addEventListeners() {
-    //const subDropdown = this.dropdown.isOpenSource$.subscribe(() => {
-      //this.cd.markForCheck();
-    //});
+    this.listeners = [
+      {
+        eventName: 'open',
+        target: this,
+        handler: this.onOpenChange.bind(this)
+      },
+      {
+        eventName: 'click',
+        target: this.inputGroup,
+        handler: this.open.bind(this)
+      },
+    ];
+
+    this.listeners.forEach(x => {
+      x.target.addEventListener(x.eventName, x.handler);
+    })
   }
 
   open(event: MouseEvent) {
@@ -142,6 +170,11 @@ export class DropdownSelectComponent extends HTMLElement {
     } else {
       this.dispatchEvent(new CustomEvent('valueChange', { detail: items }));
     }
+  }
+
+  onOpenChange(event: CustomEvent) {
+    console.log(event.detail);
+    this.dropdownContent.style.display = this.dropdown.isOpen ? 'block' : 'none';
   }
 
 }
