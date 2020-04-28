@@ -1,5 +1,6 @@
 import '@mazdik-lib/select-list';
-import { SelectListComponent, SelectItem } from '@mazdik-lib/select-list';
+import { SelectListComponent } from '@mazdik-lib/select-list';
+import { SelectItem } from '@mazdik-lib/common';
 import html from './select-list.html';
 
 export default html;

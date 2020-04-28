@@ -10,11 +10,12 @@
   "scripts": {
     "build": "tsc -b ./tsconfig.package.json",
     "prepublish": "npm run build",
-    "s": "webpack-dev-server",
+    "s": "webpack-dev-server --color",
     "w": "webpack --watch",
     "b": "webpack"
   },
   "dependencies": {
+    "@mazdik-lib/common": "0.1.0",
     "@mazdik-lib/modal": "0.1.0",
     "@mazdik-lib/select-list": "0.1.0",
     "@mazdik-lib/dropdown-select": "0.1.0"

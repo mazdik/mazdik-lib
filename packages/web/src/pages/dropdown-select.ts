@@ -1,5 +1,6 @@
 import '@mazdik-lib/dropdown-select';
-import { DropdownSelectComponent, SelectItem } from '@mazdik-lib/dropdown-select';
+import { DropdownSelectComponent } from '@mazdik-lib/dropdown-select';
+import { SelectItem } from '@mazdik-lib/common';
 import html from './dropdown-select.html';
 
 export default html;

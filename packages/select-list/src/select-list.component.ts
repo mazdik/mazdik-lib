@@ -1,23 +1,5 @@
-export interface SelectItem {
-  id: string;
-  name: string;
-  parentId?: string;
-}
-
-export interface SelectListSettings {
-  multiple: boolean;
-  selectAllMessage?: string;
-  cancelMessage?: string;
-  clearMessage?: string;
-  searchMessage?: string;
-}
-
-interface Listener {
-  eventName: string;
-  target: HTMLElement | Window;
-  handler: (event: Event) => void;
-  options?: AddEventListenerOptions | boolean;
-}
+import { SelectItem, Listener } from '@mazdik-lib/common';
+import { SelectListSettings } from './select-list.settings';
 
 function getTemplate(id: string) {
   return `
@@ -58,16 +40,12 @@ function getTemplateMultiple(option: SelectItem) {
 
 export class SelectListComponent extends HTMLElement {
 
+  get settings(): SelectListSettings { return this._settings; }
   set settings(val: SelectListSettings) {
-    if (val) {
-      this.multiple = val.multiple;
-      this.selectAllMessage = val.selectAllMessage || this.selectAllMessage;
-      this.cancelMessage = val.cancelMessage || this.cancelMessage;
-      this.clearMessage = val.clearMessage || this.clearMessage;
-      this.searchMessage = val.searchMessage || this.searchMessage;
-    }
+    this._settings = new SelectListSettings(val);
     this.contentInit();
   }
+  private _settings: SelectListSettings = new SelectListSettings();
 
   get options(): SelectItem[] { return this._options; }
   set options(val: SelectItem[]) {
@@ -89,17 +67,11 @@ export class SelectListComponent extends HTMLElement {
     this._isOpen = val;
     if (val === true) {
       this.setFocus();
-      this.searchFilterText = null;
       this.filterInput.value = '';
+      this.render();
     }
   }
   private _isOpen: boolean;
-
-  private multiple: boolean;
-  private selectAllMessage: string = 'Select all';
-  private cancelMessage: string = 'Cancel';
-  private clearMessage: string = 'Clear';
-  private searchMessage: string = 'Search...';
 
   private filterInput: HTMLInputElement;
   private selectAll: HTMLElement;
@@ -109,7 +81,6 @@ export class SelectListComponent extends HTMLElement {
   private cancelButton: HTMLButtonElement;
   private clearButton: HTMLButtonElement;
 
-  private searchFilterText: string = null;
   private selectedOptions: string[] = [];
   private filteredOptions: SelectItem[];
 
@@ -183,7 +154,7 @@ export class SelectListComponent extends HTMLElement {
     if (index > -1) {
       this.selectedOptions.splice(index, 1);
     } else {
-      if (this.multiple) {
+      if (this.settings.multiple) {
         this.selectedOptions.push(value);
       } else {
         this.selectedOptions = [];
@@ -194,7 +165,7 @@ export class SelectListComponent extends HTMLElement {
 
   setSelected(value: string) {
     this.setSelectedOptions(value);
-    if (!this.multiple) {
+    if (!this.settings.multiple) {
       this.selectionChangeEmit();
     }
   }
@@ -209,7 +180,7 @@ export class SelectListComponent extends HTMLElement {
 
   checkAll() {
     this.selectedOptions = this.options.map(option => option.id);
-    if (!this.multiple) {
+    if (!this.settings.multiple) {
       this.selectionChangeEmit();
     }
   }
@@ -267,14 +238,13 @@ export class SelectListComponent extends HTMLElement {
     }
   }
 
-  onInputFilter(event: InputEvent) {
-    this.searchFilterText = (event.target as HTMLInputElement).value;
-    this.filteredOptions = this.filterOptionsByName(this.searchFilterText);
+  onInputFilter() {
+    this.filteredOptions = this.filterOptionsByName(this.filterInput.value);
     this.render();
   }
 
   get viewOptions(): SelectItem[] {
-    return (this.searchFilterText) ? this.filteredOptions : this.options;
+    return (this.filterInput.value) ? this.filteredOptions : this.options;
   }
 
   filterOptionsByName(value: string): SelectItem[] {
@@ -285,13 +255,14 @@ export class SelectListComponent extends HTMLElement {
   }
 
   private contentInit() {
-    this.filterInput.placeholder = this.searchMessage;
+    this.filterInput.placeholder = this.settings.searchMessage;
     this.okButton.textContent = 'OK';
-    this.cancelButton.textContent = this.cancelMessage;
-    this.clearButton.textContent = this.clearMessage;
-    this.checkboxAll.nextElementSibling.textContent = this.selectAllMessage;
-    this.okButton.style.display = this.multiple ? 'block' : 'none';
-    this.selectAll.style.display = this.multiple ? 'block' : 'none';
+    this.cancelButton.textContent = this.settings.cancelMessage;
+    this.clearButton.textContent = this.settings.clearMessage;
+    this.checkboxAll.nextElementSibling.textContent = this.settings.selectAllMessage;
+    this.okButton.style.display = this.settings.multiple ? 'block' : 'none';
+    this.selectAll.style.display = (this.settings.multiple && this.settings.enableSelectAll) ? 'block' : 'none';
+    this.filterInput.style.display = this.settings.enableFilterInput ? 'block' : 'none';
   }
 
   private render() {
@@ -305,7 +276,7 @@ export class SelectListComponent extends HTMLElement {
     const result = [];
     this.viewOptions.forEach(option => {
       let element;
-      if (this.multiple) {
+      if (this.settings.multiple) {
         element = getTemplateMultiple(option);
       } else {
         element = getTemplateSingle(option);
@@ -354,7 +325,7 @@ export class SelectListComponent extends HTMLElement {
     if (!element.firstElementChild) {
       return;
     }
-    if (this.multiple) {
+    if (this.settings.multiple) {
       this.setInputChecked(element, true);
     } else {
       element.classList.add('active');
@@ -366,7 +337,7 @@ export class SelectListComponent extends HTMLElement {
     if (!element.firstElementChild) {
       return;
     }
-    if (this.multiple) {
+    if (this.settings.multiple) {
       this.setInputChecked(element, false);
     } else {
       element.classList.remove('active');

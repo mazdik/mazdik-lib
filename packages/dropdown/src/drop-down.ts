@@ -1,4 +1,4 @@
-import {Keys} from '@mazdik-lib/common';
+import { Keys } from '@mazdik-lib/common';
 
 export class DropDown {
 

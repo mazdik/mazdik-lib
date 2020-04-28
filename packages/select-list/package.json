@@ -13,5 +13,8 @@
   },
   "publishConfig": {
     "access": "public"
+  },
+  "dependencies": {
+    "@mazdik-lib/common": "0.1.0"
   }
 }

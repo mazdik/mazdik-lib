@@ -1,61 +1,32 @@
 import { DropDown } from '@mazdik-lib/dropdown';
+import { SelectItem, Listener } from '@mazdik-lib/common';
 import '@mazdik-lib/select-list';
 import { SelectListComponent } from '@mazdik-lib/select-list';
-
-// TODO
-export interface SelectItem {
-  id: string;
-  name: string;
-  parentId?: string;
-}
-interface Listener {
-  eventName: string;
-  target: HTMLElement | Window;
-  handler: (event: Event) => void;
-  options?: AddEventListenerOptions | boolean;
-}
+import { DropdownSelectSettings } from './dropdown-select.settings';
 
 function getTemplate(id: string) {
   return `
-  <div class="dt-input-group" id="inputGroup${id}" (click)="open($event)">
-  <input class="dt-input dt-select-input"
-         readonly="readonly"
-         value="{{selectedName}}"
-         placeholder="{{placeholder}}"
-         [disabled]="disabled">
-  <button class="dt-button dt-white" [disabled]="disabled">
-    <i class="dt-icon asc" *ngIf="dropdown.isOpen"></i>
-    <i class="dt-icon desc" *ngIf="!dropdown.isOpen"></i>
-  </button>
-</div>
-<div class="dt-dropdown-select-list" id="dropdownContent${id}">
-  <web-select-list id="selectList${id}"></web-select-list>
-</div>
+  <div class="dt-input-group" id="inputGroup${id}">
+    <input class="dt-input dt-select-input" id="input${id}" readonly="readonly">
+    <button class="dt-button dt-white" id="button${id}">
+      <i class="dt-icon"></i>
+    </button>
+  </div>
+  <div class="dt-dropdown-select-list" id="dropdownContent${id}">
+    <web-select-list id="selectList${id}"></web-select-list>
+  </div>
   `;
 }
 
 export class DropdownSelectComponent extends HTMLElement {
 
-  multiple: boolean;
-  disabled: boolean;
-  selectAllMessage: string = 'Select all';
-  cancelMessage: string = 'Cancel';
-  clearMessage: string = 'Clear';
-  placeholder: string = 'Select';
-  searchMessage: string = 'Search...';
-  selectedMessage: string = 'Selected';
-  enableSelectAll: boolean = true;
-  enableFilterInput: boolean = true;
-
-  set settings(val: any) {
-    if (val) {
-      this.multiple = val.multiple;
-      this.selectAllMessage = val.selectAllMessage || this.selectAllMessage;
-      this.cancelMessage = val.cancelMessage || this.cancelMessage;
-      this.clearMessage = val.clearMessage || this.clearMessage;
-      this.searchMessage = val.searchMessage || this.searchMessage;
-    }
+  get settings(): DropdownSelectSettings { return this._settings; }
+  set settings(val: DropdownSelectSettings) {
+    this._settings = new DropdownSelectSettings(val);
+    this.selectList.settings = this._settings;
+    this.contentInit();
   }
+  private _settings: DropdownSelectSettings = new DropdownSelectSettings();
 
   get options(): SelectItem[] { return this._options; }
   set options(val: SelectItem[]) {
@@ -79,12 +50,14 @@ export class DropdownSelectComponent extends HTMLElement {
   }
 
   selectedOptions: string[] = [];
-  selectedName: string;
+  selectedName: string = null;
 
   private dropdown: DropDown;
   private selectList: SelectListComponent;
   private inputGroup: HTMLElement;
   private dropdownContent: HTMLElement;
+  private input: HTMLInputElement;
+  private button: HTMLButtonElement;
 
   private listeners: Listener[] = [];
 
@@ -100,9 +73,10 @@ export class DropdownSelectComponent extends HTMLElement {
     this.selectList = document.querySelector('#selectList'+id) as SelectListComponent;
     this.inputGroup = this.querySelector('#inputGroup'+id);
     this.dropdownContent = this.querySelector('#dropdownContent'+id);
+    this.input = this.querySelector('#input'+id);
+    this.button = this.querySelector('#button'+id);
 
-    this.dropdownContent.style.display = this.dropdown.isOpen ? 'block' : 'none';
-
+    this.contentInit();
     this.addEventListeners();
   }
 
@@ -135,7 +109,7 @@ export class DropdownSelectComponent extends HTMLElement {
 
   open(event: MouseEvent) {
     event.stopPropagation();
-    if (!this.disabled) {
+    if (!this.settings.disabled) {
       this.dropdown.toggleDropdown();
     }
   }
@@ -152,8 +126,8 @@ export class DropdownSelectComponent extends HTMLElement {
 
   getName(items: any) {
     if (items && items.length && this.options && this.options.length) {
-      if (this.multiple && items.length > 1) {
-        return this.selectedMessage + ': ' + items.length;
+      if (this.settings.multiple && items.length > 1) {
+        return this.settings.selectedMessage + ': ' + items.length;
       } else {
         const option = this.options.find((x) => {
           return x.id === items[0];
@@ -164,7 +138,7 @@ export class DropdownSelectComponent extends HTMLElement {
   }
 
   selectionChangeEmit(items: any) {
-    if (!this.multiple) {
+    if (!this.settings.multiple) {
       const value = (items && items.length) ? items[0] : null;
       this.dispatchEvent(new CustomEvent('valueChange', { detail: value }));
     } else {
@@ -172,9 +146,29 @@ export class DropdownSelectComponent extends HTMLElement {
     }
   }
 
-  onOpenChange(event: CustomEvent) {
-    console.log(event.detail);
+  onOpenChange() {
+    this.refreshStyles();
+    this.selectList.isOpen = this.dropdown.isOpen;
+  }
+
+  private contentInit() {
+    this.input.placeholder = this.settings.placeholder;
+    this.input.disabled = this.settings.disabled;
+    this.button.disabled = this.settings.disabled;
+
+    this.input.value = this.selectedName;
+    this.refreshStyles();
+  }
+
+  private refreshStyles() {
     this.dropdownContent.style.display = this.dropdown.isOpen ? 'block' : 'none';
+    if (this.dropdown.isOpen) {
+      this.button.firstElementChild.classList.add('asc');
+      this.button.firstElementChild.classList.remove('desc');
+    } else {
+      this.button.firstElementChild.classList.remove('asc');
+      this.button.firstElementChild.classList.add('desc');
+    }
   }
 
 }
