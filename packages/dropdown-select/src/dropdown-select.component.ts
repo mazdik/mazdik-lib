@@ -7,13 +7,13 @@ import { DropdownSelectSettings } from './dropdown-select.settings';
 function getTemplate(id: string) {
   return `
   <div class="dt-input-group" id="inputGroup${id}">
-    <input class="dt-input dt-select-input" id="input${id}" readonly="readonly">
-    <button class="dt-button dt-white" id="button${id}">
+    <input class="dt-input dt-select-input" readonly="readonly">
+    <button class="dt-button dt-white">
       <i class="dt-icon"></i>
     </button>
   </div>
   <div class="dt-dropdown-select-list" id="dropdownContent${id}">
-    <web-select-list id="selectList${id}"></web-select-list>
+    <web-select-list></web-select-list>
   </div>
   `;
 }
@@ -63,11 +63,11 @@ export class DropdownSelectComponent extends HTMLElement {
 
     this.classList.add('dt-dropdown-select');
     this.dropdown = new DropDown(this);
-    this.selectList = document.querySelector('#selectList'+id) as SelectListComponent;
+    this.selectList = this.querySelector('web-select-list') as SelectListComponent;
     this.inputGroup = this.querySelector('#inputGroup'+id);
     this.dropdownContent = this.querySelector('#dropdownContent'+id);
-    this.input = this.querySelector('#input'+id);
-    this.button = this.querySelector('#button'+id);
+    this.input = this.querySelector('input');
+    this.button = this.querySelector('button');
 
     this.contentInit();
     this.addEventListeners();
