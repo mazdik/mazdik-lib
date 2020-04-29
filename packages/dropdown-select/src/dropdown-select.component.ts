@@ -31,26 +31,19 @@ export class DropdownSelectComponent extends HTMLElement {
   get options(): SelectItem[] { return this._options; }
   set options(val: SelectItem[]) {
     this._options = val;
-    this.selectedName = this.getName(this.selectedOptions);
+    this.input.value = this.getName(this.selectList.model);
     this.selectList.options = val;
   }
   private _options: SelectItem[];
 
-  set value(val: any) {
+  set value(val: string[] | string) {
     if (Array.isArray(val)) {
-      this.selectedOptions = [...val];
+      this.selectList.model = [...val];
     } else {
-      this.selectedOptions = [];
-      if (val) {
-        this.selectedOptions.push(val);
-      }
+      this.selectList.model = (val) ? [val] : [];
     }
-    this.selectedName = this.getName(this.selectedOptions);
-    this.selectList.model = this.selectedOptions;
+    this.input.value = this.getName(this.selectList.model);
   }
-
-  selectedOptions: string[] = [];
-  selectedName: string = null;
 
   private dropdown: DropDown;
   private selectList: SelectListComponent;
@@ -100,6 +93,16 @@ export class DropdownSelectComponent extends HTMLElement {
         target: this.inputGroup,
         handler: this.open.bind(this)
       },
+      {
+        eventName: 'selectionChange',
+        target: this.selectList,
+        handler: this.onSelectionChange.bind(this)
+      },
+      {
+        eventName: 'selectionCancel',
+        target: this.selectList,
+        handler: this.onSelectionCancel.bind(this)
+      },
     ];
 
     this.listeners.forEach(x => {
@@ -114,30 +117,29 @@ export class DropdownSelectComponent extends HTMLElement {
     }
   }
 
-  onSelectionChange(event) {
-    this.selectedName = this.getName(event);
-    this.selectionChangeEmit(event);
-    this.dropdown.isOpen = false;
+  onSelectionChange(event: CustomEvent<string[]>) {
+    this.input.value = this.getName(event.detail);
+    this.selectionChangeEmit(event.detail);
+    this.dropdown.closeDropdown();
   }
 
   onSelectionCancel() {
-    this.dropdown.isOpen = false;
+    this.dropdown.closeDropdown();
   }
 
-  getName(items: any) {
+  getName(items: string[]) {
     if (items && items.length && this.options && this.options.length) {
       if (this.settings.multiple && items.length > 1) {
         return this.settings.selectedMessage + ': ' + items.length;
       } else {
-        const option = this.options.find((x) => {
-          return x.id === items[0];
-        });
+        const option = this.options.find(x => x.id === items[0]);
         return (option) ? option.name : '';
       }
     }
+    return null;
   }
 
-  selectionChangeEmit(items: any) {
+  selectionChangeEmit(items: string[]) {
     if (!this.settings.multiple) {
       const value = (items && items.length) ? items[0] : null;
       this.dispatchEvent(new CustomEvent('valueChange', { detail: value }));
@@ -156,7 +158,6 @@ export class DropdownSelectComponent extends HTMLElement {
     this.input.disabled = this.settings.disabled;
     this.button.disabled = this.settings.disabled;
 
-    this.input.value = this.selectedName;
     this.refreshStyles();
   }
 
