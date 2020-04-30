@@ -151,3 +151,13 @@ body {
 /* DropdownSelectDemoComponent */
 .dropdown-select-demo {display: flex;}
 .dropdown-select-demo .sl-column {margin-right: 1.875rem; width: 15.625rem;}
+
+/* ResizableDirectiveDemoComponent */
+.resizable-directive-demo .dd-box {position: absolute; width: 12.5rem; height: 12.5rem;}
+.resizable-directive-demo .box1 {
+  background-color: #009ccc;
+  min-width: 12.5rem;
+  min-height: 12.5rem;
+  max-width: 31.25rem;
+  max-height: 31.25rem;
+}
