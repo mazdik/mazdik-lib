@@ -179,7 +179,7 @@ body {
 .drag-drop-demo .dd-issue {
   background: rgba(0, 0, 0, .1);
   border-radius: .25rem;
-  margin-bottom: .25rem;
+  margin-bottom: .5rem;
   cursor: move;
   position: relative;
   color: #000;

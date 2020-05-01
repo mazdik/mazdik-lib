@@ -11,7 +11,7 @@ export default html;
 
 export function page() {
 
-  const items: Item[][] = [
+  const data: Item[][] = [
     [
       {name: 'Task 1', text: 'Write a program that prints ‘Hello World’ to the screen'},
       {name: 'Task 2', text: 'Write a program that asks the user for their name and greets them with their name'},
@@ -38,34 +38,46 @@ export function page() {
       {name: 'Task 15', text: 'Write a program that prints the next 20 leap years'},
     ]
   ];
-  let source: Item[];
+  let source: HTMLElement;
   const droppables: Droppable[] = [];
 
-  function onDragStart(event: DragEvent, index: number, src: Item[]) {
-    event.dataTransfer.setData('text', index.toString());
+  function onDragStart(event: DragEvent) {
+    const index = (event.target as HTMLElement).dataset.index;
+    event.dataTransfer.setData('text', index);
     event.dataTransfer.effectAllowed = 'move';
-    const dragElementEvent: DragElementEvent = { event, index };
+    const dragElementEvent: DragElementEvent = { event, index: parseInt(index, 10) };
     droppables.forEach(x => x.dragElementEvent = dragElementEvent);
-    source = src;
+
+    source = (event.target as HTMLElement).parentElement;
   }
 
-  function onDrop(event: DropElementEvent, target: Item[]) {
+  function onDrop(event: DropElementEvent, target: HTMLElement) {
+    const sourceChildrens = Array.from(source.children);
+    const targetChildrens = Array.from(target.children);
+
     if (event.type === 'reorder') {
-      arrayMove(target, event.previousIndex, event.currentIndex);
+      arrayMove(targetChildrens, event.previousIndex, event.currentIndex);
+      targetChildrens.forEach((x: HTMLElement, i) => x.dataset.index = i.toString());
+      target.append(...targetChildrens);
     } else {
-      arrayTransfer(source, target, event.previousIndex, event.currentIndex);
+      arrayTransfer(sourceChildrens, targetChildrens, event.previousIndex, event.currentIndex);
+      sourceChildrens.forEach((x: HTMLElement, i) => x.dataset.index = i.toString());
+      targetChildrens.forEach((x: HTMLElement, i) => x.dataset.index = i.toString());
+      source.append(...sourceChildrens);
+      target.append(...targetChildrens);
     }
   }
 
-  function createIssues(issues: Item[]): HTMLDivElement[] {
+  function createIssues(items: Item[]): HTMLElement[] {
     const elements = [];
 
-    issues.forEach((option, i) => {
+    items.forEach((option, i) => {
       const issue = document.createElement('div');
       issue.className = 'dd-issue';
       issue.draggable = true;
+      issue.dataset.index = i.toString();
       issue.addEventListener('dragstart', (event) => {
-        onDragStart(event, i, issues);
+        onDragStart(event);
       });
 
       const title = document.createElement('div');
@@ -84,16 +96,16 @@ export function page() {
     return elements;
   }
 
-  function createColumns(): HTMLDivElement[] {
+  function createColumns(): HTMLElement[] {
     const elements = [];
 
-    items.forEach(item => {
+    data.forEach(item => {
       const column = document.createElement('div');
       column.className = 'dd-column';
       column.append(...createIssues(item));
       droppables.push(new Droppable(column));
       column.addEventListener('dropElement', (event: CustomEvent<DropElementEvent>) => {
-        onDrop(event.detail, item);
+        onDrop(event.detail, column);
       });
 
       elements.push(column);
