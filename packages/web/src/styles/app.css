@@ -161,3 +161,8 @@ body {
   max-width: 31.25rem;
   max-height: 31.25rem;
 }
+
+/* DraggableDirectiveDemoComponent */
+.draggable-directive-demo .dd-box {position: absolute; width: 12.5rem; height: 12.5rem;}
+.draggable-directive-demo .box1 {background-color: #009ccc;}
+.draggable-directive-demo .box2 {background-color: #f2cb1d; left: 31.25rem;}

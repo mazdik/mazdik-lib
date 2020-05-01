@@ -17,6 +17,7 @@
   "dependencies": {
     "@mazdik-lib/common": "0.1.0",
     "@mazdik-lib/resizable": "0.1.0",
+    "@mazdik-lib/draggable": "0.1.0",
     "@mazdik-lib/modal": "0.1.0",
     "@mazdik-lib/select-list": "0.1.0",
     "@mazdik-lib/dropdown-select": "0.1.0"
