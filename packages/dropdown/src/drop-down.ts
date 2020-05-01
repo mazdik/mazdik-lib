@@ -13,7 +13,7 @@ export class DropDown {
     this.addEventListeners();
   }
 
-  addEventListeners() {
+  private addEventListeners() {
     this.clickListener = this.onClick.bind(this);
     this.element.addEventListener('click', this.clickListener);
 
