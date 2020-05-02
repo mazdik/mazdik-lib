@@ -15,6 +15,12 @@
     },
     {
       "path": "./select-list/tsconfig.package.json"
+    },
+    {
+      "path": "./dropdown/tsconfig.package.json"
+    },
+    {
+      "path": "./dropdown-select/tsconfig.package.json"
     }
   ]
 }

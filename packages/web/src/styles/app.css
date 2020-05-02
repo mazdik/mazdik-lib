@@ -147,3 +147,44 @@ body {
 /* SelectListDemoComponent */
 .select-list-demo {display: flex;}
 .select-list-demo .sl-column {margin-right: 1.875rem; width: 15.625rem; padding: .625rem; border: 1px solid #eee; border-radius: .0625rem;}
+
+/* DropdownSelectDemoComponent */
+.dropdown-select-demo {display: flex;}
+.dropdown-select-demo .sl-column {margin-right: 1.875rem; width: 15.625rem;}
+
+/* ResizableDirectiveDemoComponent */
+.resizable-directive-demo .dd-box {position: absolute; width: 12.5rem; height: 12.5rem;}
+.resizable-directive-demo .box1 {
+  background-color: #009ccc;
+  min-width: 12.5rem;
+  min-height: 12.5rem;
+  max-width: 31.25rem;
+  max-height: 31.25rem;
+}
+
+/* DraggableDirectiveDemoComponent */
+.draggable-directive-demo .dd-box {position: absolute; width: 12.5rem; height: 12.5rem;}
+.draggable-directive-demo .box1 {background-color: #009ccc;}
+.draggable-directive-demo .box2 {background-color: #f2cb1d; left: 31.25rem;}
+
+/* DragDropDemoComponent */
+.drag-drop-demo { display: flex; }
+.drag-drop-demo .dd-column { width: 20%; min-height: 31.25rem; }
+.drag-drop-demo .dd-column + .dd-column { margin-left: .625rem; }
+.drag-drop-demo .dd-column:nth-child(1) { background: rgb(255, 255, 219); }
+.drag-drop-demo .dd-column:nth-child(2) { background: rgb(236, 236, 191); }
+.drag-drop-demo .dd-column:nth-child(3) { background: rgb(253, 214, 162); }
+.drag-drop-demo .dd-column:nth-child(4) { background: rgb(162, 226, 253); }
+.drag-drop-demo .dd-column:nth-child(5) { background: rgb(162, 253, 200); }
+.drag-drop-demo .dd-issue {
+  background: rgba(0, 0, 0, .1);
+  border-radius: .25rem;
+  margin-bottom: .5rem;
+  cursor: move;
+  position: relative;
+  color: #000;
+  overflow: hidden;
+}
+.drag-drop-demo .dd-issue:hover { background: rgba(0, 0, 0, .15); }
+.drag-drop-demo .dd-title { background: rgba(0, 0, 0, .1); padding: .125rem .25rem; }
+.drag-drop-demo .dd-text { padding: .1875rem .25rem .0625rem; line-height: 1.2; }

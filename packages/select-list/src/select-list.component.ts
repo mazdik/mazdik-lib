@@ -1,56 +1,38 @@
-export interface SelectItem {
-  id: any;
-  name: string;
-  parentId?: any;
-}
+import { SelectItem, Listener } from '@mazdik-lib/common';
+import { SelectListSettings } from './select-list.settings';
 
-interface Listener {
-  eventName: string;
-  target: HTMLElement | Window;
-  handler: (event: Event) => void;
-  options?: AddEventListenerOptions | boolean;
-}
-
-function getTemplate() {
+function getTemplate(id: string) {
   return `
-  <input class="dt-input dt-form-group" id="filterInput">
-
-  <ul class="dt-list-menu dt-list-menu-scroll" id="listMenu">
-      <li class="dt-list-menu-item" *ngIf="multiple" (click)="onCheckboxAllClick($event)">
-        <span class="dt-checkbox">
-          <input type="checkbox"
-                [checked]="allSelected"
-                [indeterminate]="partiallySelected"/>
-          <label>{{selectAllMessage}}</label>
-        </span>
-      </li>
-      <li class="dt-list-divider"></li>
+  <input class="dt-input dt-form-group" id="filterInput${id}">
+  <ul class="dt-list-menu dt-list-menu-scroll" id="listMenu${id}">
+    <li class="dt-list-menu-item" id="selectAll${id}" data-id="-1">
+      <span class="dt-checkbox">
+        <input type="checkbox" id="checkboxAll${id}"/>
+        <label></label>
+      </span>
+    </li>
+    <li class="dt-list-divider"></li>
   </ul>
-
-  <div class="dt-list-divider"></div>
   <div class="dt-list-menu-row">
-    <button class="dt-button dt-button-sm" id="okButton"></button>
-    <button class="dt-button dt-button-sm" id="cancelButton"></button>
-    <button class="dt-button dt-button-sm" id="clearButton"></button>
+    <button class="dt-button dt-button-sm" id="okButton${id}"></button>
+    <button class="dt-button dt-button-sm" id="cancelButton${id}"></button>
+    <button class="dt-button dt-button-sm" id="clearButton${id}"></button>
   </div>
   `;
 }
 
-function getTemplateSingle(option: SelectItem, active: boolean) {
-  const cls = active ? 'active' : '';
-  const icon = active ? 'dt-icon-ok' : '';
+function getTemplateSingle(option: SelectItem) {
   return `
-  <li class="dt-list-menu-item ${cls}" data-id="${option.id}">
-    <i class="dt-icon ${icon}"></i>${option.name}
+  <li class="dt-list-menu-item" data-id="${option.id}">
+    <i class="dt-icon"></i>${option.name}
   </li>`;
 }
 
-function getTemplateMultiple(option: SelectItem, active: boolean) {
-  const checked = active ? 'checked' : '';
+function getTemplateMultiple(option: SelectItem) {
   return `
   <li class="dt-list-menu-item" data-id="${option.id}">
     <span class="dt-checkbox">
-      <input type="checkbox" ${checked}/>
+      <input type="checkbox"/>
       <label>${option.name}</label>
     </span>
   </li>`;
@@ -58,11 +40,12 @@ function getTemplateMultiple(option: SelectItem, active: boolean) {
 
 export class SelectListComponent extends HTMLElement {
 
-  multiple: boolean;
-  selectAllMessage: string = 'Select all';
-  cancelMessage: string = 'Cancel';
-  clearMessage: string = 'Clear';
-  searchMessage: string = 'Search...';
+  get settings(): SelectListSettings { return this._settings; }
+  set settings(val: SelectListSettings) {
+    this._settings = new SelectListSettings(val);
+    this.contentInit();
+  }
+  private _settings: SelectListSettings = new SelectListSettings();
 
   get options(): SelectItem[] { return this._options; }
   set options(val: SelectItem[]) {
@@ -71,49 +54,54 @@ export class SelectListComponent extends HTMLElement {
   }
   private _options: SelectItem[];
 
-  get model(): any[] { return this._model; }
-  set model(val: any[]) {
+  get model(): string[] { return this._model; }
+  set model(val: string[]) {
     this._model = val;
     this.selectedOptions = (val && val.length) ? val.slice(0) : [];
+    this.refreshStyles();
   }
-  private _model: any[] = [];
+  private _model: string[] = [];
 
   get isOpen(): boolean { return this._isOpen; }
   set isOpen(val: boolean) {
     this._isOpen = val;
     if (val === true) {
       this.setFocus();
-      this.searchFilterText = null;
       this.filterInput.value = '';
+      this.render();
     }
   }
   private _isOpen: boolean;
 
   private filterInput: HTMLInputElement;
+  private selectAll: HTMLElement;
+  private checkboxAll: HTMLInputElement;
   private listMenu: HTMLElement;
   private okButton: HTMLButtonElement;
   private cancelButton: HTMLButtonElement;
   private clearButton: HTMLButtonElement;
 
-  private searchFilterText: string = null;
-  private selectedOptions: any[] = [];
+  private selectedOptions: string[] = [];
   private filteredOptions: SelectItem[];
 
   private listeners: Listener[] = [];
 
   constructor() {
     super();
-
+    const id = (~~(Math.random()*1e3)).toString();
     const template = document.createElement('template');
-    template.innerHTML = getTemplate();
+    template.innerHTML = getTemplate(id);
     this.appendChild(template.content.cloneNode(true));
 
-    this.filterInput = this.querySelector('#filterInput');
-    this.listMenu = this.querySelector('#listMenu');
-    this.okButton = this.querySelector('#okButton');
-    this.cancelButton = this.querySelector('#cancelButton');
-    this.clearButton = this.querySelector('#clearButton');
+    this.filterInput = this.querySelector('#filterInput'+id);
+    this.selectAll = this.querySelector('#selectAll'+id);
+    this.checkboxAll = this.querySelector('#checkboxAll'+id);
+    this.listMenu = this.querySelector('#listMenu'+id);
+    this.okButton = this.querySelector('#okButton'+id);
+    this.cancelButton = this.querySelector('#cancelButton'+id);
+    this.clearButton = this.querySelector('#clearButton'+id);
 
+    this.contentInit();
     this.addEventListeners();
   }
 
@@ -161,16 +149,12 @@ export class SelectListComponent extends HTMLElement {
     });
   }
 
-  ngAfterViewInit() {
-    this.setFocus();
-  }
-
-  setSelectedOptions(value: any) {
+  setSelectedOptions(value: string) {
     const index = this.selectedOptions.indexOf(value);
     if (index > -1) {
       this.selectedOptions.splice(index, 1);
     } else {
-      if (this.multiple) {
+      if (this.settings.multiple) {
         this.selectedOptions.push(value);
       } else {
         this.selectedOptions = [];
@@ -179,22 +163,29 @@ export class SelectListComponent extends HTMLElement {
     }
   }
 
-  setSelected(event: MouseEvent, value: any) {
-    event.stopPropagation();
+  setSelected(value: string) {
     this.setSelectedOptions(value);
-    if (!this.multiple) {
+    if (!this.settings.multiple) {
       this.selectionChangeEmit();
+    }
+  }
+
+  setSelectedAll() {
+    if (this.allSelected) {
+      this.selectedOptions = [];
+    } else {
+      this.checkAll();
     }
   }
 
   checkAll() {
     this.selectedOptions = this.options.map(option => option.id);
-    if (!this.multiple) {
+    if (!this.settings.multiple) {
       this.selectionChangeEmit();
     }
   }
 
-  isSelected(value: any): boolean {
+  isSelected(value: string): boolean {
     return this.selectedOptions.indexOf(value) > -1;
   }
 
@@ -215,6 +206,7 @@ export class SelectListComponent extends HTMLElement {
     event.stopPropagation();
     this.selectedOptions = this.model.slice(0);
     this.dispatchEvent(new CustomEvent('selectionCancel', { detail: true }));
+    this.refreshStyles();
   }
 
   onClickClear(event: MouseEvent) {
@@ -223,6 +215,7 @@ export class SelectListComponent extends HTMLElement {
       this.selectedOptions = [];
     }
     this.selectionChangeEmit();
+    this.refreshStyles();
   }
 
   get allSelected(): boolean {
@@ -236,15 +229,6 @@ export class SelectListComponent extends HTMLElement {
     return this.selectedOptions.length !== 0 && !this.allSelected;
   }
 
-  onCheckboxAllClick(event: MouseEvent) {
-    event.stopPropagation();
-    if (this.allSelected) {
-      this.selectedOptions = [];
-    } else {
-      this.checkAll();
-    }
-  }
-
   selectionChangeEmit() {
     if (this.model.length === this.selectedOptions.length && this.model.every((value, index) => value === this.selectedOptions[index])) {
       this.dispatchEvent(new CustomEvent('selectionCancel', { detail: true }));
@@ -254,13 +238,13 @@ export class SelectListComponent extends HTMLElement {
     }
   }
 
-  onInputFilter(event: InputEvent) {
-    this.searchFilterText = (event.target as HTMLInputElement).value;
-    this.filteredOptions = this.filterOptionsByName(this.searchFilterText);
+  onInputFilter() {
+    this.filteredOptions = this.filterOptionsByName(this.filterInput.value);
+    this.render();
   }
 
   get viewOptions(): SelectItem[] {
-    return (this.searchFilterText) ? this.filteredOptions : this.options;
+    return (this.filterInput.value) ? this.filteredOptions : this.options;
   }
 
   filterOptionsByName(value: string): SelectItem[] {
@@ -270,50 +254,62 @@ export class SelectListComponent extends HTMLElement {
     return this.options.filter(val => val.name.toLowerCase().indexOf(value.toLowerCase()) > -1);
   }
 
-  private render() {
-    this.filterInput.placeholder = this.searchMessage;
+  private contentInit() {
+    this.filterInput.placeholder = this.settings.searchMessage;
     this.okButton.textContent = 'OK';
-    this.cancelButton.textContent = this.cancelMessage;
-    this.clearButton.textContent = this.clearMessage;
-    if (!this.multiple) {
-      this.okButton.style.display = 'none';
-    }
-
-    const listContent = this.getListContent().join('');
-    this.listMenu.insertAdjacentHTML('beforeend', listContent);
+    this.cancelButton.textContent = this.settings.cancelMessage;
+    this.clearButton.textContent = this.settings.clearMessage;
+    this.checkboxAll.nextElementSibling.textContent = this.settings.selectAllMessage;
+    this.okButton.style.display = this.settings.multiple ? 'block' : 'none';
+    this.selectAll.style.display = (this.settings.multiple && this.settings.enableSelectAll) ? 'block' : 'none';
+    this.filterInput.style.display = this.settings.enableFilterInput ? 'block' : 'none';
   }
 
-  private getListContent(): string[] {
+  private render() {
+    this.removeListContent();
+    const listContent = this.createListContent().join('');
+    this.listMenu.insertAdjacentHTML('beforeend', listContent);
+    this.refreshStyles();
+  }
+
+  private createListContent(): string[] {
     const result = [];
     this.viewOptions.forEach(option => {
       let element;
-      if (this.multiple) {
-        element = getTemplateMultiple(option, this.isSelected(option.id));
+      if (this.settings.multiple) {
+        element = getTemplateMultiple(option);
       } else {
-        element = getTemplateSingle(option, this.isSelected(option.id));
+        element = getTemplateSingle(option);
       }
       result.push(element);
     });
     return result;
   }
 
-  private getDataId(target: HTMLElement): number {
+  private getDataId(target: HTMLElement): string {
     const el = target.tagName === 'LI' ? target : target.closest('li');
-    return (el && el.dataset.id) ? parseInt(el.dataset.id, 10): null;
+    return (el && el.dataset.id) ? el.dataset.id: null;
+  }
+
+  private get listContent(): Element[] {
+    return Array.from(this.listMenu.children);
   }
 
   private onClickListMenu(event: MouseEvent) {
     const id = this.getDataId(event.target as HTMLElement);
-    if (id) { // TODO
-      this.setSelected(event, id);
-      console.log(id);
-      this.refreshSelected();
+    if (id !== null && id !== undefined) {
+      event.stopPropagation();
+      if (id === '-1') {
+        this.setSelectedAll();
+      } else {
+        this.setSelected(id);
+      }
+      this.refreshStyles();
     }
   }
 
-  private refreshSelected() {
-    const children = Array.from(this.listMenu.children);
-    children.forEach((element: HTMLElement) => {
+  private refreshStyles() {
+    this.listContent.forEach((element: HTMLElement) => {
       const id = this.getDataId(element);
       if (this.isSelected(id)) {
         this.addActiveStyles(element);
@@ -321,15 +317,16 @@ export class SelectListComponent extends HTMLElement {
         this.removeActiveStyles(element);
       }
     });
+    this.checkboxAll.checked = this.allSelected;
+    this.checkboxAll.indeterminate = this.partiallySelected;
   }
 
   private addActiveStyles(element: HTMLElement) {
     if (!element.firstElementChild) {
       return;
     }
-    if (this.multiple) {
-      const input = element.firstElementChild.firstElementChild as HTMLInputElement;
-      input.checked = true;
+    if (this.settings.multiple) {
+      this.setInputChecked(element, true);
     } else {
       element.classList.add('active');
       element.firstElementChild.classList.add('dt-icon-ok');
@@ -340,13 +337,26 @@ export class SelectListComponent extends HTMLElement {
     if (!element.firstElementChild) {
       return;
     }
-    if (this.multiple) {
-      const input = element.firstElementChild.firstElementChild as HTMLInputElement;
-      input.checked = false;
+    if (this.settings.multiple) {
+      this.setInputChecked(element, false);
     } else {
       element.classList.remove('active');
       element.firstElementChild.classList.remove('dt-icon-ok');
     }
+  }
+
+  private setInputChecked(element: HTMLElement, checked: boolean) {
+    const input = element.firstElementChild.firstElementChild as HTMLInputElement;
+    input.checked = checked;
+  }
+
+  private removeListContent() {
+    this.listContent.forEach((element: HTMLElement) => {
+      const id = this.getDataId(element);
+      if (id !== null && id !== undefined && id !== '-1') {
+        element.remove();
+      }
+    });
   }
 
 }

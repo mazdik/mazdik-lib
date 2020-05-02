@@ -1,13 +1,6 @@
-import { maxZIndex } from '@mazdik-lib/common';
+import { maxZIndex, Listener } from '@mazdik-lib/common';
 import { Draggable } from '@mazdik-lib/draggable';
 import { Resizable, ResizableEvent } from '@mazdik-lib/resizable';
-
-interface Listener {
-  eventName: string;
-  target: HTMLElement | Window;
-  handler: (event: Event) => void;
-  options?: AddEventListenerOptions | boolean;
-}
 
 function getTemplate() {
   return `

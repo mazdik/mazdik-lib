@@ -1,6 +1,11 @@
-## Vanilla Web Component. Resizable and draggable modal
+# Vanilla Web Components
 
-<a target="_blank" href="https://mazdik.github.io/web-modal">Demo</a>
+<a target="_blank" href="https://mazdik.github.io/mazdik-lib">Demo</a>
+
+## Resizable and draggable modal
+```
+npm install @mazdik-lib/modal
+```
 
 ### Sample
 ```html

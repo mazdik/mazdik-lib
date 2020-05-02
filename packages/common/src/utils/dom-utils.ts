@@ -19,3 +19,26 @@ export function maxZIndex(selectors: string = 'body *') {
     .sort((a, b) => a - b)
     .pop() || 0;
 }
+
+export function findAncestor(el, selectors) {
+  if (typeof el.closest === 'function') {
+    return el.closest(selectors) || null;
+  }
+  while (el) {
+    if (el.matches(selectors)) {
+      return el;
+    }
+    el = el.parentElement;
+  }
+  return null;
+}
+
+export function supportsStickyPosition(): boolean {
+  if (!('CSS' in window)) {
+    return false;
+  }
+  return (
+    CSS.supports('position', 'sticky') ||
+    CSS.supports('position', '-webkit-sticky')
+  );
+}

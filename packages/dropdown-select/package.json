@@ -1,5 +1,5 @@
 {
-  "name": "@mazdik-lib/select-list",
+  "name": "@mazdik-lib/dropdown-select",
   "version": "0.1.0",
   "main": "./lib/index.js",
   "types": "./lib/index.d.ts",
@@ -15,6 +15,8 @@
     "access": "public"
   },
   "dependencies": {
+    "@mazdik-lib/dropdown": "0.1.0",
+    "@mazdik-lib/select-list": "0.1.0",
     "@mazdik-lib/common": "0.1.0"
   }
 }
