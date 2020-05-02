@@ -1,8 +1,11 @@
-# Vanilla Web Components.
+# Vanilla Web Components
 
 <a target="_blank" href="https://mazdik.github.io/mazdik-lib">Demo</a>
 
 ## Resizable and draggable modal
+```
+npm install @mazdik-lib/modal
+```
 
 ### Sample
 ```html
