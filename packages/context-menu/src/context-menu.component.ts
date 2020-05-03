@@ -16,9 +16,12 @@ export class ContextMenuComponent extends HTMLElement {
   private eventArgs: MenuEventArgs;
   private dropdown: DropDown;
   private listeners: Listener[] = [];
+  private listMenu: HTMLElement;
 
   constructor() {
     super();
+    this.listMenu = document.createElement('ul');
+    this.appendChild(this.listMenu);
     this.classList.add('dt-context-menu');
     this.dropdown = new DropDown(this);
     this.addEventListeners();
@@ -43,6 +46,11 @@ export class ContextMenuComponent extends HTMLElement {
         eventName: 'resize',
         target: window,
         handler: this.onWindowResize.bind(this)
+      },
+      {
+        eventName: 'click',
+        target: this.listMenu,
+        handler: this.onClickListMenu.bind(this)
       },
     ];
 
@@ -141,15 +149,14 @@ export class ContextMenuComponent extends HTMLElement {
 
   private render() {
     const listContent = this.createListContent();
-    const ul = document.createElement('ul');
-    ul.append(...listContent);
-    this.append(ul);
+    this.listMenu.textContent = '';
+    this.listMenu.append(...listContent);
     this.updateStyles();
   }
 
   private createListContent(): HTMLElement[] {
     const result = [];
-    this.menu.forEach(item => {
+    this.menu.forEach((item, index) => {
       const li = document.createElement('li');
       if (item.disabled) {
         li.classList.add('disabled');
@@ -157,10 +164,9 @@ export class ContextMenuComponent extends HTMLElement {
 
       const a = document.createElement('a');
       a.href = item.url||'#';
-      a.addEventListener('click', (event) => {
-        this.itemClick(event, item);
-      });
       a.textContent = item.label;
+      a.dataset.id = index.toString();
+      li.append(a);
 
       const span = document.createElement('span');
       span.classList.add('context-menu-sep');
@@ -172,11 +178,22 @@ export class ContextMenuComponent extends HTMLElement {
       }
       a.prepend(i)
 
-      li.append(a);
-
       result.push(li);
     });
     return result;
+  }
+
+  private getDataId(target: HTMLElement): string {
+    const el = target.tagName === 'A' ? target : target.closest('a');
+    return (el && el.dataset.id) ? el.dataset.id: null;
+  }
+
+  private onClickListMenu(event: MouseEvent) {
+    const id = this.getDataId(event.target as HTMLElement);
+    if (id !== null && id !== undefined) {
+      const index = parseInt(id, 10);
+      this.itemClick(event, this.menu[index]);
+    }
   }
 
 }
