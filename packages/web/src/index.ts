@@ -1,6 +1,7 @@
 import './styles/app.css';
 import './styles/all.css';
 import '@mazdik-lib/modal';
+import { Header } from './header';
 
 async function setPage(main: HTMLElement, name: string, title: string) {
   try {
@@ -14,15 +15,19 @@ async function setPage(main: HTMLElement, name: string, title: string) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+  const header = new Header();
   const main: HTMLElement = document.querySelector('main');
-  const links: HTMLElement[] = Array.from(document.querySelectorAll('.sidenav > a'));
+  const links: HTMLElement[] = Array.from(document.querySelectorAll('.body-nav > a'));
 
-  setPage(main, location.hash.slice(1) || 'modal-basic', '');
+  const page = location.hash.slice(1) || 'modal-basic';
+  setPage(main, page, '');
+  header.state = page;
 
   links.forEach((link) => {
     link.addEventListener('click', async (e: MouseEvent) => {
         e.preventDefault();
         setPage(main, link.dataset.chunk, link.innerText);
+        header.state = link.dataset.chunk;
       });
   });
 
