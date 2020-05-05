@@ -6,13 +6,16 @@ export default class ResizableDemo implements Page {
 
   get template(): string { return html; }
 
+  private resizable: Resizable;
+
   load() {
     const box = document.querySelector('#box1') as HTMLElement;
-    const resizable = new Resizable(box, true, true, true);
-    resizable.addEventListeners();
+    this.resizable = new Resizable(box, true, true, true);
+    this.resizable.addEventListeners();
   }
 
   onDestroy() {
+    this.resizable.destroy();
   }
 
 }

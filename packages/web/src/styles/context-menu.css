@@ -20,7 +20,7 @@
 }
 
 .dt-context-menu li > a {
-  display: block;
+  display: flex;
   padding: 0 2em 0 2em;
   text-decoration: none;
   width: auto;

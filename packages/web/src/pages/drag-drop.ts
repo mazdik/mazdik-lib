@@ -11,6 +11,8 @@ export default class DragDropDemo implements Page {
 
   get template(): string { return html; }
 
+  private dragDrop: DragDrop;
+
   load() {
     const data: Item[][] = [
       [
@@ -83,10 +85,11 @@ export default class DragDropDemo implements Page {
     const { columnElements, issueElements } = createColumns();
     div.append(...columnElements);
 
-    const dragDrop = new DragDrop(columnElements, issueElements);
+    this.dragDrop = new DragDrop(columnElements, issueElements);
   }
 
   onDestroy() {
+    this.dragDrop.destroy();
   }
 
 }

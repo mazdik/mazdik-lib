@@ -6,12 +6,15 @@ export default class DropdownDemo implements Page {
 
   get template(): string { return html; }
 
+  private dropdown: Dropdown;
+
   load() {
     const list = document.querySelectorAll('.dropdown-directive-demo .dropdown');
-    const dropdown = new Dropdown(list);
+    this.dropdown = new Dropdown(list);
   }
 
   onDestroy() {
+    this.dropdown.destroy();
   }
 
 }

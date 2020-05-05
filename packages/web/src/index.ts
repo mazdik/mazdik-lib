@@ -5,6 +5,7 @@ import { Header } from './header';
 import { Page } from './page';
 
 let currentPage: Page = null;
+const indexPageTitle = document.title;
 
 function destroy(page: Page) {
   if (page && typeof page.onDestroy === "function") {
@@ -19,6 +20,7 @@ async function setPage(main: HTMLElement, name: string, title: string) {
     currentPage = new module.default;
     main.innerHTML = currentPage.template;
     currentPage.load();
+    document.title = title ? title + ' - ' + indexPageTitle : indexPageTitle;
   } catch (error) {
     main.textContent = error.message;
   }
