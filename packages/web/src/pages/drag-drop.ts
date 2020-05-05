@@ -1,6 +1,5 @@
 import html from './drag-drop.html';
-import { Droppable, DragElementEvent, DropElementEvent } from '@mazdik-lib/drag-drop';
-import { arrayMove, arrayTransfer } from '@mazdik-lib/common';
+import { DragDrop } from '@mazdik-lib/drag-drop';
 
 class Item {
   name: string;
@@ -38,47 +37,13 @@ export function page() {
       {name: 'Task 15', text: 'Write a program that prints the next 20 leap years'},
     ]
   ];
-  let source: HTMLElement;
-  const droppables: Droppable[] = [];
-
-  function onDragStart(event: DragEvent) {
-    const index = (event.target as HTMLElement).dataset.index;
-    event.dataTransfer.setData('text', index);
-    event.dataTransfer.effectAllowed = 'move';
-    const dragElementEvent: DragElementEvent = { event, index: parseInt(index, 10) };
-    droppables.forEach(x => x.dragElementEvent = dragElementEvent);
-
-    source = (event.target as HTMLElement).parentElement;
-  }
-
-  function onDrop(event: DropElementEvent, target: HTMLElement) {
-    const sourceChildrens = Array.from(source.children);
-    const targetChildrens = Array.from(target.children);
-
-    if (event.type === 'reorder') {
-      arrayMove(targetChildrens, event.previousIndex, event.currentIndex);
-      targetChildrens.forEach((x: HTMLElement, i) => x.dataset.index = i.toString());
-      target.append(...targetChildrens);
-    } else {
-      arrayTransfer(sourceChildrens, targetChildrens, event.previousIndex, event.currentIndex);
-      sourceChildrens.forEach((x: HTMLElement, i) => x.dataset.index = i.toString());
-      targetChildrens.forEach((x: HTMLElement, i) => x.dataset.index = i.toString());
-      source.append(...sourceChildrens);
-      target.append(...targetChildrens);
-    }
-  }
 
   function createIssues(items: Item[]): HTMLElement[] {
     const elements = [];
 
-    items.forEach((option, i) => {
+    items.forEach(option => {
       const issue = document.createElement('div');
       issue.className = 'dd-issue';
-      issue.draggable = true;
-      issue.dataset.index = i.toString();
-      issue.addEventListener('dragstart', (event) => {
-        onDragStart(event);
-      });
 
       const title = document.createElement('div');
       title.className = 'dd-title';
@@ -96,25 +61,25 @@ export function page() {
     return elements;
   }
 
-  function createColumns(): HTMLElement[] {
-    const elements = [];
+  function createColumns() {
+    const columnElements = [];
+    let issueElements = [];
 
     data.forEach(item => {
       const column = document.createElement('div');
       column.className = 'dd-column';
-      column.append(...createIssues(item));
-      droppables.push(new Droppable(column));
-      column.addEventListener('dropElement', (event: CustomEvent<DropElementEvent>) => {
-        onDrop(event.detail, column);
-      });
+      const issues = createIssues(item);
+      column.append(...issues);
 
-      elements.push(column);
+      issueElements = issueElements.concat(issues);
+      columnElements.push(column);
     });
-
-    return elements;
+    return { columnElements, issueElements };
   }
 
   const div = document.querySelector('#drag-drop-demo') as HTMLDivElement;
-  div.append(...createColumns());
+  const { columnElements, issueElements } = createColumns();
+  div.append(...columnElements);
 
+  const dragDrop = new DragDrop(columnElements, issueElements);
 }
