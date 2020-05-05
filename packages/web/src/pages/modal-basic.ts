@@ -1,12 +1,19 @@
+import { Page } from '../page';
 import { ModalComponent } from '@mazdik-lib/modal';
 import html from './modal-basic.html';
 
-export default html;
+export default class ModalBasicDemo implements Page {
 
-export function page() {
-    // Basic demo
+  get template(): string { return html; }
+
+  load() {
     const dialog = document.querySelector('#modal') as ModalComponent;
     document.querySelector('#button').addEventListener('click', () => dialog.show());
 
     document.querySelector('#close-button').addEventListener('click', () => dialog.hide());
+  }
+
+  onDestroy() {
+  }
+
 }

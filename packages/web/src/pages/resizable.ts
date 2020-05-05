@@ -1,12 +1,18 @@
+import { Page } from '../page';
 import html from './resizable.html';
 import { Resizable } from '@mazdik-lib/resizable';
 
-export default html;
+export default class ResizableDemo implements Page {
 
-export function page() {
+  get template(): string { return html; }
 
-  const box = document.querySelector('#box1') as HTMLElement;
-  const resizable = new Resizable(box, true, true, true);
-  resizable.addEventListeners();
+  load() {
+    const box = document.querySelector('#box1') as HTMLElement;
+    const resizable = new Resizable(box, true, true, true);
+    resizable.addEventListeners();
+  }
+
+  onDestroy() {
+  }
 
 }
