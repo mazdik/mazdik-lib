@@ -13,7 +13,4 @@ export default class ModalBasicDemo implements Page {
     document.querySelector('#close-button').addEventListener('click', () => dialog.hide());
   }
 
-  onDestroy() {
-  }
-
 }

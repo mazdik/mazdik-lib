@@ -20,6 +20,9 @@
       "path": "./dropdown-select/tsconfig.package.json"
     },
     {
+      "path": "./inline-edit/tsconfig.package.json"
+    },
+    {
       "path": "./modal/tsconfig.package.json"
     },
     {

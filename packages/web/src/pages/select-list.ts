@@ -31,7 +31,4 @@ export default class SelectListDemo implements Page {
     selectList2.model = ['3'];
   }
 
-  onDestroy() {
-  }
-
 }

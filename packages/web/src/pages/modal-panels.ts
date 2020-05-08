@@ -24,7 +24,4 @@ export default class ModalPanelsDemo implements Page {
     document.querySelector('#close-panel3').addEventListener('click', () => panel3.hide());
   }
 
-  onDestroy() {
-  }
-
 }

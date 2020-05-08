@@ -31,7 +31,4 @@ export default class DropdownSelectDemo implements Page {
     dropdownSelect2.value = ['3'];
   }
 
-  onDestroy() {
-  }
-
 }

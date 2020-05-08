@@ -21,7 +21,4 @@ export default class ModalNestedDemo implements Page {
     document.querySelector('#close-button3').addEventListener('click', () => modal3.hide());
   }
 
-  onDestroy() {
-  }
-
 }

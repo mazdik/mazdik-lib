@@ -30,7 +30,4 @@ export default class ContextMenuDemo implements Page {
     });
   }
 
-  onDestroy() {
-  }
-
 }
