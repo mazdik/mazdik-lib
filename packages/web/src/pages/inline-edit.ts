@@ -56,7 +56,7 @@ export default class InlineEditDemo implements Page {
   private demo3() {
     const inlineEdit = document.querySelector('#inline-edit3') as InlineEditComponent;
     inlineEdit.value = new Date();
-    inlineEdit.viewValue = inlineEdit.value;
+    inlineEdit.viewValue = inlineEdit.value.toString();
     inlineEdit.editing = false;
     inlineEdit.type = 'date';
 

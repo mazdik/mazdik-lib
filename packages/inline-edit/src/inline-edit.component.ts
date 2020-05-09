@@ -2,23 +2,18 @@ import {
   SelectItem, Listener, inputFormattedDate, inputIsDateType, checkStrDate, isBlank
 } from '@mazdik-lib/common';
 
-function getTemplate(id: string) {
+function getTemplate() {
   return `
-  <div class="dt-inline-data" id="inlineDataView${id}" *ngIf="!editing">
-    {{viewValue}}
-  </div>
+  <div class="dt-inline-data"></div>
   <select
-    *ngIf="editing && options"
-    appAfterViewFocus
+    *ngIf="options"
     (change)="onInput($event); onInputChange()"
     (focus)="onInputFocus()"
     (blur)="onInputBlur()">
     <option value="" disabled selected hidden>{{selectPlaceholder}}</option>
     <option *ngFor="let opt of options" [value]="opt.id" [selected]="(opt.id === value)">{{opt.name}}</option>
   </select>
-  <input *ngIf="editing && !options"
-          appAfterViewFocus
-          [value]="inputFormattedValue || null"
+  <input *ngIf="!options"
           (input)="onInput($event)"
           (keyup)="onInputChange()"
           (focus)="onInputFocus()"
@@ -30,10 +25,31 @@ export class InlineEditComponent extends HTMLElement {
 
   type = 'text';
   selectPlaceholder: string;
-  value: string | number | Date;
-  editing: boolean;
-  options: SelectItem[];
-  viewValue: string | number | Date;
+
+  get editing(): boolean { return this._editing; }
+  set editing(val: boolean) {
+    this._editing = val;
+    this.updateStyles();
+    this.setFocus();
+  }
+  private _editing: boolean;
+
+  set viewValue(val: string) {
+    this.inlineDataView.innerText = val;
+  }
+
+  get value(): string | number | Date { return this._value; }
+  set value(val: string | number | Date) {
+    this._value = val;
+    this.input.value = this.inputFormattedValue || null;
+  }
+  private _value: string | number | Date;
+
+  get options(): SelectItem[] { return this._options; }
+  set options(val: SelectItem[]) {
+    this._options = val;
+  }
+  private _options: SelectItem[];
 
   get isDateType(): boolean {
     return inputIsDateType(this.type);
@@ -53,14 +69,13 @@ export class InlineEditComponent extends HTMLElement {
 
   constructor() {
     super();
-    const id = (~~(Math.random()*1e3)).toString();
     const template = document.createElement('template');
-    template.innerHTML = getTemplate(id);
+    template.innerHTML = getTemplate();
     this.appendChild(template.content.cloneNode(true));
 
     this.classList.add('dt-inline-editor');
 
-    this.inlineDataView = this.querySelector('#inlineDataView');
+    this.inlineDataView = this.querySelector('.dt-inline-data');
     this.select = this.querySelector('select');
     this.input = this.querySelector('input');
 
@@ -68,6 +83,7 @@ export class InlineEditComponent extends HTMLElement {
     this.input.step = (this.type === 'number') ? 'any' : null;
 
     this.addEventListeners();
+    this.updateStyles();
   }
 
   disconnectedCallback() {
@@ -96,13 +112,13 @@ export class InlineEditComponent extends HTMLElement {
 
   onInput(event: any) {
     if (this.type === 'number') {
-      this.value = !isBlank(event.target.value) ? parseFloat(event.target.value) : null;
+      this._value = !isBlank(event.target.value) ? parseFloat(event.target.value) : null;
     } else if (this.isDateType) {
       if (checkStrDate(event.target.value)) {
         this.value = new Date(event.target.value);
       }
     } else {
-      this.value = event.target.value;
+      this._value = event.target.value;
     }
     this.dispatchEvent(new CustomEvent('valueChange', { detail: this.value }));
   }
@@ -117,6 +133,26 @@ export class InlineEditComponent extends HTMLElement {
 
   onInputBlur() {
     this.dispatchEvent(new CustomEvent('blurChange'));
+  }
+
+  private updateStyles() {
+    if (this.editing) {
+      this.inlineDataView.style.display = 'none';
+      this.select.style.display = 'block';
+      this.input.style.display = 'block';
+    } else {
+      this.inlineDataView.style.display = 'block';
+      this.select.style.display = 'none';
+      this.input.style.display = 'none';
+    }
+  }
+
+  private setFocus() {
+    if (this.options) {
+      this.select.focus();
+    } else {
+      this.input.focus();
+    }
   }
 
 }
