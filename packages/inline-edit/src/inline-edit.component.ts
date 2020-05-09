@@ -6,15 +6,11 @@ function getTemplate() {
   return `
   <div class="dt-inline-data"></div>
   <select
-    *ngIf="options"
     (change)="onInput($event); onInputChange()"
     (focus)="onInputFocus()"
     (blur)="onInputBlur()">
-    <option value="" disabled selected hidden>{{selectPlaceholder}}</option>
-    <option *ngFor="let opt of options" [value]="opt.id" [selected]="(opt.id === value)">{{opt.name}}</option>
   </select>
-  <input *ngIf="!options"
-          (input)="onInput($event)"
+  <input (input)="onInput($event)"
           (keyup)="onInputChange()"
           (focus)="onInputFocus()"
           (blur)="onInputBlur()"/>
@@ -23,8 +19,16 @@ function getTemplate() {
 
 export class InlineEditComponent extends HTMLElement {
 
-  type = 'text';
-  selectPlaceholder: string;
+  selectPlaceholder: string = '';
+
+  get type(): string { return this._type; }
+  set type(val: string) {
+    this._type = val;
+    this.setInputType();
+    this.updateStyles();
+    this.input.value = this.inputFormattedValue || null;
+  }
+  private _type: string = 'text';
 
   get editing(): boolean { return this._editing; }
   set editing(val: boolean) {
@@ -34,20 +38,20 @@ export class InlineEditComponent extends HTMLElement {
   }
   private _editing: boolean;
 
-  set viewValue(val: string) {
-    this.inlineDataView.innerText = val;
-  }
-
   get value(): string | number | Date { return this._value; }
   set value(val: string | number | Date) {
     this._value = val;
     this.input.value = this.inputFormattedValue || null;
+    this.setSelectedIndex();
+    this.setViewValue();
   }
   private _value: string | number | Date;
 
   get options(): SelectItem[] { return this._options; }
   set options(val: SelectItem[]) {
     this._options = val;
+    this.loadSelect(val, this.selectPlaceholder);
+    this.setViewValue();
   }
   private _options: SelectItem[];
 
@@ -79,18 +83,17 @@ export class InlineEditComponent extends HTMLElement {
     this.select = this.querySelector('select');
     this.input = this.querySelector('input');
 
-    this.input.type = this.type;
-    this.input.step = (this.type === 'number') ? 'any' : null;
+    this.select.style.display = 'block';
+    this.input.style.display = 'block';
 
     this.addEventListeners();
-    this.updateStyles();
   }
 
   disconnectedCallback() {
     this.removeEventListeners();
   }
 
-  addEventListeners() {
+  private addEventListeners() {
     this.listeners = [
       // {
       //   eventName: 'open',
@@ -104,13 +107,13 @@ export class InlineEditComponent extends HTMLElement {
     })
   }
 
-  removeEventListeners() {
+  private removeEventListeners() {
     this.listeners.forEach(x => {
       x.target.removeEventListener(x.eventName, x.handler);
     });
   }
 
-  onInput(event: any) {
+  private onInput(event: any) {
     if (this.type === 'number') {
       this._value = !isBlank(event.target.value) ? parseFloat(event.target.value) : null;
     } else if (this.isDateType) {
@@ -123,23 +126,26 @@ export class InlineEditComponent extends HTMLElement {
     this.dispatchEvent(new CustomEvent('valueChange', { detail: this.value }));
   }
 
-  onInputChange() {
+  private onInputChange() {
     this.dispatchEvent(new CustomEvent('inputChange'));
   }
 
-  onInputFocus() {
+  private onInputFocus() {
     this.dispatchEvent(new CustomEvent('focusChange'));
   }
 
-  onInputBlur() {
+  private onInputBlur() {
     this.dispatchEvent(new CustomEvent('blurChange'));
   }
 
   private updateStyles() {
     if (this.editing) {
       this.inlineDataView.style.display = 'none';
-      this.select.style.display = 'block';
-      this.input.style.display = 'block';
+      if (this.options) {
+        this.select.style.display = 'block';
+      } else {
+        this.input.style.display = 'block';
+      }
     } else {
       this.inlineDataView.style.display = 'block';
       this.select.style.display = 'none';
@@ -153,6 +159,39 @@ export class InlineEditComponent extends HTMLElement {
     } else {
       this.input.focus();
     }
+  }
+
+  private loadSelect(options: SelectItem[], placeholder: string) {
+    this.select.innerHTML = `<option value="" disabled selected hidden>${placeholder}</option>`;
+    for (const option of options) {
+      this.select.options.add(new Option(option.name, option.id));
+    }
+    this.setSelectedIndex();
+  }
+
+  private setSelectedIndex() {
+    if (this.options && this.options.length) {
+      const index = this.options.findIndex(x => x.id === this.value.toString()) || -2;
+      this.select.selectedIndex = index + 1;
+    }
+  }
+
+  private setInputType() {
+    if (this.type !== 'select') {
+      this.input.type = this.type;
+      this.input.step = (this.type === 'number') ? 'any' : null;
+    }
+  }
+
+  private setViewValue() {
+    let viewValue = '';
+    if (this.options && this.options.length) {
+      const selected = this.options.find(x => x.id === this.value.toString());
+      viewValue = selected ? selected.name : '';
+    } else {
+      viewValue = this.value.toString();
+    }
+    this.inlineDataView.innerText = viewValue;
   }
 
 }

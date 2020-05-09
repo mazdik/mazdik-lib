@@ -17,7 +17,6 @@ export default class InlineEditDemo implements Page {
   private demo1() {
     const inlineEdit = document.querySelector('#inline-edit1') as InlineEditComponent;
     inlineEdit.value = 'string';
-    inlineEdit.viewValue = 'string';
     inlineEdit.editing = false;
     inlineEdit.type = 'text';
 
@@ -32,7 +31,7 @@ export default class InlineEditDemo implements Page {
     const inlineEdit = document.querySelector('#inline-edit2') as InlineEditComponent;
     inlineEdit.value = 2;
     inlineEdit.editing = false;
-    inlineEdit.type = 'number';
+    inlineEdit.type = 'select';
 
     const options: SelectItem[] = [
       {id: '1', name: 'Select 1'},
@@ -44,7 +43,6 @@ export default class InlineEditDemo implements Page {
     ];
     inlineEdit.selectPlaceholder = 'placeholder';
     inlineEdit.options = options;
-    inlineEdit.viewValue = options.find(x => x.id === inlineEdit.value.toString()).name;
 
     const button = document.querySelector('#button2') as HTMLButtonElement
     button.addEventListener('click', () => {
@@ -56,7 +54,6 @@ export default class InlineEditDemo implements Page {
   private demo3() {
     const inlineEdit = document.querySelector('#inline-edit3') as InlineEditComponent;
     inlineEdit.value = new Date();
-    inlineEdit.viewValue = inlineEdit.value.toString();
     inlineEdit.editing = false;
     inlineEdit.type = 'date';
 
