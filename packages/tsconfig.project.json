@@ -26,10 +26,16 @@
       "path": "./modal/tsconfig.package.json"
     },
     {
+      "path": "./nav-menu/tsconfig.package.json"
+    },
+    {
       "path": "./resizable/tsconfig.package.json"
     },
     {
       "path": "./select-list/tsconfig.package.json"
+    },
+    {
+      "path": "./tree-lib/tsconfig.package.json"
     }
   ]
 }
