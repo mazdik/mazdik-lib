@@ -1,10 +1,10 @@
 import { TreeNode } from '@mazdik-lib/tree-lib';
 import { isBlank } from '@mazdik-lib/common';
 
-function getTemplate(node: TreeNode, nodeIcon: string) {
-  const icon = nodeIcon ? `<i class="${nodeIcon}"></i>` : '';
+function getTemplate(node: TreeNode, iconClass: string, cls: string) {
+  const icon = iconClass ? `<i class="${iconClass}"></i>` : '';
   return `
-  <a class="vertical-menu-item heading" [ngClass]="classes" (click)="onClickHeader($event)">${icon}
+  <a class="${cls}" (click)="onClickHeader($event)">${icon}
     <span class="menu-item-text">${node.name}</span>
     <div class="rotating-icon">
       <svg focusable="false" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -17,7 +17,13 @@ function getTemplate(node: TreeNode, nodeIcon: string) {
 
 export class NavItemComponent extends HTMLElement {
 
-  node: TreeNode;
+  get node(): TreeNode { return this._node; }
+  set node(val: TreeNode) {
+    this._node = val;
+    this.render();
+  }
+  private _node: TreeNode;
+
   set expandedNode(val: TreeNode) {
     if (val && val.$$level === this.node.$$level && val !== this.node) {
       this.node.expanded = false;
@@ -27,7 +33,6 @@ export class NavItemComponent extends HTMLElement {
 
   constructor() {
     super();
-    this.classList.add('nav-item');
   }
 
   get classes() {
@@ -70,8 +75,13 @@ export class NavItemComponent extends HTMLElement {
   }
 
   private render() {
-    const nodeIcon = (this.node.icon || this.getIconFunc) ? 'nav-menu-icon ' + this.getIcon(this.node) : '';
-    // TODO
+    const iconClass = (this.node.icon || this.getIconFunc) ? 'nav-menu-icon ' + this.getIcon(this.node) : '';
+    let cls = 'vertical-menu-item heading';
+    Object.keys(this.classes).forEach(k => cls += (this.classes[k] === true) ? ` ${k}` : '');
+
+    const template = document.createElement('template');
+    template.innerHTML = getTemplate(this.node, iconClass, cls);
+    this.appendChild(template.content.cloneNode(true));
   }
 
 }
