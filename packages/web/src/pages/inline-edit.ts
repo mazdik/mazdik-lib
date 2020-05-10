@@ -16,9 +16,8 @@ export default class InlineEditDemo implements Page {
 
   private demo1() {
     const inlineEdit = document.querySelector('#inline-edit1') as InlineEditComponent;
-    inlineEdit.value = 'string';
-    inlineEdit.editing = false;
     inlineEdit.type = 'text';
+    inlineEdit.value = 'string';
 
     const button = document.querySelector('#button1') as HTMLButtonElement
     button.addEventListener('click', () => {
@@ -33,9 +32,8 @@ export default class InlineEditDemo implements Page {
 
   private demo2() {
     const inlineEdit = document.querySelector('#inline-edit2') as InlineEditComponent;
-    inlineEdit.value = 2;
-    inlineEdit.editing = false;
     inlineEdit.type = 'select';
+    inlineEdit.value = 2;
 
     const options: SelectItem[] = [
       {id: '1', name: 'Select 1'},
@@ -61,9 +59,8 @@ export default class InlineEditDemo implements Page {
 
   private demo3() {
     const inlineEdit = document.querySelector('#inline-edit3') as InlineEditComponent;
-    inlineEdit.value = new Date();
-    inlineEdit.editing = false;
     inlineEdit.type = 'date';
+    inlineEdit.value = new Date();
 
     const button = document.querySelector('#button3') as HTMLButtonElement
     button.addEventListener('click', () => {

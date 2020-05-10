@@ -5,20 +5,12 @@ import {
 export class InlineEditComponent extends HTMLElement {
 
   selectPlaceholder: string = '';
-
-  get type(): string { return this._type; }
-  set type(val: string) {
-    this._type = val;
-    this.setInputType();
-    this.updateStyles();
-  }
-  private _type: string = 'text';
+  type: string = 'text';
 
   get editing(): boolean { return this._editing; }
   set editing(val: boolean) {
     this._editing = val;
-    this.updateStyles();
-    this.setFocus();
+    this.renderInput();
   }
   private _editing: boolean;
 
@@ -33,7 +25,7 @@ export class InlineEditComponent extends HTMLElement {
   get options(): SelectItem[] { return this._options; }
   set options(val: SelectItem[]) {
     this._options = val;
-    this.loadSelect(val, this.selectPlaceholder);
+    this.loadSelect();
     this.setViewValue();
   }
   private _options: SelectItem[];
@@ -65,9 +57,6 @@ export class InlineEditComponent extends HTMLElement {
 
     this.select = document.createElement('select');
     this.input = document.createElement('input');
-
-    this.select.style.display = 'block';
-    this.input.style.display = 'block';
 
     this.addEventListeners();
   }
@@ -143,32 +132,51 @@ export class InlineEditComponent extends HTMLElement {
     this.dispatchEvent(new CustomEvent('blurChange'));
   }
 
-  private updateStyles() {
-    if (this.editing) {
-      this.inlineDataView.style.display = 'none';
-      if (this.options) {
-        this.select.style.display = 'block';
-      } else {
-        this.input.style.display = 'block';
-      }
-    } else {
-      this.inlineDataView.style.display = 'block';
-      this.select.style.display = 'none';
-      this.input.style.display = 'none';
-    }
-  }
-
-  private setFocus() {
-    if (this.options) {
+  private appendInput() {
+    if (this.type === 'select') {
+      this.appendChild(this.select);
       this.select.focus();
     } else {
+      this.input.type = this.type;
+      if (this.type === 'number') {
+        this.input.step = 'any';
+      }
+      this.input.value = this.inputFormattedValue || null;
+      this.appendChild(this.input);
       this.input.focus();
     }
   }
 
-  private loadSelect(options: SelectItem[], placeholder: string) {
-    this.select.innerHTML = `<option value="" disabled selected hidden>${placeholder}</option>`;
-    for (const option of options) {
+  private removeInput() {
+    if (this.contains(this.input)) {
+      this.input = this.removeChild(this.input);
+    }
+    if (this.contains(this.select)) {
+      this.select = this.removeChild(this.select);
+    }
+  }
+
+  private renderInput() {
+    if (this.editing) {
+      this.inlineDataView.style.display = 'none';
+      this.appendInput();
+    } else {
+      this.inlineDataView.style.display = 'block';
+      this.removeInput();
+    }
+  }
+
+  private firstInitValue() {
+    if (!this.initValue) {
+      this.input.value = this.inputFormattedValue || null;
+      this.setSelectedIndex();
+      this.initValue = true;
+    }
+  }
+
+  private loadSelect() {
+    this.select.innerHTML = `<option value="" disabled selected hidden>${this.selectPlaceholder}</option>`;
+    for (const option of this.options) {
       this.select.options.add(new Option(option.name, option.id));
     }
     this.setSelectedIndex();
@@ -178,17 +186,6 @@ export class InlineEditComponent extends HTMLElement {
     if (this.options && this.options.length) {
       const index = this.options.findIndex(x => x.id === this.value.toString()) || -2;
       this.select.selectedIndex = index + 1;
-    }
-  }
-
-  private setInputType() {
-    if (this.type === 'select') {
-      this.appendChild(this.select);
-    } else {
-      this.input.type = this.type;
-      this.input.step = (this.type === 'number') ? 'any' : null;
-      this.input.value = this.inputFormattedValue || null;
-      this.appendChild(this.input);
     }
   }
 
@@ -208,14 +205,6 @@ export class InlineEditComponent extends HTMLElement {
       viewValue = this.value.toString();
     }
     this.inlineDataView.innerText = viewValue;
-  }
-
-  private firstInitValue() {
-    if (!this.initValue) {
-      this.input.value = this.inputFormattedValue || null;
-      this.setSelectedIndex();
-      this.initValue = true;
-    }
   }
 
 }
