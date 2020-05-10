@@ -2,21 +2,6 @@ import {
   SelectItem, Listener, inputFormattedDate, inputIsDateType, checkStrDate, isBlank
 } from '@mazdik-lib/common';
 
-function getTemplate() {
-  return `
-  <div class="dt-inline-data"></div>
-  <select
-    (change)="onInput($event); onInputChange()"
-    (focus)="onInputFocus()"
-    (blur)="onInputBlur()">
-  </select>
-  <input (input)="onInput($event)"
-          (keyup)="onInputChange()"
-          (focus)="onInputFocus()"
-          (blur)="onInputBlur()"/>
-  `;
-}
-
 export class InlineEditComponent extends HTMLElement {
 
   selectPlaceholder: string = '';
@@ -26,7 +11,6 @@ export class InlineEditComponent extends HTMLElement {
     this._type = val;
     this.setInputType();
     this.updateStyles();
-    this.input.value = this.inputFormattedValue || null;
   }
   private _type: string = 'text';
 
@@ -41,8 +25,7 @@ export class InlineEditComponent extends HTMLElement {
   get value(): string | number | Date { return this._value; }
   set value(val: string | number | Date) {
     this._value = val;
-    this.input.value = this.inputFormattedValue || null;
-    this.setSelectedIndex();
+    this.firstInitValue();
     this.setViewValue();
   }
   private _value: string | number | Date;
@@ -70,18 +53,18 @@ export class InlineEditComponent extends HTMLElement {
   private inlineDataView: HTMLElement;
   private select: HTMLSelectElement;
   private input: HTMLInputElement;
+  private initValue: boolean = false;
 
   constructor() {
     super();
-    const template = document.createElement('template');
-    template.innerHTML = getTemplate();
-    this.appendChild(template.content.cloneNode(true));
-
     this.classList.add('dt-inline-editor');
 
-    this.inlineDataView = this.querySelector('.dt-inline-data');
-    this.select = this.querySelector('select');
-    this.input = this.querySelector('input');
+    this.inlineDataView = document.createElement('div');
+    this.inlineDataView.classList.add('dt-inline-data');
+    this.appendChild(this.inlineDataView);
+
+    this.select = document.createElement('select');
+    this.input = document.createElement('input');
 
     this.select.style.display = 'block';
     this.input.style.display = 'block';
@@ -95,11 +78,37 @@ export class InlineEditComponent extends HTMLElement {
 
   private addEventListeners() {
     this.listeners = [
-      // {
-      //   eventName: 'open',
-      //   target: this,
-      //   handler: this.onOpenChange.bind(this)
-      // },
+      {
+        eventName: 'input',
+        target: this.input,
+        handler: this.onInput.bind(this)
+      },
+      {
+        eventName: 'focus',
+        target: this.input,
+        handler: this.onInputFocus.bind(this)
+      },
+      {
+        eventName: 'blur',
+        target: this.input,
+        handler: this.onInputBlur.bind(this)
+      },
+      // select
+      {
+        eventName: 'change',
+        target: this.select,
+        handler: this.onInput.bind(this)
+      },
+      {
+        eventName: 'focus',
+        target: this.select,
+        handler: this.onInputFocus.bind(this)
+      },
+      {
+        eventName: 'blur',
+        target: this.select,
+        handler: this.onInputBlur.bind(this)
+      },
     ];
 
     this.listeners.forEach(x => {
@@ -115,19 +124,15 @@ export class InlineEditComponent extends HTMLElement {
 
   private onInput(event: any) {
     if (this.type === 'number') {
-      this._value = !isBlank(event.target.value) ? parseFloat(event.target.value) : null;
+      this.value = !isBlank(event.target.value) ? parseFloat(event.target.value) : null;
     } else if (this.isDateType) {
       if (checkStrDate(event.target.value)) {
         this.value = new Date(event.target.value);
       }
     } else {
-      this._value = event.target.value;
+      this.value = event.target.value;
     }
     this.dispatchEvent(new CustomEvent('valueChange', { detail: this.value }));
-  }
-
-  private onInputChange() {
-    this.dispatchEvent(new CustomEvent('inputChange'));
   }
 
   private onInputFocus() {
@@ -177,9 +182,13 @@ export class InlineEditComponent extends HTMLElement {
   }
 
   private setInputType() {
-    if (this.type !== 'select') {
+    if (this.type === 'select') {
+      this.appendChild(this.select);
+    } else {
       this.input.type = this.type;
       this.input.step = (this.type === 'number') ? 'any' : null;
+      this.input.value = this.inputFormattedValue || null;
+      this.appendChild(this.input);
     }
   }
 
@@ -188,10 +197,25 @@ export class InlineEditComponent extends HTMLElement {
     if (this.options && this.options.length) {
       const selected = this.options.find(x => x.id === this.value.toString());
       viewValue = selected ? selected.name : '';
+    } else if (this.value instanceof Date) {
+      if (this.type === 'date') {
+        viewValue = this.value.toLocaleDateString();
+      } else {
+        const time = this.value.toLocaleTimeString();
+        viewValue = this.value.toLocaleDateString() + ' ' + time;
+      }
     } else {
       viewValue = this.value.toString();
     }
     this.inlineDataView.innerText = viewValue;
+  }
+
+  private firstInitValue() {
+    if (!this.initValue) {
+      this.input.value = this.inputFormattedValue || null;
+      this.setSelectedIndex();
+      this.initValue = true;
+    }
   }
 
 }

@@ -25,6 +25,10 @@ export default class InlineEditDemo implements Page {
       inlineEdit.editing = !inlineEdit.editing;
       button.innerText = inlineEdit.editing ? 'View' : 'Edit';
     });
+
+    inlineEdit.addEventListener('valueChange', (event: CustomEvent) => {
+      console.log(event.detail);
+    });
   }
 
   private demo2() {
@@ -49,6 +53,10 @@ export default class InlineEditDemo implements Page {
       inlineEdit.editing = !inlineEdit.editing;
       button.innerText = inlineEdit.editing ? 'View' : 'Edit';
     });
+
+    inlineEdit.addEventListener('valueChange', (event: CustomEvent) => {
+      console.log(event.detail);
+    });
   }
 
   private demo3() {
@@ -61,6 +69,10 @@ export default class InlineEditDemo implements Page {
     button.addEventListener('click', () => {
       inlineEdit.editing = !inlineEdit.editing;
       button.innerText = inlineEdit.editing ? 'View' : 'Edit';
+    });
+
+    inlineEdit.addEventListener('valueChange', (event: CustomEvent) => {
+      console.log(event.detail);
     });
   }
 
