@@ -29,7 +29,6 @@ export class NavItemComponent extends HTMLElement {
       this.node.expanded = false;
     }
   }
-  getIconFunc: (node?: TreeNode) => string;
 
   constructor() {
     super();
@@ -40,7 +39,8 @@ export class NavItemComponent extends HTMLElement {
       ['level-' + (this.node.$$level + 1)]: true,
       collapsed: !this.node.expanded,
       expanded: this.node.expanded,
-      active: this.node.isSelected
+      active: this.node.isSelected,
+      heading: this.node.hasChildren
     };
   }
 
@@ -49,14 +49,6 @@ export class NavItemComponent extends HTMLElement {
       collapsed: !this.node.expanded,
       expanded: this.node.expanded
     };
-  }
-
-  getIcon(node: TreeNode) {
-    if (this.getIconFunc) {
-      return this.getIconFunc(node);
-    } else {
-      return node.icon;
-    }
   }
 
   onClickHeader(event: MouseEvent) {
@@ -75,8 +67,8 @@ export class NavItemComponent extends HTMLElement {
   }
 
   private render() {
-    const iconClass = (this.node.icon || this.getIconFunc) ? 'nav-menu-icon ' + this.getIcon(this.node) : '';
-    let cls = 'vertical-menu-item heading';
+    const iconClass = this.node.icon ? 'nav-menu-icon ' + this.node.icon : '';
+    let cls = 'vertical-menu-item';
     Object.keys(this.classes).forEach(k => cls += (this.classes[k] === true) ? ` ${k}` : '');
 
     const template = document.createElement('template');

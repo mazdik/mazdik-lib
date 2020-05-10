@@ -10,7 +10,6 @@ export class NavMenuComponent extends HTMLElement {
     this.tree.nodes = val;
     this.render();
   }
-  getIconFunc: (node?: TreeNode) => string;
   minimize: boolean;
 
   private tree: Tree = new Tree();
@@ -96,7 +95,6 @@ export class NavMenuComponent extends HTMLElement {
     div.classList.add('nav-item');
 
     const navItem = document.createElement('web-nav-item') as NavItemComponent;
-    navItem.getIconFunc = this.getIconFunc;
     navItem.node = node;
     div.appendChild(navItem);
 
