@@ -63,9 +63,10 @@ export class NavItem {
   }
 
   onClick() {
-    this.node.setSelected();
     if (this.node.hasChildren) {
       this.node.expanded = !this.node.expanded;
+    } else {
+      this.node.setSelected();
     }
     this.updateStyles();
   }
