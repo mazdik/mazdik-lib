@@ -1,7 +1,6 @@
 import { Listener, isBlank } from '@mazdik-lib/common';
 import { TreeNode, Tree } from '@mazdik-lib/tree-lib';
-import './nav-item.component';
-import { NavItemComponent, updateExpandedStyles } from './nav-item.component';
+import { NavItem, updateExpandedStyles } from './nav-item';
 
 export class NavMenuComponent extends HTMLElement {
 
@@ -9,13 +8,14 @@ export class NavMenuComponent extends HTMLElement {
   set nodes(val: TreeNode[]) {
     this.tree.nodes = val;
     this.render();
+    this.updateStyles();
   }
   minimize: boolean;
 
   private tree: Tree = new Tree();
   private collapsed: boolean = true;
   private listeners: Listener[] = [];
-  private navItems: NavItemComponent[] = [];
+  private navItems: NavItem[] = [];
 
   constructor() {
     super();
@@ -94,10 +94,9 @@ export class NavMenuComponent extends HTMLElement {
     const div = document.createElement('div');
     div.classList.add('nav-item');
 
-    const navItem = document.createElement('web-nav-item') as NavItemComponent;
-    navItem.node = node;
-    div.appendChild(navItem);
+    const navItem = new NavItem(node);
     this.navItems.push(navItem);
+    div.appendChild(navItem.element);
 
     if (node.hasChildren) {
       const headingChildren = document.createElement('div');
@@ -115,31 +114,21 @@ export class NavMenuComponent extends HTMLElement {
 
   private onClick(event: MouseEvent) {
     const target = event.target as HTMLElement;
-    const element = target.tagName === 'WEB-NAV-ITEM' ? target : target.closest('web-nav-item') as HTMLElement;
+    const element = target.tagName === 'A' ? target : target.closest('a') as HTMLElement;
 
     if (element && !isBlank(element.dataset.id)) {
       event.stopPropagation();
-      const node = this.getNodeById(element.dataset.id);
-      this.onClickNode(node, element as NavItemComponent);
-      this.navItems.forEach(x => x.updateStyles());
+      const navItem = this.navItems.find(x => x.node.$$id.toString() === element.dataset.id);
+      navItem.onClick();
+      this.updateAllItemsStyles();
+      if (!isBlank(navItem.node.id)) {
+        this.dispatchEvent(new CustomEvent('linkClicked', { detail: navItem.node.id }));
+      }
     }
   }
 
-  private getNodeById(nodeId: string): TreeNode {
-    return this.tree.getNodeBy((node) => node.$$id.toString() === nodeId);
-  }
-
-  private onClickNode(node: TreeNode, element: NavItemComponent) {
-    node.setSelected();
-    if (node.hasChildren) {
-      node.expanded = !node.expanded;
-      const headingChildren = element.nextElementSibling as HTMLElement;
-      updateExpandedStyles(node.expanded, headingChildren);
-    }
-    if (!isBlank(node.id)) {
-      this.dispatchEvent(new CustomEvent('linkClicked', { detail: node.id }));
-    }
-    element.updateStyles();
+  updateAllItemsStyles() {
+    this.navItems.forEach(x => x.updateStyles());
   }
 
 }

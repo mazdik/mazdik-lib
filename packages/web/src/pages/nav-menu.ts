@@ -52,6 +52,10 @@ export default class NavMenuDemo implements Page {
     const navMenu2 = document.querySelector('#nav-menu2') as NavMenuComponent;
     navMenu2.minimize = true;
     navMenu2.nodes = navMenuNodes;
+
+    navMenu1.addEventListener('linkClicked', (event: CustomEvent) => {
+      console.log(event.detail);
+    });
   }
 
 }
