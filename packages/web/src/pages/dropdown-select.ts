@@ -1,29 +1,34 @@
+import { Page } from '../page';
 import '@mazdik-lib/dropdown-select';
 import { DropdownSelectComponent } from '@mazdik-lib/dropdown-select';
 import { SelectItem } from '@mazdik-lib/common';
 import html from './dropdown-select.html';
 
-export default html;
+export default class DropdownSelectDemo implements Page {
 
-export function page() {
-  const dropdownSelect1 = document.querySelector('#dropdown-select-demo1') as DropdownSelectComponent;
-  const dropdownSelect2 = document.querySelector('#dropdown-select-demo2') as DropdownSelectComponent;
+  get template(): string { return html; }
 
-  const options: SelectItem[] = [
-    {id: '1', name: 'Select 1'},
-    {id: '2', name: 'Select 2'},
-    {id: '3', name: 'Select 3'},
-    {id: '4', name: 'Select 4'},
-    {id: '5', name: 'Select 5'},
-    {id: '6', name: 'Select 6'},
-  ];
+  load() {
+    const dropdownSelect1 = document.querySelector('#dropdown-select-demo1') as DropdownSelectComponent;
+    const dropdownSelect2 = document.querySelector('#dropdown-select-demo2') as DropdownSelectComponent;
 
-  dropdownSelect1.settings = {
-    multiple: true
-  };
-  dropdownSelect1.options = options;
-  dropdownSelect1.value = ['2', '4'];
+    const options: SelectItem[] = [
+      { id: '1', name: 'Select 1' },
+      { id: '2', name: 'Select 2' },
+      { id: '3', name: 'Select 3' },
+      { id: '4', name: 'Select 4' },
+      { id: '5', name: 'Select 5' },
+      { id: '6', name: 'Select 6' },
+    ];
 
-  dropdownSelect2.options = options;
-  dropdownSelect2.value = ['3'];
+    dropdownSelect1.settings = {
+      multiple: true
+    };
+    dropdownSelect1.options = options;
+    dropdownSelect1.value = ['2', '4'];
+
+    dropdownSelect2.options = options;
+    dropdownSelect2.value = ['3'];
+  }
+
 }
