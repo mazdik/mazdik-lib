@@ -13,15 +13,14 @@ export default class NavMenuDemo implements Page {
         name: 'First menu',
         expanded: true,
         children: [
-          { id: '/crud-table-demo', name: 'Menu 1 link 1' },
-          { id: '/data-table-demo', name: 'Menu 1 link 2' },
+          { id: '/page1', name: 'Menu 1 link 1' },
+          { id: '/page2', name: 'Menu 1 link 2' },
           {
             name: 'Submenu ',
-            expanded: true,
             children: [
-              { id: '/nav-menu-demo', name: 'Submenu link 1' },
-              { id: '/data-table-demo', name: 'Submenu link 2' },
-              { id: '/tree-table-demo', name: 'Submenu link 3' },
+              { id: '/page3', name: 'Submenu link 1' },
+              { id: '/page4', name: 'Submenu link 2' },
+              { id: '/page5', name: 'Submenu link 3' },
             ]
           },
         ]
@@ -29,18 +28,18 @@ export default class NavMenuDemo implements Page {
       {
         name: 'Second menu',
         children: [
-          { id: '/crud-table-demo', name: 'Menu 2 link 1' },
-          { id: '/data-table-demo', name: 'Menu 2 link 2' },
-          { id: '/tree-table-demo', name: 'Menu 2 link 3' },
+          { id: '/page6', name: 'Menu 2 link 1' },
+          { id: '/page7', name: 'Menu 2 link 2' },
+          { id: '/page8', name: 'Menu 2 link 3' },
         ]
       },
       {
         name: 'With icons',
         icon: 'dt-icon-reload',
         children: [
-          { id: '/crud-table-demo', name: 'Menu 2 link 1', icon: 'dt-icon-shrink' },
-          { id: '/data-table-demo', name: 'Menu 2 link 2', icon: 'dt-icon-reload' },
-          { id: '/tree-table-demo', name: 'Menu 2 link 3', icon: 'dt-icon-shrink' },
+          { id: '/page9', name: 'Menu 2 link 1', icon: 'dt-icon-shrink' },
+          { id: '/page10', name: 'Menu 2 link 2', icon: 'dt-icon-reload' },
+          { id: '/page11', name: 'Menu 2 link 3', icon: 'dt-icon-shrink' },
         ]
       }
     ];
@@ -56,6 +55,8 @@ export default class NavMenuDemo implements Page {
     navMenu1.addEventListener('linkClicked', (event: CustomEvent) => {
       console.log(event.detail);
     });
+
+    navMenu1.ensureVisible('/page4');
   }
 
 }

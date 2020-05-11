@@ -122,13 +122,22 @@ export class NavMenuComponent extends HTMLElement {
       navItem.onClick();
       this.updateAllItemsStyles();
       if (!isBlank(navItem.node.id)) {
-        this.dispatchEvent(new CustomEvent('linkClicked', { detail: navItem.node.id }));
+        this.dispatchEvent(new CustomEvent('linkClicked', { detail: navItem.node }));
       }
     }
   }
 
   updateAllItemsStyles() {
     this.navItems.forEach(x => x.updateStyles());
+  }
+
+  ensureVisible(id: string) {
+    const node = this.tree.getNodeById(id);
+    if (node) {
+      node.ensureVisible();
+      node.setSelected();
+    }
+    this.updateAllItemsStyles();
   }
 
 }
