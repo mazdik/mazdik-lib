@@ -1,7 +1,7 @@
-import { Listener } from '@mazdik-lib/common';
+import { Listener, isBlank } from '@mazdik-lib/common';
 import { TreeNode, Tree } from '@mazdik-lib/tree-lib';
 import './nav-item.component';
-import { NavItemComponent } from './nav-item.component';
+import { NavItemComponent, updateExpandedStyles } from './nav-item.component';
 
 export class NavMenuComponent extends HTMLElement {
 
@@ -38,6 +38,11 @@ export class NavMenuComponent extends HTMLElement {
         target: this,
         handler: this.onMouseLeave.bind(this)
       },
+      {
+        eventName: 'click',
+        target: this,
+        handler: this.onClick.bind(this)
+      }
     ];
 
     this.listeners.forEach(x => {
@@ -97,16 +102,47 @@ export class NavMenuComponent extends HTMLElement {
     div.appendChild(navItem);
 
     if (node.hasChildren) {
-      const childDiv = document.createElement('div');
-      childDiv.classList.add('heading-children');
-      div.appendChild(childDiv);
+      const headingChildren = document.createElement('div');
+      headingChildren.classList.add('heading-children');
+      div.appendChild(headingChildren);
+      updateExpandedStyles(node.expanded, headingChildren);
 
       node.children.forEach(childNode => {
         const dom = this.createTreeDom(childNode);
-        childDiv.appendChild(dom);
+        headingChildren.appendChild(dom);
       });
     }
     return div;
+  }
+
+  private onClick(event: MouseEvent) {
+    const target = event.target as HTMLElement;
+    const element = target.tagName === 'WEB-NAV-ITEM' ? target : target.closest('web-nav-item') as HTMLElement;
+
+    if (element && !isBlank(element.dataset.id)) {
+      event.stopPropagation();
+      const node = this.getNodeById(element.dataset.id);
+      console.log(node);
+      this.onClickNode(node, element as NavItemComponent);
+    }
+  }
+
+  private getNodeById(nodeId: string): TreeNode {
+    return this.tree.getNodeBy((node) => node.$$id.toString() === nodeId);
+  }
+
+  private onClickNode(node: TreeNode, element: NavItemComponent) {
+    node.setSelected();
+    if (node.hasChildren) {
+      node.expanded = !node.expanded;
+      const headingChildren = element.nextElementSibling as HTMLElement;
+      updateExpandedStyles(node.expanded, headingChildren);
+      this.dispatchEvent(new CustomEvent('expand', { detail: node }));
+    }
+    if (!isBlank(node.id)) {
+      this.dispatchEvent(new CustomEvent('linkClicked', { detail: node.id }));
+    }
+    element.updateStyles();
   }
 
 }
