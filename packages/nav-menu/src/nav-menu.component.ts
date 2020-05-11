@@ -13,7 +13,6 @@ export class NavMenuComponent extends HTMLElement {
   minimize: boolean;
 
   private tree: Tree = new Tree();
-  private expandedNode: TreeNode;
   private collapsed: boolean = true;
   private listeners: Listener[] = [];
 
@@ -84,7 +83,6 @@ export class NavMenuComponent extends HTMLElement {
     const fragment = document.createDocumentFragment();
     this.nodes.forEach(node => {
       const element = this.createTreeDom(node);
-      console.log(element);
       fragment.appendChild(element);
     });
     this.appendChild(fragment);
