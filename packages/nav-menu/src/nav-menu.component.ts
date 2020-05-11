@@ -15,6 +15,7 @@ export class NavMenuComponent extends HTMLElement {
   private tree: Tree = new Tree();
   private collapsed: boolean = true;
   private listeners: Listener[] = [];
+  private navItems: NavItemComponent[] = [];
 
   constructor() {
     super();
@@ -54,10 +55,6 @@ export class NavMenuComponent extends HTMLElement {
     this.listeners.forEach(x => {
       x.target.removeEventListener(x.eventName, x.handler);
     });
-  }
-
-  private onLinkClicked(event) {
-    this.dispatchEvent(new CustomEvent('linkClicked', { detail: event }));
   }
 
   private updateStyles() {
@@ -100,6 +97,7 @@ export class NavMenuComponent extends HTMLElement {
     const navItem = document.createElement('web-nav-item') as NavItemComponent;
     navItem.node = node;
     div.appendChild(navItem);
+    this.navItems.push(navItem);
 
     if (node.hasChildren) {
       const headingChildren = document.createElement('div');
@@ -122,8 +120,8 @@ export class NavMenuComponent extends HTMLElement {
     if (element && !isBlank(element.dataset.id)) {
       event.stopPropagation();
       const node = this.getNodeById(element.dataset.id);
-      console.log(node);
       this.onClickNode(node, element as NavItemComponent);
+      this.navItems.forEach(x => x.updateStyles());
     }
   }
 
@@ -137,7 +135,6 @@ export class NavMenuComponent extends HTMLElement {
       node.expanded = !node.expanded;
       const headingChildren = element.nextElementSibling as HTMLElement;
       updateExpandedStyles(node.expanded, headingChildren);
-      this.dispatchEvent(new CustomEvent('expand', { detail: node }));
     }
     if (!isBlank(node.id)) {
       this.dispatchEvent(new CustomEvent('linkClicked', { detail: node.id }));
