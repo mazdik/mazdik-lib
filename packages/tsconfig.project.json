@@ -29,6 +29,9 @@
       "path": "./nav-menu/tsconfig.package.json"
     },
     {
+      "path": "./notify/tsconfig.package.json"
+    },
+    {
       "path": "./resizable/tsconfig.package.json"
     },
     {
