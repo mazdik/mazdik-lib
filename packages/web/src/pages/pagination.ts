@@ -12,7 +12,6 @@ export default class PaginationDemo implements Page {
     component.totalItems = 100;
     component.perPage = 10;
     component.currentPage = 1;
-    component.currentPage = 1;
     component.pageSizeOptions = [10, 20, 30, 50];
 
     component.addEventListener('pageChanged', (event: CustomEvent) => {

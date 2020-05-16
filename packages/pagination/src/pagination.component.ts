@@ -1,4 +1,4 @@
-import { Listener, isBlank } from '@mazdik-lib/common';
+import { Listener, isBlank, toggleClass } from '@mazdik-lib/common';
 import { PageEvent } from './types';
 import { Pagination } from './pagination';
 
@@ -107,6 +107,7 @@ export class PaginationComponent extends HTMLElement {
 
     this.select = document.createElement('select');
     this.select.classList.add('pagination-page-size-select');
+    this.select.style.display = 'none';
     this.pageSize.append(this.select);
 
     this.rangeLabel = document.createElement('div');
@@ -122,6 +123,9 @@ export class PaginationComponent extends HTMLElement {
 
   private renderPages() {
     const elements = [];
+    elements.push(this.createActionLink('first', '&laquo;'));
+    elements.push(this.createActionLink('prev', '&lsaquo;'));
+
     this.pages.forEach(page => {
       const a = document.createElement('a');
       a.dataset.id = page.toString();
@@ -129,6 +133,10 @@ export class PaginationComponent extends HTMLElement {
       a.href = '';
       elements.push(a);
     });
+
+    elements.push(this.createActionLink('next', '&rsaquo;'));
+    elements.push(this.createActionLink('last', '&raquo;'));
+
     this.navigation.innerHTML = '';
     this.navigation.append(...elements);
 
@@ -137,7 +145,16 @@ export class PaginationComponent extends HTMLElement {
     this.setRangeLabel();
   }
 
+  private createActionLink(action: string, label: string): HTMLAnchorElement {
+    const a = document.createElement('a');
+    a.dataset.action = action;
+    a.innerHTML = label;
+    a.href = '';
+    return a;
+  }
+
   private loadSelect() {
+    this.select.style.display = 'block';
     this.select.innerHTML = '';
     this.pageSizeOptions.forEach(x => {
       const value = x.toString();
@@ -156,22 +173,34 @@ export class PaginationComponent extends HTMLElement {
   private onClick(event: MouseEvent) {
     const target = event.target as HTMLElement;
     const element = target.tagName === 'A' ? target : target.closest('a') as HTMLElement;
-
-    if (element && !isBlank(element.dataset.id)) {
-      event.stopPropagation();
-      event.preventDefault();
-      element.blur();
+    if (!element) {
+      return;
+    }
+    event.stopPropagation();
+    event.preventDefault();
+    element.blur();
+    if (!isBlank(element.dataset.id)) {
       const page = parseInt(element.dataset.id, 10);
       this.setPage(page);
+    } else if (element.dataset.action === 'first') {
+      this.setPage(1);
+    } else if (element.dataset.action === 'prev') {
+      this.setPage(this.currentPage - 1);
+    } else if (element.dataset.action === 'next') {
+      this.setPage(this.currentPage + 1);
+    } else if (element.dataset.action === 'last') {
+      this.setPage(this.totalPages);
     }
   }
 
   private updateStyles() {
     this.pageElements.forEach(element => {
-      if (this.currentPage.toString() === element.dataset.id) {
-        element.classList.add('active');
-      } else {
-        element.classList.remove('active');
+      toggleClass(element, 'active', this.currentPage.toString() === element.dataset.id);
+      if (element.dataset.action === 'first' || element.dataset.action === 'prev') {
+        toggleClass(element, 'disabled', this.currentPage === 1);
+      }
+      if (element.dataset.action === 'next' || element.dataset.action === 'last') {
+        toggleClass(element, 'disabled', this.currentPage === this.totalPages);
       }
     });
   }

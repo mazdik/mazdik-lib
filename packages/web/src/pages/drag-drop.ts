@@ -47,15 +47,15 @@ export default class DragDropDemo implements Page {
 
       items.forEach(option => {
         const issue = document.createElement('div');
-        issue.className = 'dd-issue';
+        issue.classList.add('dd-issue');
 
         const title = document.createElement('div');
-        title.className = 'dd-title';
+        title.classList.add('dd-title');
         title.textContent = option.name;
         issue.append(title);
 
         const text = document.createElement('div');
-        text.className = 'dd-text';
+        text.classList.add('dd-text');
         text.textContent = option.text;
         issue.append(text);
 
@@ -71,7 +71,7 @@ export default class DragDropDemo implements Page {
 
       data.forEach(item => {
         const column = document.createElement('div');
-        column.className = 'dd-column';
+        column.classList.add('dd-column');
         const issues = createIssues(item);
         column.append(...issues);
 
