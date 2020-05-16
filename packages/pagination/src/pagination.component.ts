@@ -1,106 +1,97 @@
-import { Listener } from '@mazdik-lib/common';
+import { Listener, isBlank } from '@mazdik-lib/common';
 import { PageEvent } from './types';
+import { Pagination } from './pagination';
 
 export class PaginationComponent extends HTMLElement {
 
   get perPage(): number { return this._perPage; }
   set perPage(value: number) {
     this._perPage = value;
-    this.pages = this.getPages();
+    this.totalPages = Pagination.getTotalPages(this.totalItems, this.perPage);
+    this.pages = Pagination.getPages(this.currentPage, this.totalPages);
+    this.renderPages();
+    this.setSelectedIndex();
   }
   private _perPage: number = 10;
 
   get totalItems(): number { return this._totalItems; }
   set totalItems(value: number) {
     this._totalItems = value;
-    this.pages = this.getPages();
+    this.totalPages = Pagination.getTotalPages(this.totalItems, this.perPage);
+    this.pages = Pagination.getPages(this.currentPage, this.totalPages);
+    this.renderPages();
   }
   private _totalItems: number = 0;
 
   get currentPage(): number { return this._currentPage; }
   set currentPage(value: number) {
-    const _previous = this._currentPage;
-    this._currentPage = (value > this.totalPages()) ? this.totalPages() : (value || 1);
-
-    if (_previous === this._currentPage || typeof _previous === 'undefined') {
-      return;
-    }
-    this.pages = this.getPages();
+    this._currentPage = (value > this.totalPages) ? this.totalPages : (value || 1);
+    this.pages = Pagination.getPages(this.currentPage, this.totalPages);
+    this.renderPages();
   }
   private _currentPage: number = 1;
 
   get pageSizeOptions(): number[] { return this._pageSizeOptions; }
   set pageSizeOptions(value: number[]) {
     this._pageSizeOptions = (value || []).sort((a, b) => a - b);
+    this.loadSelect();
   }
   private _pageSizeOptions: number[] = [];
 
+  private totalPages: number;
   private pages: number[];
+  private listeners: Listener[] = [];
+  private select: HTMLSelectElement;
+  private pageSize: HTMLElement;
+  private rangeLabel: HTMLElement;
+  private navigation: HTMLElement;
+  private pageElements: HTMLElement[] = [];
 
   constructor() {
     super();
     this.classList.add('pagination');
     this.render();
+    this.addEventListeners();
   }
 
-  setPage(page: number, event?: MouseEvent): void {
-    if (event) {
-      event.preventDefault();
-    }
+  disconnectedCallback() {
+    this.removeEventListeners();
+  }
 
-    if (event && event.target) {
-      const target: any = event.target;
-      target.blur();
-    }
-    if (page > 0 && page <= this.totalPages() && page !== this.currentPage) {
+  private addEventListeners() {
+    this.listeners = [
+      {
+        eventName: 'change',
+        target: this.select,
+        handler: this.onChangePageSize.bind(this)
+      },
+      {
+        eventName: 'click',
+        target: this.navigation,
+        handler: this.onClick.bind(this)
+      },
+    ];
+
+    this.listeners.forEach(x => {
+      x.target.addEventListener(x.eventName, x.handler);
+    })
+  }
+
+  private removeEventListeners() {
+    this.listeners.forEach(x => {
+      x.target.removeEventListener(x.eventName, x.handler);
+    });
+  }
+
+  private setPage(page: number): void {
+    if (page > 0 && page <= this.totalPages && page !== this.currentPage) {
       this.currentPage = page;
       this.emitEvent();
     }
   }
 
-  totalPages(): number {
-    const totalPages = this.perPage < 1 ? 1 : Math.ceil(this.totalItems / this.perPage);
-    return Math.max(totalPages || 0, 1);
-  }
-
-  getPages(): number[] {
-    const maxSize = 3;
-    const pages: number[] = [];
-    let startPage = 1;
-    const totalPages = this.totalPages();
-    let endPage = totalPages;
-
-    if (maxSize < totalPages) {
-      startPage = Math.max(this.currentPage - Math.floor(maxSize / 2), 1);
-      endPage = startPage + maxSize - 1;
-
-      if (endPage > totalPages) {
-        endPage = totalPages;
-        startPage = endPage - maxSize + 1;
-      }
-    }
-    for (let num = startPage; num <= endPage; num++) {
-      pages.push(num);
-    }
-    return pages;
-  }
-
-  getRangeLabel = (page: number, pageSize: number, length: number) => {
-    if (length === 0 || pageSize === 0) { return `0 of ${length}`; }
-
-    length = Math.max(length, 0);
-
-    const startIndex = (page - 1) * pageSize;
-
-    const endIndex = startIndex < length ?
-      Math.min(startIndex + pageSize, length) :
-      startIndex + pageSize;
-
-    return `${startIndex + 1} - ${endIndex} of ${length}`;
-  }
-
-  onChangePageSize(pageSize: number) {
-    this.perPage = pageSize;
+  private onChangePageSize(event: any) {
+    this.perPage = parseInt(event.target.value, 10);
     this.currentPage = this._currentPage;
     this.emitEvent();
   }
@@ -111,22 +102,82 @@ export class PaginationComponent extends HTMLElement {
   }
 
   private render() {
-    const pageSize = document.createElement('div');
-    pageSize.classList.add('pagination-page-size');
+    this.pageSize = document.createElement('div');
+    this.pageSize.classList.add('pagination-page-size');
 
-    const select = document.createElement('select');
-    select.classList.add('pagination-page-size-select');
-    pageSize.append(select);
+    this.select = document.createElement('select');
+    this.select.classList.add('pagination-page-size-select');
+    this.pageSize.append(this.select);
 
-    const rangeLabel = document.createElement('div');
-    rangeLabel.classList.add('pagination-range-label');
+    this.rangeLabel = document.createElement('div');
+    this.rangeLabel.classList.add('pagination-range-label');
 
-    const navigation = document.createElement('div');
-    navigation.classList.add('pagination-navigation');
+    this.navigation = document.createElement('div');
+    this.navigation.classList.add('pagination-navigation');
 
-    this.append(pageSize);
-    this.append(rangeLabel);
-    this.append(navigation);
+    this.append(this.pageSize);
+    this.append(this.rangeLabel);
+    this.append(this.navigation);
+  }
+
+  private renderPages() {
+    const elements = [];
+    this.pages.forEach(page => {
+      const a = document.createElement('a');
+      a.dataset.id = page.toString();
+      a.textContent = page.toString();
+      a.href = '';
+      elements.push(a);
+    });
+    this.navigation.innerHTML = '';
+    this.navigation.append(...elements);
+
+    this.pageElements = elements;
+    this.updateStyles();
+    this.setRangeLabel();
+  }
+
+  private loadSelect() {
+    this.select.innerHTML = '';
+    this.pageSizeOptions.forEach(x => {
+      const value = x.toString();
+      this.select.options.add(new Option(value, value));
+    });
+    this.setSelectedIndex();
+  }
+
+  private setSelectedIndex() {
+    if (this.pageSizeOptions && this.pageSizeOptions.length) {
+      const index = this.pageSizeOptions.findIndex(x => x === this.perPage);
+      this.select.selectedIndex = index;
+    }
+  }
+
+  private onClick(event: MouseEvent) {
+    const target = event.target as HTMLElement;
+    const element = target.tagName === 'A' ? target : target.closest('a') as HTMLElement;
+
+    if (element && !isBlank(element.dataset.id)) {
+      event.stopPropagation();
+      event.preventDefault();
+      element.blur();
+      const page = parseInt(element.dataset.id, 10);
+      this.setPage(page);
+    }
+  }
+
+  private updateStyles() {
+    this.pageElements.forEach(element => {
+      if (this.currentPage.toString() === element.dataset.id) {
+        element.classList.add('active');
+      } else {
+        element.classList.remove('active');
+      }
+    });
+  }
+
+  private setRangeLabel() {
+    this.rangeLabel.textContent = Pagination.getRangeLabel(this.currentPage, this.perPage, this.totalItems);
   }
 
 }

@@ -184,8 +184,9 @@ export class InlineEditComponent extends HTMLElement {
 
   private setSelectedIndex() {
     if (this.options && this.options.length) {
-      const index = this.options.findIndex(x => x.id === this.value.toString()) || -2;
-      this.select.selectedIndex = index + 1;
+      let index = this.options.findIndex(x => x.id === this.value.toString());
+      index = (index >= 0) ? index + 1 : index; // + 1 selectPlaceholder
+      this.select.selectedIndex = index;
     }
   }
 
