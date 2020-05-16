@@ -75,6 +75,7 @@ class App {
           { id: 'nav-menu', name: 'Navigation menu' },
           { id: 'notify', name: 'Notify' },
           { id: 'tabs', name: 'Tabs' },
+          { id: 'pagination', name: 'Pagination' },
         ]
       },
     ];

@@ -32,6 +32,9 @@
       "path": "./notify/tsconfig.package.json"
     },
     {
+      "path": "./pagination/tsconfig.package.json"
+    },
+    {
       "path": "./resizable/tsconfig.package.json"
     },
     {
