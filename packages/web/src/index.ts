@@ -73,6 +73,9 @@ class App {
           { id: 'dropdown', name: 'Dropdown' },
           { id: 'inline-edit', name: 'Inline edit' },
           { id: 'nav-menu', name: 'Navigation menu' },
+          { id: 'notify', name: 'Notify' },
+          { id: 'tabs', name: 'Tabs' },
+          { id: 'pagination', name: 'Pagination' },
         ]
       },
     ];

@@ -24,7 +24,10 @@
     "@mazdik-lib/inline-edit": "0.1.0",
     "@mazdik-lib/modal": "0.1.0",
     "@mazdik-lib/nav-menu": "0.1.0",
+    "@mazdik-lib/notify": "0.1.0",
+    "@mazdik-lib/pagination": "0.1.0",
     "@mazdik-lib/resizable": "0.1.0",
-    "@mazdik-lib/select-list": "0.1.0"
+    "@mazdik-lib/select-list": "0.1.0",
+    "@mazdik-lib/tabs": "0.1.0"
   }
 }

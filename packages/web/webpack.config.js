@@ -1,14 +1,16 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const isProduction = process.env.NODE_ENV == 'production';
 
 module.exports = {
-  mode: 'production',
+  mode: isProduction ? 'production' : 'development',
   entry: './src/index.ts',
-  devtool: 'inline-source-map',
+  devtool: isProduction ? 'none' : 'cheap-module-source-map',
   output: {
     path: path.resolve(__dirname, 'lib'),
-    filename: 'bundle.js'
+    filename: isProduction ? '[name].[hash].bundle.js' : '[name].bundle.js'
   },
   resolve: {
     extensions: ['.ts', '.js']
@@ -31,6 +33,7 @@ module.exports = {
     ]
   },
   plugins: [
+    new CleanWebpackPlugin(),
     new HtmlWebpackPlugin({
         template: './src/index.html'
     }),

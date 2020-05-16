@@ -138,7 +138,7 @@ export class Resizable {
 
   private createHandle(edgeClass: string) {
     const node = document.createElement('span');
-    node.className = edgeClass;
+    node.classList.add(edgeClass);
     this.element.appendChild(node);
   }
 

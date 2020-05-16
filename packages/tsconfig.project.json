@@ -29,10 +29,19 @@
       "path": "./nav-menu/tsconfig.package.json"
     },
     {
+      "path": "./notify/tsconfig.package.json"
+    },
+    {
+      "path": "./pagination/tsconfig.package.json"
+    },
+    {
       "path": "./resizable/tsconfig.package.json"
     },
     {
       "path": "./select-list/tsconfig.package.json"
+    },
+    {
+      "path": "./tabs/tsconfig.package.json"
     },
     {
       "path": "./tree-lib/tsconfig.package.json"

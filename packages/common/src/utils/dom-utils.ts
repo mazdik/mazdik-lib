@@ -42,3 +42,11 @@ export function supportsStickyPosition(): boolean {
     CSS.supports('position', '-webkit-sticky')
   );
 }
+
+export function toggleClass(element: HTMLElement, className: string, state: boolean) {
+  if (state) {
+    element.classList.add(className);
+  } else {
+    element.classList.remove(className);
+  }
+}
