@@ -74,6 +74,7 @@ class App {
           { id: 'inline-edit', name: 'Inline edit' },
           { id: 'nav-menu', name: 'Navigation menu' },
           { id: 'notify', name: 'Notify' },
+          { id: 'tabs', name: 'Tabs' },
         ]
       },
     ];

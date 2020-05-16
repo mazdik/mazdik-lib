@@ -38,6 +38,9 @@
       "path": "./select-list/tsconfig.package.json"
     },
     {
+      "path": "./tabs/tsconfig.package.json"
+    },
+    {
       "path": "./tree-lib/tsconfig.package.json"
     }
   ]
