@@ -37,7 +37,10 @@ module.exports = {
     new HtmlWebpackPlugin({
         template: './src/index.html'
     }),
-    new MiniCssExtractPlugin()
+    new MiniCssExtractPlugin({
+      filename: isProduction ? '[name].[hash].css' : '[name].css' ,
+      chunkFilename: isProduction ? '[id].[hash].css' : '[id].css',
+    })
   ],
   performance: {
     maxEntrypointSize: 1512000,
