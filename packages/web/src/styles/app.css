@@ -125,7 +125,7 @@
 .dual-list-box-demo {min-width: 25rem; max-width: 37.5rem}
 
 /* ScrollerDemoComponent */
-.scroller-demo .sc-row {height: 2.5rem;}
+.scroller-demo .dt-scrollable-content > div {height: 2.5rem;}
 .scroller-demo.dt-scroller {width: 12.5rem;}
 
 /* SelectListDemoComponent */

@@ -76,6 +76,7 @@ class App {
           { id: 'notify', name: 'Notify' },
           { id: 'tabs', name: 'Tabs' },
           { id: 'pagination', name: 'Pagination' },
+          { id: 'scroller', name: 'Virtual scroller' },
         ]
       },
     ];

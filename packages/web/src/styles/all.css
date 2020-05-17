@@ -20,8 +20,8 @@
 @import '../ng-data-table/components//data-table/data-table.component.css'; */
 @import '../../../notify/src/notify.component.css';
 @import '../../../pagination/src/pagination.component.css';
-/*@import '../row-view/row-view.component.css';
-@import '../scroller/scroller.component.css';
-@import '../tree-view/tree-view.component.css'; */
+/*@import '../row-view/row-view.component.css'; */
+@import '../../../scroller/src/scroller.component.css';
+/*@import '../tree-view/tree-view.component.css'; */
 @import '../../../tabs/src/tabs.component.css';
 @import '../../../nav-menu/src/nav-menu.component.css';
