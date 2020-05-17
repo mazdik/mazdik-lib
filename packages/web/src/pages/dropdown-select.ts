@@ -1,12 +1,16 @@
 import { Page } from '../page';
 import '@mazdik-lib/dropdown-select';
 import { DropdownSelectComponent } from '@mazdik-lib/dropdown-select';
-import { SelectItem } from '@mazdik-lib/common';
-import html from './dropdown-select.html';
+import { SelectItem } from '@mazdik-lib/common';;
 
 export default class DropdownSelectDemo implements Page {
 
-  get template(): string { return html; }
+  get template(): string {
+    return `<div class="dropdown-select-demo">
+    <web-dropdown-select class="sl-column" id="dropdown-select-demo1"></web-dropdown-select>
+    <web-dropdown-select class="sl-column" id="dropdown-select-demo2"></web-dropdown-select>
+  </div>`;
+  }
 
   load() {
     const dropdownSelect1 = document.querySelector('#dropdown-select-demo1') as DropdownSelectComponent;

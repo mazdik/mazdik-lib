@@ -1,11 +1,12 @@
 import { Page } from '../page';
 import '@mazdik-lib/scroller';
 import { ScrollerComponent } from '@mazdik-lib/scroller';
-import html from './scroller.html';
 
 export default class ScrollerDemo implements Page {
 
-  get template(): string { return html; }
+  get template(): string {
+    return `<web-scroller class="scroller-demo"></web-scroller>`;
+  }
 
   load() {
     const items = Array.from({length: 5000}).map((x, i) => {

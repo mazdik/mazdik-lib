@@ -2,11 +2,15 @@ import { Page } from '../page';
 import '@mazdik-lib/select-list';
 import { SelectListComponent } from '@mazdik-lib/select-list';
 import { SelectItem } from '@mazdik-lib/common';
-import html from './select-list.html';
 
 export default class SelectListDemo implements Page {
 
-  get template(): string { return html; }
+  get template(): string {
+    return `<div class="select-list-demo">
+    <web-select-list class="sl-column" id="select-list-demo1"></web-select-list>
+    <web-select-list class="sl-column" id="select-list-demo2"></web-select-list>
+  </div>`;
+  }
 
   load() {
     const selectList1 = document.querySelector('#select-list-demo1') as SelectListComponent;

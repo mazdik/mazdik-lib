@@ -1,10 +1,14 @@
 import { Page } from '../page';
-import html from './draggable.html';
 import { Draggable } from '@mazdik-lib/draggable';
 
 export default class DraggableDemo implements Page {
 
-  get template(): string { return html; }
+  get template(): string {
+    return `<div class="draggable-directive-demo">
+    <div class="dd-box box1" id="box1"></div>
+    <div class="dd-box box2" id="box2"></div>
+  </div>`;
+  }
 
   private draggableElements: Draggable[] = [];
 
