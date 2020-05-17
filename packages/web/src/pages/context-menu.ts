@@ -1,4 +1,4 @@
-import { Page } from '../page';;
+import { Page } from '../page';
 import '@mazdik-lib/context-menu';
 import { ContextMenuComponent, MenuEventArgs } from '@mazdik-lib/context-menu';
 import { MenuItem } from '@mazdik-lib/common';

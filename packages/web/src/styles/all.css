@@ -11,8 +11,8 @@
 @import 'resizable.css';
 @import 'spinners.css';
 @import '../../../dropdown-select/src/dropdown-select.component.css';
-/*@import '../dt-toolbar/dt-toolbar.component.css';
-@import '../dual-list-box/dual-list-box.component.css';*/
+/*@import '../dt-toolbar/dt-toolbar.component.css'; */
+@import '../../../dual-list-box/src/dual-list-box.component.css';
 @import '../../../inline-edit/src/inline-edit.component.css';
 @import '../../../modal/src/modal.component.css';
 /* @import '../modal-select/modal-select.component.css';

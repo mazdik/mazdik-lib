@@ -21,6 +21,7 @@
     "@mazdik-lib/draggable": "0.1.0",
     "@mazdik-lib/dropdown": "0.1.0",
     "@mazdik-lib/dropdown-select": "0.1.0",
+    "@mazdik-lib/dual-list-box": "0.1.0",
     "@mazdik-lib/inline-edit": "0.1.0",
     "@mazdik-lib/modal": "0.1.0",
     "@mazdik-lib/nav-menu": "0.1.0",
