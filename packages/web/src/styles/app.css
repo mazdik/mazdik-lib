@@ -200,3 +200,5 @@
 .nav-menu-demo1 .vertical-menu-item, .nav-menu-demo2 .vertical-menu-item  { display: flex; }
 .nav-menu-demo1 .nav-menu-icon, .nav-menu-demo2 .nav-menu-icon { padding-right: 1.4rem; }
 
+/* RowViewDemoComponent */
+.row-view-demo { display: block; width: 30rem; }

@@ -77,6 +77,7 @@ class App {
           { id: 'tabs', name: 'Tabs' },
           { id: 'pagination', name: 'Pagination' },
           { id: 'scroller', name: 'Virtual scroller' },
+          { id: 'row-view', name: 'Row view' },
         ]
       },
     ];

@@ -38,6 +38,9 @@
       "path": "./resizable/tsconfig.package.json"
     },
     {
+      "path": "./row-view/tsconfig.package.json"
+    },
+    {
       "path": "./scroller/tsconfig.package.json"
     },
     {

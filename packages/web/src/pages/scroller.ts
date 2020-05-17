@@ -3,7 +3,7 @@ import '@mazdik-lib/scroller';
 import { ScrollerComponent } from '@mazdik-lib/scroller';
 import html from './scroller.html';
 
-export default class SelectListDemo implements Page {
+export default class ScrollerDemo implements Page {
 
   get template(): string { return html; }
 

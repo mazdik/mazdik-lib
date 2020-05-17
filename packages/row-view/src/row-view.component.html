@@ -1,0 +1,24 @@
+<table class="dt-detail-view">
+  <tbody>
+  <tr>
+    <th>№</th>
+    <th class="sortable"
+        (click)="setOrder('key')">
+      {{headerKeyMessage}}
+      <span [hidden]="!isOrderReverse('key')">▼</span>
+      <span [hidden]="!isOrder('key')">▲</span>
+    </th>
+    <th class="sortable"
+        (click)="setOrder('value')">
+      {{headerValueMessage}}
+      <span [hidden]="!isOrderReverse('value')">▼</span>
+      <span [hidden]="!isOrder('value')">▲</span>
+    </th>
+  </tr>
+  <tr *ngFor="let data of viewData; index as i">
+    <td>{{i+1}}</td>
+    <td>{{data.key}}</td>
+    <td>{{data.value}}</td>
+  </tr>
+  </tbody>
+</table>
