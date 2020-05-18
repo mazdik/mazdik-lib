@@ -7,31 +7,11 @@ export class DragDrop {
   private source: HTMLElement;
   private droppables: Droppable[] = [];
   private listeners: Listener[] = [];
+  private draggableElements: HTMLElement[] = [];
 
   constructor(droppableElements: HTMLElement[], draggableElements: HTMLElement[]) {
-    droppableElements.forEach(element => {
-      this.droppables.push(new Droppable(element));
-      this.listeners.push({
-        eventName: 'dropElement',
-        target: element,
-        handler: (event: CustomEvent<DropElementEvent>) => {
-          this.onDrop(event.detail, element);
-        }
-      });
-    });
-    draggableElements.forEach((element, i) => {
-      element.dataset.index = i.toString();
-      element.draggable = true;
-      this.listeners.push({
-        eventName: 'dragstart',
-        target: element,
-        handler: this.onDragStart.bind(this)
-      });
-    });
-
-    this.listeners.forEach(x => {
-      x.target.addEventListener(x.eventName, x.handler);
-    })
+    this.registerDroppableElements(droppableElements);
+    this.registerDraggableElements(draggableElements);
   }
 
   destroy() {
@@ -41,6 +21,45 @@ export class DragDrop {
     });
   }
 
+  registerDroppableElements(droppableElements: HTMLElement[]) {
+    const listeners: Listener[] = [];
+
+    droppableElements.forEach(element => {
+      this.droppables.push(new Droppable(element));
+      listeners.push({
+        eventName: 'dropElement',
+        target: element,
+        handler: (event: CustomEvent<DropElementEvent>) => {
+          this.onDrop(event.detail, element);
+        }
+      });
+    });
+    listeners.forEach(x => {
+      x.target.addEventListener(x.eventName, x.handler);
+    });
+    this.listeners = [...this.listeners, ...listeners];
+  }
+
+  registerDraggableElements(draggableElements: HTMLElement[]) {
+    const listeners: Listener[] = [];
+
+    draggableElements.forEach(element => {
+      element.draggable = true;
+      listeners.push({
+        eventName: 'dragstart',
+        target: element,
+        handler: this.onDragStart.bind(this)
+      });
+      this.draggableElements.push(element);
+    });
+    this.draggableElements.forEach((x, i) => x.dataset.index = i.toString());
+
+    listeners.forEach(x => {
+      x.target.addEventListener(x.eventName, x.handler);
+    });
+    this.listeners = [...this.listeners, ...listeners];
+  }
+
   private removeEventListeners() {
     this.listeners.forEach(x => {
       x.target.removeEventListener(x.eventName, x.handler);
@@ -48,7 +67,8 @@ export class DragDrop {
   }
 
   private onDragStart(event: DragEvent) {
-    const index = (event.target as HTMLElement).dataset.index;
+    const element = event.target as HTMLElement;
+    const index = element.dataset.index;
     event.dataTransfer.setData('text', index);
     event.dataTransfer.effectAllowed = 'move';
     const dragElementEvent: DragElementEvent = { event, index: parseInt(index, 10) };
@@ -72,6 +92,7 @@ export class DragDrop {
       this.source.append(...sourceChildrens);
       target.append(...targetChildrens);
     }
+    target.dispatchEvent(new CustomEvent('droppableElementChange'));
   }
 
 }

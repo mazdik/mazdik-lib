@@ -1,20 +1,11 @@
 import { SelectItem, isBlank, arrayMove, arrayTransfer, Listener, toggleClass } from '@mazdik-lib/common';
-import { DragElementEvent, DropElementEvent } from '@mazdik-lib/drag-drop';
+import { DragDrop } from '@mazdik-lib/drag-drop';
 
 function getTemplate(id: string) {
   return `
 <div class="dt-listbox-panel">
   <label></label>
-  <div class="dt-list-menu" id="sourceList${id}" appDroppable [dragElementEvent]="dragElementEvent" (dropElement)="onDropSource($event)">
-    <div class="dt-list-menu-item"
-        *ngFor="let option of source; index as i"
-        (click)="sourceModel = option.id"
-        [ngClass]="{'active': sourceModel === option.id}"
-        [draggable]="true"
-        (dragstart)="onDragStart($event, i); sourceModel = option.id">
-        {{option.name}}
-    </div>
-  </div>
+  <div class="dt-list-menu" id="sourceList${id}"></div>
 </div>
 <div class="dt-listbox-panel">
   <button class="dt-button" id="moveRightAllButton${id}" title="move all to the right">
@@ -32,16 +23,7 @@ function getTemplate(id: string) {
 </div>
 <div class="dt-listbox-panel">
   <label></label>
-  <div class="dt-list-menu" id="targetList${id}" appDroppable [dragElementEvent]="dragElementEvent" (dropElement)="onDropTarget($event)">
-    <div class="dt-list-menu-item"
-        *ngFor="let option of target; index as i"
-        (click)="targetModel = option.id"
-        [ngClass]="{'active': targetModel === option.id}"
-        [draggable]="true"
-        (dragstart)="onDragStart($event, i); targetModel = option.id">
-        {{option.name}}
-    </div>
-  </div>
+  <div class="dt-list-menu" id="targetList${id}"></div>
 </div>
 <div class="dt-listbox-panel">
   <button class="dt-button" id="moveTopButton${id}" title="move top">
@@ -75,6 +57,7 @@ export class DualListBoxComponent extends HTMLElement {
     this.filterSource();
     this.sourceElements = this.createListContent(value);
     this.renderSourceList();
+    this.dragDrop.registerDraggableElements(this.sourceElements);
   }
   private _source: SelectItem[];
 
@@ -84,12 +67,13 @@ export class DualListBoxComponent extends HTMLElement {
     this.filterSource();
     this.targetElements = this.createListContent(value);
     this.renderTargetList();
+    this.dragDrop.registerDraggableElements(this.targetElements);
   }
   private _target: SelectItem[];
 
   private sourceModel: string;
   private targetModel: string;
-  private dragElementEvent: DragElementEvent;
+  private dragDrop: DragDrop;
 
   private sourceList: HTMLElement;
   private targetList: HTMLElement;
@@ -129,11 +113,13 @@ export class DualListBoxComponent extends HTMLElement {
     this.moveBottomButton = this.querySelector('#moveBottomButton' + id);
 
     this.classList.add('dt-listbox');
+    this.dragDrop = new DragDrop([this.sourceList, this.targetList], []);
     this.addEventListeners();
   }
 
   disconnectedCallback() {
     this.removeEventListeners();
+    this.dragDrop.destroy();
   }
 
   private addEventListeners() {
@@ -147,6 +133,16 @@ export class DualListBoxComponent extends HTMLElement {
         eventName: 'click',
         target: this.targetList,
         handler: this.onClickTargetList.bind(this)
+      },
+      {
+        eventName: 'droppableElementChange',
+        target: this.sourceList,
+        handler: this.onDroppableElementChange.bind(this)
+      },
+      {
+        eventName: 'droppableElementChange',
+        target: this.targetList,
+        handler: this.onDroppableElementChange.bind(this)
       },
       {
         eventName: 'click',
@@ -299,36 +295,10 @@ export class DualListBoxComponent extends HTMLElement {
     }
   }
 
-  private onDragStart(event: DragEvent, index: number) {
-    event.dataTransfer.setData('text', index.toString());
-    event.dataTransfer.effectAllowed = 'move';
-    this.dragElementEvent = { event, index };
-  }
-
-  private onDropSource(event: DropElementEvent) {
-    if (event.type === 'reorder') {
-      arrayMove(this.sourceElements, event.previousIndex, event.currentIndex);
-    } else {
-      arrayTransfer(this.targetElements, this.sourceElements, event.previousIndex, event.currentIndex);
+  private emitEvent(rerender: boolean = true) {
+    if (rerender){
+      this.renderLists();
     }
-    this.targetModel = null;
-
-    this.emitEvent();
-  }
-
-  private onDropTarget(event: DropElementEvent) {
-    if (event.type === 'reorder') {
-      arrayMove(this.targetElements, event.previousIndex, event.currentIndex);
-    } else {
-      arrayTransfer(this.sourceElements, this.targetElements, event.previousIndex, event.currentIndex);
-    }
-    this.sourceModel = null;
-
-    this.emitEvent();
-  }
-
-  private emitEvent() {
-    this.renderLists();
     const all = [...this.source, ...this.target];
     const resultTarget = this.targetElements.map(x => all.find(t => t.id === x.dataset.id));
     this.dispatchEvent(new CustomEvent('targetChange', { detail: resultTarget }));
@@ -403,6 +373,15 @@ export class DualListBoxComponent extends HTMLElement {
     this.moveUpButton.disabled = isBlankTargetModel;
     this.moveDownButton.disabled = isBlankTargetModel;
     this.moveBottomButton.disabled = isBlankTargetModel;
+  }
+
+  private onDroppableElementChange() {
+    this.sourceElements = Array.from(this.sourceList.children) as HTMLElement[];
+    this.targetElements = Array.from(this.targetList.children) as HTMLElement[];
+    this.sourceModel = null;
+    this.targetModel = null;
+    this.updateStyles();
+    this.emitEvent(false);
   }
 
 }
