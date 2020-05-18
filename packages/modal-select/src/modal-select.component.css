@@ -1,0 +1,15 @@
+.dt-select-header {
+  margin: .1875rem 0;
+}
+
+.dt-modal-select .dt-input-group input:not([disabled]) {
+  cursor: pointer;
+}
+
+input.dt-select-input[readonly]:not([disabled]) {
+  background-color: white;
+}
+
+.dt-modal-select .ui-modal {
+  width: 25rem;
+}

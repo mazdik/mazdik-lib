@@ -24,6 +24,7 @@
     "@mazdik-lib/dual-list-box": "0.1.0",
     "@mazdik-lib/inline-edit": "0.1.0",
     "@mazdik-lib/modal": "0.1.0",
+    "@mazdik-lib/modal-select": "0.1.0",
     "@mazdik-lib/nav-menu": "0.1.0",
     "@mazdik-lib/notify": "0.1.0",
     "@mazdik-lib/pagination": "0.1.0",

@@ -29,6 +29,9 @@
       "path": "./modal/tsconfig.package.json"
     },
     {
+      "path": "./modal-select/tsconfig.package.json"
+    },
+    {
       "path": "./nav-menu/tsconfig.package.json"
     },
     {

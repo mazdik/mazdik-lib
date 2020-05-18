@@ -15,8 +15,8 @@
 @import '../../../dual-list-box/src/dual-list-box.component.css';
 @import '../../../inline-edit/src/inline-edit.component.css';
 @import '../../../modal/src/modal.component.css';
-/* @import '../modal-select/modal-select.component.css';
-@import '../ng-crud-table/components//crud-table/crud-table.component.css';
+@import '../../../modal-select/src/modal-select.component.css';
+/*@import '../ng-crud-table/components//crud-table/crud-table.component.css';
 @import '../ng-data-table/components//data-table/data-table.component.css'; */
 @import '../../../notify/src/notify.component.css';
 @import '../../../pagination/src/pagination.component.css';

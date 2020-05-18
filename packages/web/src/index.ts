@@ -79,6 +79,7 @@ class App {
           { id: 'scroller', name: 'Virtual scroller' },
           { id: 'row-view', name: 'Row view' },
           { id: 'dual-list-box', name: 'Dual list box' },
+          { id: 'modal-select', name: 'Modal select' },
         ]
       },
     ];

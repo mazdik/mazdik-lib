@@ -1,0 +1,43 @@
+<div class="dt-input-group" (click)="open()">
+  <input class="dt-input dt-select-input"
+         readonly="readonly"
+         value="{{selectedName}}"
+         placeholder="{{placeholder}}"
+         [disabled]="disabled">
+  <button class="dt-button dt-white" [disabled]="disabled">
+    <i class="dt-icon dt-icon-return"></i>
+  </button>
+</div>
+
+<app-modal #modal>
+  <ng-container class="app-modal-header">{{modalTitle}}</ng-container>
+  <ng-container class="app-modal-body">
+    <div class="dt-select-header">
+      <div class="dt-clearable-input">
+        <input class="dt-input select-input"
+               placeholder={{searchInputPlaceholder}}
+               [value]="searchFilterText"
+               (input)="searchFilterText = $event.target.value"
+               (keyup)="onFilterKeyup()">
+        <span [style.display]="searchFilterText?.length > 0 ? 'block' : 'none' "
+              (click)="onClickClearSearch()">&times;</span>
+      </div>
+    </div>
+    <ul class="dt-list-menu">
+      <li class="dt-list-menu-item"
+          *ngFor="let option of options"
+          (click)="setSelected(option)"
+          [ngClass]="{'active': isSelected(option)}">
+          {{option.name}}
+      </li>
+    </ul>
+  </ng-container>
+  <ng-container class="app-modal-footer">
+    <app-pagination
+        [totalItems]="totalItems"
+        [perPage]="itemsPerPage"
+        [currentPage]="currentPage"
+        (pageChanged)="onPageChanged($event)">
+    </app-pagination>
+  </ng-container>
+</app-modal>
