@@ -73,6 +73,7 @@ export class DualListBoxComponent extends HTMLElement {
   set source(value: SelectItem[]) {
     this._source = value;
     this.filterSource();
+    this.sourceElements = this.createListContent(value);
     this.renderSourceList();
   }
   private _source: SelectItem[];
@@ -81,6 +82,7 @@ export class DualListBoxComponent extends HTMLElement {
   set target(value: SelectItem[]) {
     this._target = value;
     this.filterSource();
+    this.targetElements = this.createListContent(value);
     this.renderTargetList();
   }
   private _target: SelectItem[];
@@ -200,9 +202,9 @@ export class DualListBoxComponent extends HTMLElement {
   }
 
   private moveRight() {
-    if (!isBlank(this.sourceModel) && !isBlank(this.source)) {
-      const selectedItemIndex = this.source.findIndex(x => x.id === this.sourceModel);
-      arrayTransfer(this.source, this.target, selectedItemIndex, this.target.length);
+    if (!isBlank(this.sourceModel) && !isBlank(this.sourceElements)) {
+      const selectedItemIndex = this.sourceElements.findIndex(x => x.dataset.id === this.sourceModel);
+      arrayTransfer(this.sourceElements, this.targetElements, selectedItemIndex, this.targetElements.length);
       this.sourceModel = null;
 
       this.emitEvent();
@@ -210,9 +212,9 @@ export class DualListBoxComponent extends HTMLElement {
   }
 
   private moveRightAll() {
-    if (!isBlank(this.source)) {
-      this.target = [...this.target, ... this.source];
-      this.source = [];
+    if (!isBlank(this.sourceElements)) {
+      this.targetElements = [...this.targetElements, ... this.sourceElements];
+      this.sourceElements = [];
       this.sourceModel = null;
 
       this.emitEvent();
@@ -220,9 +222,9 @@ export class DualListBoxComponent extends HTMLElement {
   }
 
   private moveLeft() {
-    if (!isBlank(this.targetModel) && !isBlank(this.target)) {
-      const selectedItemIndex = this.target.findIndex(x => x.id === this.targetModel);
-      arrayTransfer(this.target, this.source, selectedItemIndex, this.source.length);
+    if (!isBlank(this.targetModel) && !isBlank(this.targetElements)) {
+      const selectedItemIndex = this.targetElements.findIndex(x => x.dataset.id === this.targetModel);
+      arrayTransfer(this.targetElements, this.sourceElements, selectedItemIndex, this.sourceElements.length);
       this.targetModel = null;
 
       this.emitEvent();
@@ -230,9 +232,9 @@ export class DualListBoxComponent extends HTMLElement {
   }
 
   private moveLeftAll() {
-    if (!isBlank(this.target)) {
-      this.target.forEach(item => this.source.push(item));
-      this.target = [];
+    if (!isBlank(this.targetElements)) {
+      this.targetElements.forEach(item => this.sourceElements.push(item));
+      this.targetElements = [];
       this.targetModel = null;
 
       this.emitEvent();
@@ -240,10 +242,10 @@ export class DualListBoxComponent extends HTMLElement {
   }
 
   private moveUp() {
-    if (!isBlank(this.targetModel) && this.target.length > 1) {
-      const selectedItemIndex = this.target.findIndex(x => x.id === this.targetModel);
+    if (!isBlank(this.targetModel) && this.targetElements.length > 1) {
+      const selectedItemIndex = this.targetElements.findIndex(x => x.dataset.id === this.targetModel);
       if (selectedItemIndex !== 0) {
-        arrayMove(this.target, selectedItemIndex, selectedItemIndex - 1);
+        arrayMove(this.targetElements, selectedItemIndex, selectedItemIndex - 1);
         if (this.targetList.children[selectedItemIndex]) {
           this.targetList.children[selectedItemIndex].scrollIntoView({ block: 'center', behavior: 'smooth' });
         }
@@ -254,10 +256,10 @@ export class DualListBoxComponent extends HTMLElement {
   }
 
   private moveTop() {
-    if (!isBlank(this.targetModel) && this.target.length > 1) {
-      const selectedItemIndex = this.target.findIndex(x => x.id === this.targetModel);
+    if (!isBlank(this.targetModel) && this.targetElements.length > 1) {
+      const selectedItemIndex = this.targetElements.findIndex(x => x.dataset.id === this.targetModel);
       if (selectedItemIndex !== 0) {
-        arrayMove(this.target, selectedItemIndex, 0);
+        arrayMove(this.targetElements, selectedItemIndex, 0);
         this.targetList.scrollTop = 0;
 
         this.emitEvent();
@@ -266,10 +268,10 @@ export class DualListBoxComponent extends HTMLElement {
   }
 
   private moveDown() {
-    if (!isBlank(this.targetModel) && this.target.length > 1) {
-      const selectedItemIndex = this.target.findIndex(x => x.id === this.targetModel);
-      if (selectedItemIndex !== (this.target.length - 1)) {
-        arrayMove(this.target, selectedItemIndex, selectedItemIndex + 1);
+    if (!isBlank(this.targetModel) && this.targetElements.length > 1) {
+      const selectedItemIndex = this.targetElements.findIndex(x => x.dataset.id === this.targetModel);
+      if (selectedItemIndex !== (this.targetElements.length - 1)) {
+        arrayMove(this.targetElements, selectedItemIndex, selectedItemIndex + 1);
         if (this.targetList.children[selectedItemIndex]) {
           this.targetList.children[selectedItemIndex].scrollIntoView({ block: 'center', behavior: 'smooth' });
         }
@@ -280,10 +282,10 @@ export class DualListBoxComponent extends HTMLElement {
   }
 
   private moveBottom() {
-    if (!isBlank(this.targetModel) && this.target.length > 1) {
-      const selectedItemIndex = this.target.findIndex(x => x.id === this.targetModel);
-      if (selectedItemIndex !== (this.target.length - 1)) {
-        arrayMove(this.target, selectedItemIndex, this.target.length);
+    if (!isBlank(this.targetModel) && this.targetElements.length > 1) {
+      const selectedItemIndex = this.targetElements.findIndex(x => x.dataset.id === this.targetModel);
+      if (selectedItemIndex !== (this.targetElements.length - 1)) {
+        arrayMove(this.targetElements, selectedItemIndex, this.targetElements.length);
         this.targetList.scrollTop = this.targetList.scrollHeight;
 
         this.emitEvent();
@@ -305,9 +307,9 @@ export class DualListBoxComponent extends HTMLElement {
 
   private onDropSource(event: DropElementEvent) {
     if (event.type === 'reorder') {
-      arrayMove(this.source, event.previousIndex, event.currentIndex);
+      arrayMove(this.sourceElements, event.previousIndex, event.currentIndex);
     } else {
-      arrayTransfer(this.target, this.source, event.previousIndex, event.currentIndex);
+      arrayTransfer(this.targetElements, this.sourceElements, event.previousIndex, event.currentIndex);
     }
     this.targetModel = null;
 
@@ -316,9 +318,9 @@ export class DualListBoxComponent extends HTMLElement {
 
   private onDropTarget(event: DropElementEvent) {
     if (event.type === 'reorder') {
-      arrayMove(this.target, event.previousIndex, event.currentIndex);
+      arrayMove(this.targetElements, event.previousIndex, event.currentIndex);
     } else {
-      arrayTransfer(this.source, this.target, event.previousIndex, event.currentIndex);
+      arrayTransfer(this.sourceElements, this.targetElements, event.previousIndex, event.currentIndex);
     }
     this.sourceModel = null;
 
@@ -327,7 +329,9 @@ export class DualListBoxComponent extends HTMLElement {
 
   private emitEvent() {
     this.renderLists();
-    this.dispatchEvent(new CustomEvent('targetChange', { detail: this.target }));
+    const all = [...this.source, ...this.target];
+    const resultTarget = this.targetElements.map(x => all.find(t => t.id === x.dataset.id));
+    this.dispatchEvent(new CustomEvent('targetChange', { detail: resultTarget }));
   }
 
   private createListContent(items: SelectItem[]): HTMLElement[] {
@@ -343,14 +347,12 @@ export class DualListBoxComponent extends HTMLElement {
   }
 
   private renderSourceList() {
-    this.sourceElements = this.createListContent(this.source);
     this.sourceList.innerHTML = '';
     this.sourceList.append(...this.sourceElements);
     this.updateStyles();
   }
 
   private renderTargetList() {
-    this.targetElements = this.createListContent(this.target);
     this.targetList.innerHTML = '';
     this.targetList.append(...this.targetElements);
     this.updateStyles();
