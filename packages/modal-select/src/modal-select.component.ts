@@ -1,6 +1,54 @@
-import { SelectItem, arrayPaginate } from '@mazdik-lib/common';
+import { SelectItem, arrayPaginate, Listener } from '@mazdik-lib/common';
 import { ModalComponent } from '@mazdik-lib/modal';
 import { PageEvent } from '@mazdik-lib/pagination';
+
+function getTemplate(id: string) {
+  return `
+<div class="dt-input-group" id="inputGroup${id}" (click)="open()">
+  <input class="dt-input dt-select-input"
+         readonly="readonly"
+         value="{{selectedName}}"
+         placeholder="{{placeholder}}"
+         [disabled]="disabled">
+  <button class="dt-button dt-white" [disabled]="disabled">
+    <i class="dt-icon dt-icon-return"></i>
+  </button>
+</div>
+
+<app-modal #modal>
+  <ng-container class="app-modal-header">{{modalTitle}}</ng-container>
+  <ng-container class="app-modal-body">
+    <div class="dt-select-header">
+      <div class="dt-clearable-input">
+        <input class="dt-input select-input" id="filterInput${id}"
+               placeholder={{searchInputPlaceholder}}
+               [value]="searchFilterText"
+               (input)="searchFilterText = $event.target.value"
+               (keyup)="onFilterKeyup()">
+        <span [style.display]="searchFilterText?.length > 0 ? 'block' : 'none' "
+              (click)="onClickClearSearch()">&times;</span>
+      </div>
+    </div>
+    <ul class="dt-list-menu">
+      <li class="dt-list-menu-item"
+          *ngFor="let option of options"
+          (click)="setSelected(option)"
+          [ngClass]="{'active': isSelected(option)}">
+          {{option.name}}
+      </li>
+    </ul>
+  </ng-container>
+  <ng-container class="app-modal-footer">
+    <app-pagination
+        [totalItems]="totalItems"
+        [perPage]="itemsPerPage"
+        [currentPage]="currentPage"
+        (pageChanged)="onPageChanged($event)">
+    </app-pagination>
+  </ng-container>
+</app-modal>
+  `;
+}
 
 export class ModalSelectComponent extends HTMLElement {
 
@@ -43,10 +91,52 @@ export class ModalSelectComponent extends HTMLElement {
   selectedName: string;
 
   private optionsCopy: SelectItem[] = [];
+  private listeners: Listener[] = [];
+
+  private inputGroup: HTMLElement;
+  private filterInput: HTMLInputElement;
 
   constructor() {
     super();
+    const id = (~~(Math.random()*1e3)).toString();
+    const template = document.createElement('template');
+    template.innerHTML = getTemplate(id);
+    this.appendChild(template.content.cloneNode(true));
+
     this.classList.add('dt-modal-select');
+    this.inputGroup = this.querySelector('#inputGroup'+id);
+    this.filterInput = this.querySelector('#filterInput'+id);
+
+    this.addEventListeners();
+  }
+
+  disconnectedCallback() {
+    this.removeEventListeners();
+  }
+
+  private addEventListeners() {
+    this.listeners = [
+      {
+        eventName: 'click',
+        target: this.inputGroup,
+        handler: this.onClickInputGroup.bind(this)
+      },
+      {
+        eventName: 'input',
+        target: this.filterInput,
+        handler: this.onInputFilter.bind(this)
+      },
+    ];
+
+    this.listeners.forEach(x => {
+      x.target.addEventListener(x.eventName, x.handler);
+    })
+  }
+
+  private removeEventListeners() {
+    this.listeners.forEach(x => {
+      x.target.removeEventListener(x.eventName, x.handler);
+    });
   }
 
   open() {
@@ -107,6 +197,14 @@ export class ModalSelectComponent extends HTMLElement {
   onClickClearSearch() {
     this.searchFilterText = '';
     this.onFilterKeyup();
+  }
+
+  private onClickInputGroup() {
+
+  }
+
+  private onInputFilter() {
+
   }
 
 }
