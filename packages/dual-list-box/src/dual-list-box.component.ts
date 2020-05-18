@@ -1,4 +1,4 @@
-import { SelectItem, isBlank, arrayMove, arrayTransfer, Listener } from '@mazdik-lib/common';
+import { SelectItem, isBlank, arrayMove, arrayTransfer, Listener, toggleClass } from '@mazdik-lib/common';
 import { DragElementEvent, DropElementEvent } from '@mazdik-lib/drag-drop';
 
 function getTemplate(id: string) {
@@ -17,16 +17,16 @@ function getTemplate(id: string) {
   </div>
 </div>
 <div class="dt-listbox-panel">
-  <button class="dt-button" (click)="moveRightAll()" title="move all to the right">
+  <button class="dt-button" id="moveRightAllButton${id}" title="move all to the right">
     <i class="dt-icon-quotation-r large"></i>
   </button>
-  <button class="dt-button" (click)="moveRight()" [disabled]="isBlankSourceModel" title="move selected to the right">
+  <button class="dt-button" id="moveRightButton${id}" title="move selected to the right">
     <i class="dt-icon-arrow-right large"></i>
   </button>
-  <button class="dt-button" (click)="moveLeft()" [disabled]="isBlankTargetModel" title="move selected to the left">
+  <button class="dt-button" id="moveLeftButton${id}" title="move selected to the left">
     <i class="dt-icon-arrow-left large"></i>
   </button>
-  <button class="dt-button" (click)="moveLeftAll()" title="move all to the left">
+  <button class="dt-button" id="moveLeftAllButton${id}" title="move all to the left">
     <i class="dt-icon-quotation-l large"></i>
   </button>
 </div>
@@ -44,16 +44,16 @@ function getTemplate(id: string) {
   </div>
 </div>
 <div class="dt-listbox-panel">
-  <button class="dt-button" (click)="moveTop()" [disabled]="isBlankTargetModel" title="move top">
+  <button class="dt-button" id="moveTopButton${id}" title="move top">
     <i class="dt-icon-tab-up large"></i>
   </button>
-  <button class="dt-button" (click)="moveUp()" [disabled]="isBlankTargetModel" title="move up">
+  <button class="dt-button" id="moveUpButton${id}" title="move up">
     <i class="dt-icon-arrow-up large"></i>
   </button>
-  <button class="dt-button" (click)="moveDown()" [disabled]="isBlankTargetModel" title="move down">
+  <button class="dt-button" id="moveDownButton${id}" title="move down">
     <i class="dt-icon-arrow-down large"></i>
   </button>
-  <button class="dt-button" (click)="moveBottom()" [disabled]="isBlankTargetModel" title="move bottom">
+  <button class="dt-button" id="moveBottomButton${id}" title="move bottom">
     <i class="dt-icon-tab-down large"></i>
   </button>
 </div>
@@ -73,7 +73,7 @@ export class DualListBoxComponent extends HTMLElement {
   set source(value: SelectItem[]) {
     this._source = value;
     this.filterSource();
-    this.renderSourceListItems();
+    this.renderSourceList();
   }
   private _source: SelectItem[];
 
@@ -85,12 +85,25 @@ export class DualListBoxComponent extends HTMLElement {
   }
   private _target: SelectItem[];
 
-  private sourceModel: any;
-  private targetModel: any;
+  private sourceModel: string;
+  private targetModel: string;
   private dragElementEvent: DragElementEvent;
 
   private sourceList: HTMLElement;
   private targetList: HTMLElement;
+  private sourceElements: HTMLElement[] = [];
+  private targetElements: HTMLElement[] = [];
+
+  private moveRightAllButton: HTMLButtonElement;
+  private moveRightButton: HTMLButtonElement;
+  private moveLeftButton: HTMLButtonElement;
+  private moveLeftAllButton: HTMLButtonElement;
+
+  private moveTopButton: HTMLButtonElement;
+  private moveUpButton: HTMLButtonElement;
+  private moveDownButton: HTMLButtonElement;
+  private moveBottomButton: HTMLButtonElement;
+
   private listeners: Listener[] = [];
 
   constructor() {
@@ -102,6 +115,16 @@ export class DualListBoxComponent extends HTMLElement {
 
     this.sourceList = this.querySelector('#sourceList' + id);
     this.targetList = this.querySelector('#targetList' + id);
+
+    this.moveRightAllButton = this.querySelector('#moveRightAllButton' + id);
+    this.moveRightButton = this.querySelector('#moveRightButton' + id);
+    this.moveLeftButton = this.querySelector('#moveLeftButton' + id);
+    this.moveLeftAllButton = this.querySelector('#moveLeftAllButton' + id);
+
+    this.moveTopButton = this.querySelector('#moveTopButton' + id);
+    this.moveUpButton = this.querySelector('#moveUpButton' + id);
+    this.moveDownButton = this.querySelector('#moveDownButton' + id);
+    this.moveBottomButton = this.querySelector('#moveBottomButton' + id);
 
     this.classList.add('dt-listbox');
     this.addEventListeners();
@@ -123,6 +146,46 @@ export class DualListBoxComponent extends HTMLElement {
         target: this.targetList,
         handler: this.onClickTargetList.bind(this)
       },
+      {
+        eventName: 'click',
+        target: this.moveRightAllButton,
+        handler: this.moveRightAll.bind(this)
+      },
+      {
+        eventName: 'click',
+        target: this.moveRightButton,
+        handler: this.moveRight.bind(this)
+      },
+      {
+        eventName: 'click',
+        target: this.moveLeftButton,
+        handler: this.moveLeft.bind(this)
+      },
+      {
+        eventName: 'click',
+        target: this.moveLeftAllButton,
+        handler: this.moveLeftAll.bind(this)
+      },
+      {
+        eventName: 'click',
+        target: this.moveTopButton,
+        handler: this.moveTop.bind(this)
+      },
+      {
+        eventName: 'click',
+        target: this.moveUpButton,
+        handler: this.moveUp.bind(this)
+      },
+      {
+        eventName: 'click',
+        target: this.moveDownButton,
+        handler: this.moveDown.bind(this)
+      },
+      {
+        eventName: 'click',
+        target: this.moveBottomButton,
+        handler: this.moveBottom.bind(this)
+      },
     ];
 
     this.listeners.forEach(x => {
@@ -136,7 +199,7 @@ export class DualListBoxComponent extends HTMLElement {
     });
   }
 
-  moveRight() {
+  private moveRight() {
     if (!isBlank(this.sourceModel) && !isBlank(this.source)) {
       const selectedItemIndex = this.source.findIndex(x => x.id === this.sourceModel);
       arrayTransfer(this.source, this.target, selectedItemIndex, this.target.length);
@@ -146,7 +209,7 @@ export class DualListBoxComponent extends HTMLElement {
     }
   }
 
-  moveRightAll() {
+  private moveRightAll() {
     if (!isBlank(this.source)) {
       this.target = [...this.target, ... this.source];
       this.source = [];
@@ -156,7 +219,7 @@ export class DualListBoxComponent extends HTMLElement {
     }
   }
 
-  moveLeft() {
+  private moveLeft() {
     if (!isBlank(this.targetModel) && !isBlank(this.target)) {
       const selectedItemIndex = this.target.findIndex(x => x.id === this.targetModel);
       arrayTransfer(this.target, this.source, selectedItemIndex, this.source.length);
@@ -166,7 +229,7 @@ export class DualListBoxComponent extends HTMLElement {
     }
   }
 
-  moveLeftAll() {
+  private moveLeftAll() {
     if (!isBlank(this.target)) {
       this.target.forEach(item => this.source.push(item));
       this.target = [];
@@ -176,7 +239,7 @@ export class DualListBoxComponent extends HTMLElement {
     }
   }
 
-  moveUp() {
+  private moveUp() {
     if (!isBlank(this.targetModel) && this.target.length > 1) {
       const selectedItemIndex = this.target.findIndex(x => x.id === this.targetModel);
       if (selectedItemIndex !== 0) {
@@ -190,7 +253,7 @@ export class DualListBoxComponent extends HTMLElement {
     }
   }
 
-  moveTop() {
+  private moveTop() {
     if (!isBlank(this.targetModel) && this.target.length > 1) {
       const selectedItemIndex = this.target.findIndex(x => x.id === this.targetModel);
       if (selectedItemIndex !== 0) {
@@ -202,7 +265,7 @@ export class DualListBoxComponent extends HTMLElement {
     }
   }
 
-  moveDown() {
+  private moveDown() {
     if (!isBlank(this.targetModel) && this.target.length > 1) {
       const selectedItemIndex = this.target.findIndex(x => x.id === this.targetModel);
       if (selectedItemIndex !== (this.target.length - 1)) {
@@ -216,7 +279,7 @@ export class DualListBoxComponent extends HTMLElement {
     }
   }
 
-  moveBottom() {
+  private moveBottom() {
     if (!isBlank(this.targetModel) && this.target.length > 1) {
       const selectedItemIndex = this.target.findIndex(x => x.id === this.targetModel);
       if (selectedItemIndex !== (this.target.length - 1)) {
@@ -228,27 +291,19 @@ export class DualListBoxComponent extends HTMLElement {
     }
   }
 
-  filterSource() {
+  private filterSource() {
     if (this.source && this.source.length && this.target && this.target.length) {
       this._source = this.source.filter(x => this.target.every(t => t.id !== x.id));
     }
   }
 
-  get isBlankSourceModel() {
-    return isBlank(this.sourceModel);
-  }
-
-  get isBlankTargetModel() {
-    return isBlank(this.targetModel);
-  }
-
-  onDragStart(event: DragEvent, index: number) {
+  private onDragStart(event: DragEvent, index: number) {
     event.dataTransfer.setData('text', index.toString());
     event.dataTransfer.effectAllowed = 'move';
     this.dragElementEvent = { event, index };
   }
 
-  onDropSource(event: DropElementEvent) {
+  private onDropSource(event: DropElementEvent) {
     if (event.type === 'reorder') {
       arrayMove(this.source, event.previousIndex, event.currentIndex);
     } else {
@@ -259,7 +314,7 @@ export class DualListBoxComponent extends HTMLElement {
     this.emitEvent();
   }
 
-  onDropTarget(event: DropElementEvent) {
+  private onDropTarget(event: DropElementEvent) {
     if (event.type === 'reorder') {
       arrayMove(this.target, event.previousIndex, event.currentIndex);
     } else {
@@ -271,6 +326,7 @@ export class DualListBoxComponent extends HTMLElement {
   }
 
   private emitEvent() {
+    this.renderLists();
     this.dispatchEvent(new CustomEvent('targetChange', { detail: this.target }));
   }
 
@@ -286,22 +342,65 @@ export class DualListBoxComponent extends HTMLElement {
     return elements;
   }
 
-  private renderSourceListItems() {
-    const elements = this.createListContent(this.source);
-    this.sourceList.append(...elements);
+  private renderSourceList() {
+    this.sourceElements = this.createListContent(this.source);
+    this.sourceList.innerHTML = '';
+    this.sourceList.append(...this.sourceElements);
+    this.updateStyles();
   }
 
   private renderTargetList() {
-    const elements = this.createListContent(this.target);
-    this.targetList.append(...elements);
+    this.targetElements = this.createListContent(this.target);
+    this.targetList.innerHTML = '';
+    this.targetList.append(...this.targetElements);
+    this.updateStyles();
   }
 
-  private onClickSourceList() {
-
+  private renderLists() {
+    this.renderSourceList();
+    this.renderTargetList();
   }
 
-  private onClickTargetList() {
+  private onClickSourceList(event: MouseEvent) {
+    const element = this.getListItemElement(event);
+    if (!element) {
+      return;
+    }
+    event.stopPropagation();
+    this.sourceModel = element.dataset.id;
+    this.updateStyles();
+  }
 
+  private onClickTargetList(event: MouseEvent) {
+    const element = this.getListItemElement(event);
+    if (!element) {
+      return;
+    }
+    event.stopPropagation();
+    this.targetModel = element.dataset.id;
+    this.updateStyles();
+  }
+
+  private getListItemElement(event: MouseEvent): HTMLElement {
+    const target = event.target as HTMLElement;
+    const element = target.classList.contains('dt-list-menu-item') ? target : target.closest('.dt-list-menu-item') as HTMLElement;
+    return element;
+  }
+
+  private updateStyles() {
+    this.sourceElements.forEach(element => {
+      toggleClass(element, 'active', element.dataset.id === this.sourceModel);
+    });
+    this.targetElements.forEach(element => {
+      toggleClass(element, 'active', element.dataset.id === this.targetModel);
+    });
+    const isBlankTargetModel = isBlank(this.targetModel);
+    this.moveRightButton.disabled = isBlank(this.sourceModel)
+    this.moveLeftButton.disabled = isBlankTargetModel;
+    this.moveTopButton.disabled = isBlankTargetModel;
+    this.moveUpButton.disabled = isBlankTargetModel;
+    this.moveDownButton.disabled = isBlankTargetModel;
+    this.moveBottomButton.disabled = isBlankTargetModel;
   }
 
 }
