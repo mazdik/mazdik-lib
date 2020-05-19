@@ -1,0 +1,31 @@
+<div class="tree-header">
+  <i class="dt-tree-icon dt-icon-shrink large" (click)="collapseAll()"></i>
+  <i class="dt-tree-icon dt-icon-reload large" (click)="refresh()"></i>
+
+  <div class="dt-clearable-input tree-filter-input">
+    <input class="dt-input"
+           placeholder="Search"
+           #filterInput
+           [value]="searchFilterText"
+           (input)="searchFilterText = $event.target.value"
+           (keyup)="onFilterKeyup()">
+    <span class="dt-loader"
+          style="top: 25%; cursor:auto;"
+          [style.display]="filterLoading ? 'block' : 'none' ">
+    </span>
+    <span [style.display]="(searchFilterText?.length > 0 && !filterLoading) ? 'block' : 'none' "
+          (click)="onClickClearSearch()">&times;</span>
+  </div>
+</div>
+<div class="tree-body">
+  <div *ngIf="loading" class="tree-loading-content"><i class="dt-loader"></i></div>
+  <ul class="tree-container" style="padding-left: 0;">
+    <app-tree-view-node
+      *ngFor="let node of nodes"
+      [node]="node"
+      [getIconFunc]="getIconFunc"
+      (selectedChanged)="selectedChanged.emit($event)"
+      (nodeRightClick)="onNodeRightClick($event)">
+    </app-tree-view-node>
+  </ul>
+</div>

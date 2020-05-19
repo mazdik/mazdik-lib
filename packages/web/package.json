@@ -32,6 +32,7 @@
     "@mazdik-lib/row-view": "0.1.0",
     "@mazdik-lib/scroller": "0.1.0",
     "@mazdik-lib/select-list": "0.1.0",
-    "@mazdik-lib/tabs": "0.1.0"
+    "@mazdik-lib/tabs": "0.1.0",
+    "@mazdik-lib/tree-view": "0.1.0"
   }
 }

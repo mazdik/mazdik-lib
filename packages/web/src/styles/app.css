@@ -202,3 +202,6 @@
 
 /* RowViewDemoComponent */
 .row-view-demo { display: block; width: 30rem; }
+
+/* TreeViewDemoComponent */
+.tree-view-demo { display: block; width: 280px; height: 500px; border-right: 1px solid #eee; }

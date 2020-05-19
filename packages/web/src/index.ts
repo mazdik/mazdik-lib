@@ -80,6 +80,7 @@ class App {
           { id: 'row-view', name: 'Row view' },
           { id: 'dual-list-box', name: 'Dual list box' },
           { id: 'modal-select', name: 'Modal select' },
+          { id: 'tree-view', name: 'Tree view' },
         ]
       },
     ];
