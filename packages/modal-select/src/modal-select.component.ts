@@ -1,100 +1,92 @@
-import { SelectItem, arrayPaginate, Listener } from '@mazdik-lib/common';
+import { SelectItem, arrayPaginate, Listener, toggleClass } from '@mazdik-lib/common';
+import '@mazdik-lib/modal';
 import { ModalComponent } from '@mazdik-lib/modal';
-import { PageEvent } from '@mazdik-lib/pagination';
+import '@mazdik-lib/pagination';
+import { PageEvent, PaginationComponent } from '@mazdik-lib/pagination';
 
 function getTemplate(id: string) {
   return `
-<div class="dt-input-group" id="inputGroup${id}" (click)="open()">
-  <input class="dt-input dt-select-input"
-         readonly="readonly"
-         value="{{selectedName}}"
-         placeholder="{{placeholder}}"
-         [disabled]="disabled">
-  <button class="dt-button dt-white" [disabled]="disabled">
-    <i class="dt-icon dt-icon-return"></i>
-  </button>
-</div>
-
-<app-modal #modal>
-  <ng-container class="app-modal-header">{{modalTitle}}</ng-container>
-  <ng-container class="app-modal-body">
-    <div class="dt-select-header">
-      <div class="dt-clearable-input">
-        <input class="dt-input select-input" id="filterInput${id}"
-               placeholder={{searchInputPlaceholder}}
-               [value]="searchFilterText"
-               (input)="searchFilterText = $event.target.value"
-               (keyup)="onFilterKeyup()">
-        <span [style.display]="searchFilterText?.length > 0 ? 'block' : 'none' "
-              (click)="onClickClearSearch()">&times;</span>
+  <div class="dt-input-group" id="inputGroup${id}">
+    <input class="dt-input dt-select-input" id="selectInput${id}" readonly="readonly">
+    <button class="dt-button dt-white">
+      <i class="dt-icon dt-icon-return"></i>
+    </button>
+  </div>
+  <web-modal>
+    <template select="app-modal-header">
+      <span id="modalSelectTitle${id}">Modal</span>
+    </template>
+    <template select="app-modal-body">
+      <div class="dt-select-header">
+        <div class="dt-clearable-input">
+          <input class="dt-input select-input" id="filterInput${id}">
+          <span id="clearSearchIcon${id}">&times;</span>
+        </div>
       </div>
-    </div>
-    <ul class="dt-list-menu">
-      <li class="dt-list-menu-item"
-          *ngFor="let option of options"
-          (click)="setSelected(option)"
-          [ngClass]="{'active': isSelected(option)}">
-          {{option.name}}
-      </li>
-    </ul>
-  </ng-container>
-  <ng-container class="app-modal-footer">
-    <app-pagination
-        [totalItems]="totalItems"
-        [perPage]="itemsPerPage"
-        [currentPage]="currentPage"
-        (pageChanged)="onPageChanged($event)">
-    </app-pagination>
-  </ng-container>
-</app-modal>
+      <ul class="dt-list-menu" id="selectList${id}"></ul>
+    </template>
+    <template select="app-modal-footer">
+      <web-pagination></web-pagination>
+    </ng-container>
+    </template>
+  </web-modal>
   `;
 }
 
 export class ModalSelectComponent extends HTMLElement {
 
   filterDelay: number = 300;
-  disabled: boolean;
-  modalTitle: string = 'Search Dialog';
   itemsPerPage: number = 10;
+  modalTitle: string = 'Search Dialog';
   placeholder: string = 'Select';
   searchInputPlaceholder: string = 'Search...';
+
+  get disabled() { return this._disabled; }
+  set disabled(val: boolean) {
+    this._disabled = val;
+    this.selectInput.disabled = val;
+    const button = this.selectInput.nextElementSibling as HTMLButtonElement;
+    button.disabled = val;
+  }
+  private _disabled: boolean;
 
   get options(): SelectItem[] { return this._options; }
   set options(val: SelectItem[]) {
     this._options = val;
     if (this._options) {
       this.optionsCopy = [...val];
-      this.selectedName = this.getName();
-      this.dispatchEvent(new CustomEvent('nameChanged', { detail: this.selectedName }));
+      this.setSelectedName();
     }
   }
   private _options: SelectItem[];
 
-  get model() { return this._model; }
-  set model(value) {
+  get model(): string { return this._model; }
+  set model(value: string) {
     if (this._model !== value) {
       this._model = value;
-      this.selectedName = this.getName();
       this.dispatchEvent(new CustomEvent('valueChange', { detail: this._model }));
-      this.dispatchEvent(new CustomEvent('nameChanged', { detail: this.selectedName }));
+      this.setSelectedName();
     }
   }
-  private _model: any;
+  private _model: string;
 
   private modal: ModalComponent;
+  private pagination: PaginationComponent;
 
-  searchFilterText: string = null;
-  currentPage: number = 1;
-  sortOrder: number = 1;
-  totalItems: number;
-  filterTimeout: any;
-  selectedName: string;
+  private currentPage: number = 1;
+  private totalItems: number;
+  private filterTimeout: any;
 
   private optionsCopy: SelectItem[] = [];
   private listeners: Listener[] = [];
 
   private inputGroup: HTMLElement;
+  private selectInput: HTMLInputElement;
   private filterInput: HTMLInputElement;
+  private selectList: HTMLElement;
+  private clearSearchIcon: HTMLElement;
+  private modalSelectTitle: HTMLElement;
+  private selectListElements: HTMLElement[] = [];
 
   constructor() {
     super();
@@ -105,7 +97,13 @@ export class ModalSelectComponent extends HTMLElement {
 
     this.classList.add('dt-modal-select');
     this.inputGroup = this.querySelector('#inputGroup'+id);
+    this.selectInput = this.querySelector('#selectInput'+id);
     this.filterInput = this.querySelector('#filterInput'+id);
+    this.selectList = this.querySelector('#selectList'+id);
+    this.clearSearchIcon = this.querySelector('#clearSearchIcon'+id);
+    this.modalSelectTitle = this.querySelector('#modalSelectTitle'+id);
+    this.modal = this.querySelector('web-modal');
+    this.pagination = this.querySelector('web-pagination');
 
     this.addEventListeners();
   }
@@ -122,9 +120,24 @@ export class ModalSelectComponent extends HTMLElement {
         handler: this.onClickInputGroup.bind(this)
       },
       {
+        eventName: 'click',
+        target: this.selectList,
+        handler: this.onClickList.bind(this)
+      },
+      {
+        eventName: 'click',
+        target: this.clearSearchIcon,
+        handler: this.onClickClearSearch.bind(this)
+      },
+      {
         eventName: 'input',
         target: this.filterInput,
         handler: this.onInputFilter.bind(this)
+      },
+      {
+        eventName: 'pageChanged',
+        target: this.pagination,
+        handler: this.onPageChanged.bind(this)
       },
     ];
 
@@ -139,28 +152,11 @@ export class ModalSelectComponent extends HTMLElement {
     });
   }
 
-  open() {
-    if (!this.disabled) {
-      this.searchFilterText = '';
-      this.modal.show();
-      this._options = this.getOptions();
-    }
-  }
-
-  onFilterKeyup() {
-    if (this.filterTimeout) {
-      clearTimeout(this.filterTimeout);
-    }
-    this.filterTimeout = setTimeout(() => {
-      this._options = this.getOptions();
-      this.filterTimeout = null;
-    }, this.filterDelay);
-  }
-
-  getOptions() {
+  private getOptions() {
+    const searchFilterText = this.filterInput.value;
     let data = [];
-    if (this.optionsCopy && this.optionsCopy.length && this.searchFilterText) {
-      data = this.optionsCopy.filter(x => x.name.toLocaleLowerCase().indexOf(this.searchFilterText.toLocaleLowerCase()) > -1);
+    if (this.optionsCopy && this.optionsCopy.length && searchFilterText) {
+      data = this.optionsCopy.filter(x => x.name.toLocaleLowerCase().indexOf(searchFilterText.toLocaleLowerCase()) > -1);
       this.currentPage = 1;
     } else {
       data = this.optionsCopy;
@@ -170,41 +166,93 @@ export class ModalSelectComponent extends HTMLElement {
     return result;
   }
 
-  onPageChanged(event: PageEvent) {
-    this.currentPage = event.currentPage;
-    this.itemsPerPage = event.perPage;
-    this._options = this.getOptions();
+  private createListContent(items: SelectItem[]): HTMLElement[] {
+    const elements = [];
+    items.forEach(item => {
+      const element = document.createElement('div');
+      element.classList.add('dt-list-menu-item');
+      element.textContent = item.name;
+      element.dataset.id = item.id;
+      elements.push(element);
+    });
+    return elements;
   }
 
-  setSelected(option: SelectItem) {
-    this.model = option.id;
-    this.modal.hide();
+  private renderListContent() {
+    const options = this.getOptions();
+    this.selectListElements = this.createListContent(options);
+    this.selectList.innerHTML = '';
+    this.selectList.append(...this.selectListElements);
   }
 
-  isSelected(option: SelectItem): boolean {
-    return option.id === this.model;
+  private getListItemElement(event: MouseEvent): HTMLElement {
+    const target = event.target as HTMLElement;
+    const element = target.classList.contains('dt-list-menu-item') ? target : target.closest('.dt-list-menu-item') as HTMLElement;
+    return element;
   }
 
-  getName() {
-    if (this.optionsCopy) {
-      const option = this.optionsCopy.find((x) => {
-        return x.id === this.model;
-      });
-      return (option) ? option.name : '';
-    }
+  private setSelectedName() {
+    const option = (this.optionsCopy || []).find(x => x.id === this.model);
+    const selectedName = (option) ? option.name : '';
+    this.selectInput.value = selectedName;
+    this.dispatchEvent(new CustomEvent('nameChanged', { detail: selectedName }));
   }
 
-  onClickClearSearch() {
-    this.searchFilterText = '';
-    this.onFilterKeyup();
+  private updateStyles() {
+    this.selectListElements.forEach(element => {
+      toggleClass(element, 'active', element.dataset.id === this.model);
+    });
+    this.clearSearchIcon.style.display = this.filterInput.value.length > 0 ? 'block' : 'none';
   }
 
   private onClickInputGroup() {
+    if (!this.disabled) {
+      this.filterInput.value = '';
+      this.modalSelectTitle.textContent = this.modalTitle;
+      this.selectInput.placeholder = this.placeholder;
+      this.filterInput.placeholder = this.searchInputPlaceholder;
+      this.renderListContent();
+      this.updateStyles();
+      this.modal.show();
+      this.pagination.totalItems = this.totalItems;
+      this.pagination.perPage = this.itemsPerPage;
+      this.pagination.currentPage = this.currentPage;
+    }
+  }
 
+  private onClickList(event: MouseEvent) {
+    const element = this.getListItemElement(event);
+    if (!element) {
+      return;
+    }
+    event.stopPropagation();
+    this.model = element.dataset.id;
+    this.modal.hide();
+    this.updateStyles();
   }
 
   private onInputFilter() {
+    if (this.filterTimeout) {
+      clearTimeout(this.filterTimeout);
+    }
+    this.filterTimeout = setTimeout(() => {
+      this.renderListContent();
+      this.filterTimeout = null;
+    }, this.filterDelay);
+    this.updateStyles();
+  }
 
+  private onPageChanged(event: CustomEvent<PageEvent>) {
+    this.currentPage = event.detail.currentPage;
+    this.itemsPerPage = event.detail.perPage;
+    this.renderListContent();
+    this.updateStyles();
+  }
+
+  private onClickClearSearch() {
+    this.filterInput.value = '';
+    this.renderListContent();
+    this.updateStyles();
   }
 
 }
