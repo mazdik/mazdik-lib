@@ -1,6 +1,42 @@
 import { TreeDataSource, Tree, TreeNode } from '@mazdik-lib/tree-lib';
 import { TreeViewNode } from './tree-view-node';
 
+function getTemplate(id: string) {
+  return `
+<div class="tree-header">
+  <i class="dt-tree-icon dt-icon-shrink large" (click)="collapseAll()"></i>
+  <i class="dt-tree-icon dt-icon-reload large" (click)="refresh()"></i>
+
+  <div class="dt-clearable-input tree-filter-input">
+    <input class="dt-input"
+           placeholder="Search"
+           #filterInput
+           [value]="searchFilterText"
+           (input)="searchFilterText = $event.target.value"
+           (keyup)="onFilterKeyup()">
+    <span class="dt-loader"
+          style="top: 25%; cursor:auto;"
+          [style.display]="filterLoading ? 'block' : 'none' ">
+    </span>
+    <span [style.display]="(searchFilterText?.length > 0 && !filterLoading) ? 'block' : 'none' "
+          (click)="onClickClearSearch()">&times;</span>
+  </div>
+</div>
+<div class="tree-body">
+  <div *ngIf="loading" class="tree-loading-content"><i class="dt-loader"></i></div>
+  <ul class="tree-container" id="treeContainer${id}" style="padding-left: 0;">
+    <app-tree-view-node
+      *ngFor="let node of nodes"
+      [node]="node"
+      [getIconFunc]="getIconFunc"
+      (selectedChanged)="selectedChanged.emit($event)"
+      (nodeRightClick)="onNodeRightClick($event)">
+    </app-tree-view-node>
+  </ul>
+</div>
+  `;
+}
+
 export class TreeViewComponent extends HTMLElement {
 
   get service(): TreeDataSource { return this.tree.service; }
@@ -19,7 +55,6 @@ export class TreeViewComponent extends HTMLElement {
     this.tree.serverSideFiltering = val;
   }
 
-  //contextMenu: ContextMenuComponent;
   filterDelay = 500;
   getIconFunc: (node?: TreeNode) => string;
 
@@ -36,13 +71,16 @@ export class TreeViewComponent extends HTMLElement {
   searchFilterText: any = null;
 
   private treeViewNodes: TreeViewNode[] = [];
+  private treeContainer: HTMLElement;
 
   constructor() {
     super();
-  }
+    const id = (~~(Math.random()*1e3)).toString();
+    const template = document.createElement('template');
+    template.innerHTML = getTemplate(id);
+    this.appendChild(template.content.cloneNode(true));
 
-  ngOnInit() {
-    this.initGetNodes();
+    this.treeContainer = this.querySelector('#treeContainer'+id);
   }
 
   initGetNodes() {
@@ -62,9 +100,8 @@ export class TreeViewComponent extends HTMLElement {
   }
 
   onNodeRightClick(event) {
-    // if (this.contextMenu) {
-    //   this.contextMenu.show({ originalEvent: event.event, data: event.node });
-    // }
+    const data = {originalEvent: event.event, data: event.node};
+    this.dispatchEvent(new CustomEvent('nodeRightClick', {detail: data}));
   }
 
   collapseAll() {
@@ -83,19 +120,13 @@ export class TreeViewComponent extends HTMLElement {
     this.onFilterKeyup();
   }
 
-  getNodeById(nodeId: string) {
-    return this.tree.getNodeById(nodeId);
-  }
-
   private render() {
-    const treeContainer = document.createElement('ul');
-    treeContainer.classList.add('tree-container');
-
+    const fragment = document.createDocumentFragment();
     this.nodes.forEach(node => {
       const element = this.createTreeDom(node);
-      treeContainer.appendChild(element);
+      fragment.appendChild(element);
     });
-    this.appendChild(treeContainer);
+    this.treeContainer.appendChild(fragment);
   }
 
   private createTreeDom(node: TreeNode): HTMLElement {

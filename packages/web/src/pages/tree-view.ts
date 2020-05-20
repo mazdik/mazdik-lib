@@ -1,6 +1,7 @@
 import { Page } from '../page';
 import '@mazdik-lib/tree-view';
 import { TreeViewComponent } from '@mazdik-lib/tree-view';
+import { TreeDemoService } from '../shared/tree-demo-service';
 
 export default class TreeViewDemo implements Page {
 
@@ -50,6 +51,11 @@ export default class TreeViewDemo implements Page {
 
     const component = document.querySelector('web-tree-view') as TreeViewComponent;
     component.nodes = navMenuNodes;
+
+    const treeService = new TreeDemoService();
+    treeService.getNodes(null).then(res => {
+      console.log(res);
+    });
   }
 
 }
