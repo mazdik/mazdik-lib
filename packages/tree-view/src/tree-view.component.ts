@@ -23,7 +23,7 @@ function getTemplate(id: string) {
   </div>
 </div>
 <div class="tree-body">
-  <div *ngIf="loading" class="tree-loading-content"><i class="dt-loader"></i></div>
+  <div id="loadingIcon${id}" class="tree-loading-content"><i class="dt-loader"></i></div>
   <ul class="tree-container" id="treeContainer${id}" style="padding-left: 0;">
     <app-tree-view-node
       *ngFor="let node of nodes"
@@ -39,24 +39,19 @@ function getTemplate(id: string) {
 
 export class TreeViewComponent extends HTMLElement {
 
+  filterDelay = 500;
+  getIconFunc: (node?: TreeNode) => string;
+
   get service(): TreeDataSource { return this.tree.service; }
   set service(val: TreeDataSource) {
     this.tree.service = val;
     this.tree.nodes = [];
-  }
-
-  get nodes(): TreeNode[] { return this.tree.nodes; }
-  set nodes(val: TreeNode[]) {
-    this.tree.nodes = val;
-    this.render();
+    this.initGetNodes();
   }
 
   set serverSideFiltering(val: boolean) {
     this.tree.serverSideFiltering = val;
   }
-
-  filterDelay = 500;
-  getIconFunc: (node?: TreeNode) => string;
 
   get filterLoading(): boolean {
     return this.tree.filterLoading;
@@ -67,11 +62,11 @@ export class TreeViewComponent extends HTMLElement {
 
   tree: Tree = new Tree();
   filterTimeout: any;
-  loading: boolean;
   searchFilterText: any = null;
 
   private treeViewNodes: TreeViewNode[] = [];
   private treeContainer: HTMLElement;
+  private loadingIcon: HTMLElement;
 
   constructor() {
     super();
@@ -81,11 +76,22 @@ export class TreeViewComponent extends HTMLElement {
     this.appendChild(template.content.cloneNode(true));
 
     this.treeContainer = this.querySelector('#treeContainer'+id);
+    this.loadingIcon = this.querySelector('#loadingIcon'+id);
+
+    this.loading(false);
   }
 
-  initGetNodes() {
-    this.loading = true;
-    this.tree.initLoadNodes().finally(() => { this.loading = false; });
+  private initGetNodes() {
+    this.loading(true);
+    this.tree.initLoadNodes().then(() => {
+      this.render();
+    }).finally(() => {
+      this.loading(false);
+    });
+  }
+
+  private loading(val: boolean) {
+    this.loadingIcon.style.display = val ? 'block' : 'none';
   }
 
   onFilterKeyup() {
@@ -109,7 +115,7 @@ export class TreeViewComponent extends HTMLElement {
   }
 
   refresh() {
-    this.nodes = [];
+    this.tree.nodes = [];
     this.initGetNodes();
     this.tree.selectedNode = null;
     this.filterInput.value = null;
@@ -122,7 +128,7 @@ export class TreeViewComponent extends HTMLElement {
 
   private render() {
     const fragment = document.createDocumentFragment();
-    this.nodes.forEach(node => {
+    this.tree.nodes.forEach(node => {
       const element = this.createTreeDom(node);
       fragment.appendChild(element);
     });
@@ -130,7 +136,8 @@ export class TreeViewComponent extends HTMLElement {
   }
 
   private createTreeDom(node: TreeNode): HTMLElement {
-    const treeViewNode = new TreeViewNode(node);
+    const treeViewNode = new TreeViewNode(node, this.getIconFunc);
+    this.treeViewNodes.push(treeViewNode);
     if (node.hasChildren) {
       const childrenContainer = document.createElement('ul');
       childrenContainer.classList.add('tree-container');

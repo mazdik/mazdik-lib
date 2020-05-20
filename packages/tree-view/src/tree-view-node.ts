@@ -30,13 +30,13 @@ export class TreeViewNode {
 
   element: HTMLElement
 
-  constructor(public node: TreeNode) {
+  constructor(public node: TreeNode, private getIconFunc: Function) {
     this.element = this.createNodeElement();
   }
 
   private getTemplate() {
-    const icon = this.node.icon ? `<i class="${this.node.icon}"></i>` : '';
-    const innerContent = icon + this.node.name;
+    const icon = this.getIcon();
+    const innerContent = `<i class="${icon}"></i>${this.node.name}`;
     const template = `
     <i class="${this.getExpanderIcon()}"></i>
     <span class="${this.nodeContentClass()}">${innerContent}</span>`;
@@ -45,10 +45,15 @@ export class TreeViewNode {
 
   private createNodeElement(): HTMLElement {
     const element = document.createElement('li');
+    element.className = this.nodeClass();
     element.innerHTML = this.getTemplate();
     element.dataset.id = this.node.$$id.toString();
     //this.updateNavItemStyles(node, element);
     return element;
+  }
+
+  private getIcon() {
+    return this.getIconFunc ? this.getIconFunc(this.node) : this.node.icon;
   }
 
   //@Output() selectedChanged: EventEmitter<TreeNode> = new EventEmitter<TreeNode>();

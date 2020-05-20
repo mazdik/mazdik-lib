@@ -49,13 +49,13 @@ export default class TreeViewDemo implements Page {
       }
     ];
 
-    const component = document.querySelector('web-tree-view') as TreeViewComponent;
-    component.nodes = navMenuNodes;
-
     const treeService = new TreeDemoService();
-    treeService.getNodes(null).then(res => {
-      console.log(res);
-    });
+    const getIconFunc = (node) => (!node.isLeaf()) ? 'dt-icon-folder' : 'dt-icon-file';
+
+    const component = document.querySelector('web-tree-view') as TreeViewComponent;
+    component.getIconFunc = getIconFunc;
+    component.service = treeService;
+
   }
 
 }
