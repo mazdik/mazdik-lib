@@ -1,6 +1,6 @@
 import { TreeDataSource, Tree, TreeNode } from '@mazdik-lib/tree-lib';
 import { Listener, isBlank } from '@mazdik-lib/common';
-import { TreeViewNode } from './tree-view-node';
+import { TreeViewNode, updateExpandedStyles } from './tree-view-node';
 
 function getTemplate(id: string) {
   return `
@@ -116,6 +116,112 @@ export class TreeViewComponent extends HTMLElement {
     this.loadingIcon.style.display = val ? 'block' : 'none';
   }
 
+  private render() {
+    const fragment = document.createDocumentFragment();
+    this.tree.nodes.forEach(node => {
+      const element = this.createTreeDom(node);
+      fragment.appendChild(element);
+    });
+    this.treeContainer.appendChild(fragment);
+  }
+
+  private createTreeDom(node: TreeNode, viewNode?: TreeViewNode): HTMLElement {
+    const treeViewNode = viewNode ? viewNode : new TreeViewNode(node, this.getIconFunc);
+    this.treeViewNodes.push(treeViewNode);
+    if (node.hasChildren) {
+      const childrenContainer = document.createElement('ul');
+      childrenContainer.classList.add('tree-container');
+      treeViewNode.element.appendChild(childrenContainer);
+      updateExpandedStyles(node.expanded, childrenContainer);
+
+      node.children.forEach(childNode => {
+        const dom = this.createTreeDom(childNode);
+        childrenContainer.appendChild(dom);
+      });
+    }
+    return treeViewNode.element;
+  }
+
+  updateAllItemsStyles() {
+    this.treeViewNodes.forEach(x => x.updateStyles());
+  }
+
+  updateStyles() {
+    this.filterLoading.style.display = this.tree.filterLoading ? 'block' : 'none';
+  }
+
+  private onExpand(treeViewNode: TreeViewNode) {
+    const node = treeViewNode.node;
+    const needCreateElements = !node.hasChildren;
+    node.expanded = !node.expanded;
+    if (node.expanded) {
+      node.$$loading = true;
+      treeViewNode.updateStyles();
+      node.tree.loadNode(node).then(() => {
+        if (needCreateElements) {
+          this.createTreeDom(treeViewNode.node, treeViewNode);
+        }
+      }).finally(() => {
+        node.$$loading = false;
+        treeViewNode.updateStyles();
+      });
+    }
+    this.updateAllItemsStyles();
+  }
+
+  private getTreeViewNode(event: MouseEvent, className: string): TreeViewNode {
+    const target = event.target as HTMLElement;
+    const element = target.classList.contains(className) ? target : target.closest('.' + className) as HTMLElement;
+    if (element && element.parentElement) {
+      const id = element.parentElement.dataset.id;
+      if (isBlank(id)) {
+        return;
+      }
+      event.stopPropagation();
+      const treeViewNode = this.treeViewNodes.find(x => x.node.$$id.toString() === id);
+      return treeViewNode;
+    }
+  }
+
+  private onClick(event: MouseEvent) {
+    this.onClickTreenodeContent(event);
+    this.onClickExpanderIcon(event);
+  }
+
+  private onClickTreenodeContent(event: MouseEvent) {
+    const treeViewNode = this.getTreeViewNode(event, 'treenode-content');
+    if (treeViewNode) {
+      treeViewNode.node.setSelected();
+      this.updateAllItemsStyles();
+      this.dispatchEvent(new CustomEvent('selectedChanged', { detail: treeViewNode.node }));
+    }
+  }
+
+  private onClickExpanderIcon(event: MouseEvent) {
+    const treeViewNode = this.getTreeViewNode(event, 'dt-icon-node');
+    if (treeViewNode) {
+      this.onExpand(treeViewNode);
+    }
+  }
+
+  private onDblClick(event: MouseEvent) {
+    const treeViewNode = this.getTreeViewNode(event, 'treenode-content');
+    if (treeViewNode) {
+      this.onExpand(treeViewNode);
+    }
+  }
+
+  private onContextMenu(event: MouseEvent) {
+    const treeViewNode = this.getTreeViewNode(event, 'treenode-content');
+    if (treeViewNode) {
+      treeViewNode.node.setSelected();
+      this.updateAllItemsStyles();
+      this.dispatchEvent(new CustomEvent('selectedChanged', { detail: treeViewNode.node }));
+      const data = {originalEvent: event, data: treeViewNode.node};
+      this.dispatchEvent(new CustomEvent('nodeRightClick', {detail: data}));
+    }
+  }
+
   onFilterKeyup() {
     if (this.filterTimeout) {
       clearTimeout(this.filterTimeout);
@@ -141,95 +247,6 @@ export class TreeViewComponent extends HTMLElement {
   onClickClearSearch() {
     this.filterInput.value = null;
     this.onFilterKeyup();
-  }
-
-  private render() {
-    const fragment = document.createDocumentFragment();
-    this.tree.nodes.forEach(node => {
-      const element = this.createTreeDom(node);
-      fragment.appendChild(element);
-    });
-    this.treeContainer.appendChild(fragment);
-  }
-
-  private createTreeDom(node: TreeNode): HTMLElement {
-    const treeViewNode = new TreeViewNode(node, this.getIconFunc);
-    this.treeViewNodes.push(treeViewNode);
-    if (node.hasChildren) {
-      const childrenContainer = document.createElement('ul');
-      childrenContainer.classList.add('tree-container');
-      treeViewNode.element.appendChild(childrenContainer);
-      //updateExpandedStyles(node.expanded, childrenContainer);
-
-      node.children.forEach(childNode => {
-        const dom = this.createTreeDom(childNode);
-        childrenContainer.appendChild(dom);
-      });
-    }
-    return treeViewNode.element;
-  }
-
-  updateAllItemsStyles() {
-    this.treeViewNodes.forEach(x => x.updateStyles());
-  }
-
-  updateStyles() {
-    this.filterLoading.style.display = this.tree.filterLoading ? 'block' : 'none';
-  }
-
-  private onClick(event: MouseEvent) {
-    this.onClickTreenodeContent(event);
-    this.onClickExpanderIcon(event);
-  }
-
-  private onClickTreenodeContent(event: MouseEvent) {
-    const treeViewNode = this.getTreeViewNode(event, 'treenode-content');
-    if (treeViewNode) {
-      treeViewNode.node.setSelected();
-      this.updateAllItemsStyles();
-      this.dispatchEvent(new CustomEvent('selectedChanged', { detail: treeViewNode.node }));
-    }
-  }
-
-  private onClickExpanderIcon(event: MouseEvent) {
-    const treeViewNode = this.getTreeViewNode(event, 'dt-icon-node');
-    if (treeViewNode) {
-      treeViewNode.onExpand();
-      this.updateAllItemsStyles();
-    }
-  }
-
-  private onDblClick(event: MouseEvent) {
-    const treeViewNode = this.getTreeViewNode(event, 'treenode-content');
-    if (treeViewNode) {
-      treeViewNode.onExpand();
-      this.updateAllItemsStyles();
-    }
-  }
-
-  private onContextMenu(event: MouseEvent) {
-    const treeViewNode = this.getTreeViewNode(event, 'treenode-content');
-    if (treeViewNode) {
-      treeViewNode.node.setSelected();
-      this.updateAllItemsStyles();
-      this.dispatchEvent(new CustomEvent('selectedChanged', { detail: treeViewNode.node }));
-      const data = {originalEvent: event, data: treeViewNode.node};
-      this.dispatchEvent(new CustomEvent('nodeRightClick', {detail: data}));
-    }
-  }
-
-  private getTreeViewNode(event: MouseEvent, className: string): TreeViewNode {
-    const target = event.target as HTMLElement;
-    const element = target.classList.contains(className) ? target : target.closest('.' + className) as HTMLElement;
-    if (element && element.parentElement) {
-      const id = element.parentElement.dataset.id;
-      if (isBlank(id)) {
-        return;
-      }
-      event.stopPropagation();
-      const treeViewNode = this.treeViewNodes.find(x => x.node.$$id.toString() === id);
-      return treeViewNode;
-    }
   }
 
 }

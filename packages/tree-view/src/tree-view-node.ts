@@ -1,5 +1,9 @@
 import { TreeNode, TreeHelper, FilterState } from '@mazdik-lib/tree-lib';
 
+export function updateExpandedStyles(expanded: boolean, element: HTMLElement) {
+  element.style.display = expanded ? 'block' : 'none';
+}
+
 export class TreeViewNode {
 
   element: HTMLElement;
@@ -65,19 +69,10 @@ export class TreeViewNode {
     this.expanderIconElement.className = this.getExpanderIcon();
     this.nodeContentElement.className = this.nodeContentClass();
     this.iconElement.className = this.getIcon();
-  }
 
-  onExpand() {
-    this.node.expanded = !this.node.expanded;
-    this.updateStyles();
-    if (this.node.expanded) {
-      this.node.$$loading = true;
-      this.node.tree.loadNode(this.node).then(() => {
-        // TODO
-      }).finally(() => {
-        this.node.$$loading = false;
-        this.updateStyles();
-      });
+    const childrenContainer = this.nodeContentElement.nextElementSibling as HTMLElement;
+    if (childrenContainer) {
+      updateExpandedStyles(this.node.expanded, childrenContainer);
     }
   }
 
