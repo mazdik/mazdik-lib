@@ -1,4 +1,5 @@
 import { TreeDataSource, Tree, TreeNode } from '@mazdik-lib/tree-lib';
+import { Listener, isBlank } from '@mazdik-lib/common';
 import { TreeViewNode } from './tree-view-node';
 
 function getTemplate(id: string) {
@@ -8,15 +9,12 @@ function getTemplate(id: string) {
   <i class="dt-tree-icon dt-icon-reload large" (click)="refresh()"></i>
 
   <div class="dt-clearable-input tree-filter-input">
-    <input class="dt-input"
+    <input class="dt-input" id="filterInput${id}"
            placeholder="Search"
-           #filterInput
            [value]="searchFilterText"
            (input)="searchFilterText = $event.target.value"
            (keyup)="onFilterKeyup()">
-    <span class="dt-loader"
-          style="top: 25%; cursor:auto;"
-          [style.display]="filterLoading ? 'block' : 'none' ">
+    <span class="dt-loader" id="filterLoading${id}" style="top: 25%; cursor:auto;">
     </span>
     <span [style.display]="(searchFilterText?.length > 0 && !filterLoading) ? 'block' : 'none' "
           (click)="onClickClearSearch()">&times;</span>
@@ -24,15 +22,7 @@ function getTemplate(id: string) {
 </div>
 <div class="tree-body">
   <div id="loadingIcon${id}" class="tree-loading-content"><i class="dt-loader"></i></div>
-  <ul class="tree-container" id="treeContainer${id}" style="padding-left: 0;">
-    <app-tree-view-node
-      *ngFor="let node of nodes"
-      [node]="node"
-      [getIconFunc]="getIconFunc"
-      (selectedChanged)="selectedChanged.emit($event)"
-      (nodeRightClick)="onNodeRightClick($event)">
-    </app-tree-view-node>
-  </ul>
+  <ul class="tree-container" id="treeContainer${id}" style="padding-left: 0;"></ul>
 </div>
   `;
 }
@@ -53,20 +43,15 @@ export class TreeViewComponent extends HTMLElement {
     this.tree.serverSideFiltering = val;
   }
 
-  get filterLoading(): boolean {
-    return this.tree.filterLoading;
-  }
-
-  //@Output() selectedChanged: EventEmitter<TreeNode> = new EventEmitter<TreeNode>();
-  private filterInput: HTMLInputElement;
-
   tree: Tree = new Tree();
-  filterTimeout: any;
-  searchFilterText: any = null;
+  private filterTimeout: any;
 
+  private listeners: Listener[] = [];
   private treeViewNodes: TreeViewNode[] = [];
   private treeContainer: HTMLElement;
   private loadingIcon: HTMLElement;
+  private filterInput: HTMLInputElement;
+  private filterLoading: HTMLElement;
 
   constructor() {
     super();
@@ -77,8 +62,45 @@ export class TreeViewComponent extends HTMLElement {
 
     this.treeContainer = this.querySelector('#treeContainer'+id);
     this.loadingIcon = this.querySelector('#loadingIcon'+id);
+    this.filterInput = this.querySelector('#filterInput'+id);
+    this.filterLoading = this.querySelector('#filterLoading'+id);
 
     this.loading(false);
+    this.addEventListeners();
+  }
+
+  disconnectedCallback() {
+    this.removeEventListeners();
+  }
+
+  private addEventListeners() {
+    this.listeners = [
+      {
+        eventName: 'click',
+        target: this,
+        handler: this.onClick.bind(this)
+      },
+      {
+        eventName: 'dblclick',
+        target: this,
+        handler: this.onDblClick.bind(this)
+      },
+      {
+        eventName: 'contextmenu',
+        target: this,
+        handler: this.onContextMenu.bind(this)
+      }
+    ];
+
+    this.listeners.forEach(x => {
+      x.target.addEventListener(x.eventName, x.handler);
+    })
+  }
+
+  private removeEventListeners() {
+    this.listeners.forEach(x => {
+      x.target.removeEventListener(x.eventName, x.handler);
+    });
   }
 
   private initGetNodes() {
@@ -100,14 +122,9 @@ export class TreeViewComponent extends HTMLElement {
     }
 
     this.filterTimeout = setTimeout(() => {
-      this.tree.filterTree(this.searchFilterText);
+      this.tree.filterTree(this.filterInput.value);
       this.filterTimeout = null;
     }, this.filterDelay);
-  }
-
-  onNodeRightClick(event) {
-    const data = {originalEvent: event.event, data: event.node};
-    this.dispatchEvent(new CustomEvent('nodeRightClick', {detail: data}));
   }
 
   collapseAll() {
@@ -122,7 +139,7 @@ export class TreeViewComponent extends HTMLElement {
   }
 
   onClickClearSearch() {
-    this.searchFilterText = null;
+    this.filterInput.value = null;
     this.onFilterKeyup();
   }
 
@@ -150,6 +167,69 @@ export class TreeViewComponent extends HTMLElement {
       });
     }
     return treeViewNode.element;
+  }
+
+  updateAllItemsStyles() {
+    this.treeViewNodes.forEach(x => x.updateStyles());
+  }
+
+  updateStyles() {
+    this.filterLoading.style.display = this.tree.filterLoading ? 'block' : 'none';
+  }
+
+  private onClick(event: MouseEvent) {
+    this.onClickTreenodeContent(event);
+    this.onClickExpanderIcon(event);
+  }
+
+  private onClickTreenodeContent(event: MouseEvent) {
+    const treeViewNode = this.getTreeViewNode(event, 'treenode-content');
+    if (treeViewNode) {
+      treeViewNode.node.setSelected();
+      this.updateAllItemsStyles();
+      this.dispatchEvent(new CustomEvent('selectedChanged', { detail: treeViewNode.node }));
+    }
+  }
+
+  private onClickExpanderIcon(event: MouseEvent) {
+    const treeViewNode = this.getTreeViewNode(event, 'dt-icon-node');
+    if (treeViewNode) {
+      treeViewNode.onExpand();
+      this.updateAllItemsStyles();
+    }
+  }
+
+  private onDblClick(event: MouseEvent) {
+    const treeViewNode = this.getTreeViewNode(event, 'treenode-content');
+    if (treeViewNode) {
+      treeViewNode.onExpand();
+      this.updateAllItemsStyles();
+    }
+  }
+
+  private onContextMenu(event: MouseEvent) {
+    const treeViewNode = this.getTreeViewNode(event, 'treenode-content');
+    if (treeViewNode) {
+      treeViewNode.node.setSelected();
+      this.updateAllItemsStyles();
+      this.dispatchEvent(new CustomEvent('selectedChanged', { detail: treeViewNode.node }));
+      const data = {originalEvent: event, data: treeViewNode.node};
+      this.dispatchEvent(new CustomEvent('nodeRightClick', {detail: data}));
+    }
+  }
+
+  private getTreeViewNode(event: MouseEvent, className: string): TreeViewNode {
+    const target = event.target as HTMLElement;
+    const element = target.classList.contains(className) ? target : target.closest('.' + className) as HTMLElement;
+    if (element && element.parentElement) {
+      const id = element.parentElement.dataset.id;
+      if (isBlank(id)) {
+        return;
+      }
+      event.stopPropagation();
+      const treeViewNode = this.treeViewNodes.find(x => x.node.$$id.toString() === id);
+      return treeViewNode;
+    }
   }
 
 }

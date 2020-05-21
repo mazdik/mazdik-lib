@@ -1,84 +1,45 @@
 import { TreeNode, TreeHelper, FilterState } from '@mazdik-lib/tree-lib';
 
-// @Component({
-//   selector: 'app-tree-view-node',
-//   template: `
-//     <li *ngIf="node" [ngClass]="nodeClass()">
-//       <i [ngClass]="getExpanderIcon(node)"
-//          (click)="onExpand(node)">
-//       </i>
-//       <span [ngClass]="nodeContentClass()"
-//             (click)="onSelectNode(node)"
-//             (dblclick)="onExpand(node)"
-//             (contextmenu)="onNodeRightClick($event)">
-//         <i *ngIf="node.icon || getIconFunc" [ngClass]="getIcon(node)"></i>
-//         {{node.name}}
-//       </span>
-//       <ul class="tree-container" *ngIf="node.hasChildren && node.expanded">
-//         <app-tree-view-node
-//           *ngFor="let childNode of node.children"
-//           [node]="childNode"
-//           [getIconFunc]="getIconFunc"
-//           (selectedChanged)="selectedChanged.emit($event)"
-//           (nodeRightClick)="nodeRightClick.emit($event)">
-//         </app-tree-view-node>
-//       </ul>
-//     </li>
-//   `
-// })
 export class TreeViewNode {
 
-  element: HTMLElement
+  element: HTMLElement;
+  private expanderIconElement: HTMLElement;
+  private nodeContentElement: HTMLElement;
+  private iconElement: HTMLElement;
 
   constructor(public node: TreeNode, private getIconFunc: Function) {
-    this.element = this.createNodeElement();
+    this.createNodeElement();
+    this.updateStyles();
   }
 
-  private getTemplate() {
-    const icon = this.getIcon();
-    const innerContent = `<i class="${icon}"></i>${this.node.name}`;
-    const template = `
-    <i class="${this.getExpanderIcon()}"></i>
-    <span class="${this.nodeContentClass()}">${innerContent}</span>`;
-    return template;
-  }
-
-  private createNodeElement(): HTMLElement {
+  private createNodeElement() {
     const element = document.createElement('li');
-    element.className = this.nodeClass();
-    element.innerHTML = this.getTemplate();
     element.dataset.id = this.node.$$id.toString();
-    //this.updateNavItemStyles(node, element);
-    return element;
+
+    this.expanderIconElement = document.createElement('i');
+    element.appendChild(this.expanderIconElement);
+
+    this.nodeContentElement = document.createElement('span');
+
+    this.iconElement = document.createElement('i');
+    this.nodeContentElement.appendChild(this.iconElement);
+
+    const text = document.createTextNode(this.node.name);
+    this.nodeContentElement.appendChild(text);
+    element.appendChild(this.nodeContentElement);
+
+    this.element = element;
   }
 
   private getIcon() {
     return this.getIconFunc ? this.getIconFunc(this.node) : this.node.icon;
   }
 
-  //@Output() selectedChanged: EventEmitter<TreeNode> = new EventEmitter<TreeNode>();
-  //@Output() nodeRightClick: EventEmitter<any> = new EventEmitter();
-
-  onSelectNode() {
-    if (this.node.tree.selectedNode !== this.node) {
-      this.node.tree.selectedNode = this.node;
-      //this.selectedChanged.emit(this.node);
-    }
-  }
-
-  onExpand() {
-    this.node.expanded = !this.node.expanded;
-    if (this.node.expanded) {
-      this.node.$$loading = true;
-      this.node.tree.loadNode(this.node).finally(() => { this.node.$$loading = false; });
-    }
-  }
-
-  getExpanderIcon() {
+  private getExpanderIcon() {
     return TreeHelper.getExpanderIcon(this.node);
   }
 
-  nodeClass(): string {
+  private nodeClass(): string {
     let cls = 'treenode';
     if (this.node.$$filterState === FilterState.NOT_FOUND) {
       cls += ' filter-not-found';
@@ -86,7 +47,7 @@ export class TreeViewNode {
     return cls;
   }
 
-  nodeContentClass(): string {
+  private nodeContentClass(): string {
     let cls = 'treenode-content';
     if (this.node.$$filterState === FilterState.FOUND) {
       cls += ' filter-found';
@@ -99,9 +60,25 @@ export class TreeViewNode {
     return cls;
   }
 
-  onNodeRightClick(event: MouseEvent) {
-    this.onSelectNode();
-    //this.nodeRightClick.emit({ event, node: this.node });
+  updateStyles() {
+    this.element.className = this.nodeClass();
+    this.expanderIconElement.className = this.getExpanderIcon();
+    this.nodeContentElement.className = this.nodeContentClass();
+    this.iconElement.className = this.getIcon();
+  }
+
+  onExpand() {
+    this.node.expanded = !this.node.expanded;
+    this.updateStyles();
+    if (this.node.expanded) {
+      this.node.$$loading = true;
+      this.node.tree.loadNode(this.node).then(() => {
+        // TODO
+      }).finally(() => {
+        this.node.$$loading = false;
+        this.updateStyles();
+      });
+    }
   }
 
 }

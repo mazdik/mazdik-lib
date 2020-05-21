@@ -48,6 +48,10 @@
   box-shadow: inset 0 0 .0625rem var(--dt-color-secondary-light);
 }
 
+.treenode-content > i {
+  margin-right: 0.2rem;
+}
+
 .tree-loading-content {
   text-align: center;
 }
