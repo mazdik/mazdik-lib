@@ -81,7 +81,13 @@
   opacity: 0.75;
 }
 
-.dt-tree-filter-loading {
+.dt-clearable-input .dt-tree-filter-loading {
   top: 25%;
   cursor:auto;
+}
+
+.tree-body .dt-icon-node {
+  display: inline-flex;
+  align-items: center;
+  height: 1em;
 }

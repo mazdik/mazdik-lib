@@ -66,6 +66,7 @@ export class TreeViewComponent extends HTMLElement {
     this.refreshIcon = this.querySelector('#refreshIcon'+id);
 
     this.loading(false);
+    this.filterInput.placeholder = 'Search';
     this.addEventListeners();
   }
 
