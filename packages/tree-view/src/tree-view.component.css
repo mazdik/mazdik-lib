@@ -80,3 +80,8 @@
 .dt-tree-icon:hover {
   opacity: 0.75;
 }
+
+.dt-tree-filter-loading {
+  top: 25%;
+  cursor:auto;
+}

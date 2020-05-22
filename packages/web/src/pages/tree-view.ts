@@ -15,6 +15,7 @@ export default class TreeViewDemo implements Page {
 
     const component = document.querySelector('web-tree-view') as TreeViewComponent;
     component.getIconFunc = getIconFunc;
+    component.serverSideFiltering = true;
     component.service = treeService;
   }
 
