@@ -229,9 +229,8 @@ export class TreeViewComponent extends HTMLElement {
   private onClickTreenodeContent(event: MouseEvent) {
     const treeViewNode = this.getTreeViewNode(event, 'treenode-content');
     if (treeViewNode) {
-      treeViewNode.node.setSelected();
+      this.selectNode(treeViewNode);
       this.updateAllItemsStyles();
-      this.dispatchEvent(new CustomEvent('selectedChanged', { detail: treeViewNode.node }));
     }
   }
 
@@ -252,11 +251,17 @@ export class TreeViewComponent extends HTMLElement {
   private onContextMenu(event: MouseEvent) {
     const treeViewNode = this.getTreeViewNode(event, 'treenode-content');
     if (treeViewNode) {
-      treeViewNode.node.setSelected();
+      this.selectNode(treeViewNode);
       this.updateAllItemsStyles();
-      this.dispatchEvent(new CustomEvent('selectedChanged', { detail: treeViewNode.node }));
       const data = {originalEvent: event, data: treeViewNode.node};
       this.dispatchEvent(new CustomEvent('nodeRightClick', {detail: data}));
+    }
+  }
+
+  private selectNode(treeViewNode: TreeViewNode) {
+    if (this.tree.selectedNode !== treeViewNode.node) {
+      treeViewNode.node.setSelected();
+      this.dispatchEvent(new CustomEvent('selectedChanged', { detail: treeViewNode.node }))
     }
   }
 
