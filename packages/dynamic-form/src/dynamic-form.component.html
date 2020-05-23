@@ -1,0 +1,109 @@
+<div *ngFor="let dynElement of dynElements">
+
+  <div *ngIf="elemEnabled(dynElement)">
+
+    <ng-template #cellTemplate
+                 *ngIf="dynElement.cellTemplate"
+                 [ngTemplateOutlet]="dynElement.cellTemplate"
+                 [ngTemplateOutletContext]="{
+                  value: item[dynElement.name],
+                  column: dynElement
+               }">
+    </ng-template>
+
+    <div *ngIf="!dynElement.cellTemplate" [ngSwitch]="dynElement.type">
+
+      <app-form-select
+        *ngSwitchCase="'select'"
+        [dynElement]="dynElement"
+        [(value)]="(dynElement.keyElement) ? item[dynElement.keyElement] : item[dynElement.name]"
+        [dependsValue]="item[dynElement.dependsElement]"
+        (valid)="onValid($event, dynElement)"
+        [getOptionsFunc]="getOptionsFunc"
+        (keyElementChange)="onKeyElementChange($event)"
+        [disabled]="isDisabled(dynElement)"
+        [placeholder]="selectPlaceholder"
+        [searchInputPlaceholder]="searchInputPlaceholder"
+        (loaded)="loaded.emit($event)">
+      </app-form-select>
+
+      <app-form-select-popup
+        *ngSwitchCase="'select-popup'"
+        [dynElement]="dynElement"
+        [(value)]="(dynElement.keyElement) ? item[dynElement.keyElement] : item[dynElement.name]"
+        [dependsValue]="item[dynElement.dependsElement]"
+        (valid)="onValid($event, dynElement)"
+        [getOptionsFunc]="getOptionsFunc"
+        (keyElementChange)="onKeyElementChange($event)"
+        [disabled]="isDisabled(dynElement)"
+        [placeholder]="selectPlaceholder"
+        [searchInputPlaceholder]="searchInputPlaceholder"
+        (nameChanged)="onSelectPopupNameChanged($event, dynElement)"
+        (loaded)="loaded.emit($event)">
+      </app-form-select-popup>
+
+      <app-form-select-dropdown
+        *ngSwitchCase="'select-dropdown'"
+        [dynElement]="dynElement"
+        [(value)]="(dynElement.keyElement) ? item[dynElement.keyElement] : item[dynElement.name]"
+        [dependsValue]="item[dynElement.dependsElement]"
+        (valid)="onValid($event, dynElement)"
+        [getOptionsFunc]="getOptionsFunc"
+        (keyElementChange)="onKeyElementChange($event)"
+        [disabled]="isDisabled(dynElement)"
+        [placeholder]="selectPlaceholder"
+        [searchInputPlaceholder]="searchInputPlaceholder"
+        (loaded)="loaded.emit($event)">
+      </app-form-select-dropdown>
+
+      <app-form-checkbox
+        *ngSwitchCase="'checkbox'"
+        [dynElement]="dynElement"
+        [(value)]="item[dynElement.name]"
+        [dependsValue]="item[dynElement.dependsElement]"
+        (valid)="onValid($event, dynElement)"
+        [getOptionsFunc]="getOptionsFunc"
+        [disabled]="isDisabled(dynElement)"
+        (loaded)="loaded.emit($event)">
+      </app-form-checkbox>
+
+      <app-form-radio
+        *ngSwitchCase="'radio'"
+        [dynElement]="dynElement"
+        [(value)]="item[dynElement.name]"
+        [dependsValue]="item[dynElement.dependsElement]"
+        (valid)="onValid($event, dynElement)"
+        [getOptionsFunc]="getOptionsFunc"
+        [disabled]="isDisabled(dynElement)"
+        (loaded)="loaded.emit($event)">
+      </app-form-radio>
+
+      <app-form-textarea
+        *ngSwitchCase="'textarea'"
+        [dynElement]="dynElement"
+        [(value)]="item[dynElement.name]"
+        (valid)="onValid($event, dynElement)"
+        [disabled]="isDisabled(dynElement)">
+      </app-form-textarea>
+
+      <app-form-calendar
+        *ngSwitchCase="(dynElement.isDateType) ? dynElement.type : ''"
+        [dynElement]="dynElement"
+        [(value)]="item[dynElement.name]"
+        (valid)="onValid($event, dynElement)"
+        [disabled]="isDisabled(dynElement)">
+      </app-form-calendar>
+
+      <app-form-input-text
+        *ngSwitchDefault
+        [dynElement]="dynElement"
+        [(value)]="item[dynElement.name]"
+        (valid)="onValid($event, dynElement)"
+        [disabled]="isDisabled(dynElement)">
+      </app-form-input-text>
+
+    </div>
+
+  </div>
+
+</div>
