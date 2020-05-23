@@ -1,4 +1,4 @@
-import { GetOptionsFunc, KeyElementChangeEventArgs } from './types';
+import { KeyElementChangeEventArgs } from './types';
 import { DynamicFormElement } from './dynamic-form-element';
 
 export class DynamicFormComponent extends HTMLElement {
@@ -6,9 +6,6 @@ export class DynamicFormComponent extends HTMLElement {
   dynElements: DynamicFormElement[];
   item: any;
   isNewItem: boolean = true;
-  getOptionsFunc: GetOptionsFunc;
-  selectPlaceholder: string;
-  searchInputPlaceholder: string;
 
   private validElements: any = {};
 

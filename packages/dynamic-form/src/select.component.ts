@@ -22,4 +22,36 @@ import { InputOptionComponent } from './input-option.component';
 // })
 export class SelectComponent extends InputOptionComponent {
 
+  private select: HTMLSelectElement;
+
+  constructor() {
+    super();
+    this.createElement();
+  }
+
+  private createElement() {
+    this.select = document.createElement('select');
+    this.select.classList.add('dt-input');
+    this.select.disabled = this.disabled;
+  }
+
+  private loadSelect() {
+    this.select.innerHTML = `<option value="" disabled selected hidden>${this.placeholder}</option>`;
+    const options = this.getOptions();
+    for (const option of options) {
+      this.select.options.add(new Option(option.name, option.id));
+    }
+    this.setSelectedIndex();
+  }
+
+  private setSelectedIndex() {
+    const options = this.getOptions();
+    if (options && options.length) {
+      let index = options.findIndex(x => x.id === this.model.toString());
+      index = (index >= 0) ? index + 1 : index; // + 1 selectPlaceholder
+      this.select.selectedIndex = index;
+    }
+  }
+
+
 }

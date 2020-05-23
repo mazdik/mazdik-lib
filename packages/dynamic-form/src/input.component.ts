@@ -28,7 +28,7 @@ export class InputComponent {
   }
 
   validate() {
-    this.dynElement.validate(this.model);
+    this.dynElement.validate();
     this.valid.emit(!this.dynElement.hasError);
   }
 
