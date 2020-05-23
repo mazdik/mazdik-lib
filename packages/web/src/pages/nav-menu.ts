@@ -1,11 +1,14 @@
 import { Page } from '../page';
-import html from './nav-menu.html';
 import '@mazdik-lib/nav-menu';
 import { NavMenuComponent } from '@mazdik-lib/nav-menu';
 
 export default class NavMenuDemo implements Page {
 
-  get template(): string { return html; }
+  get template(): string {
+    return `<web-nav-menu class="nav-menu-demo1" id="nav-menu1"></web-nav-menu>
+    <p>Minimize: true</p>
+    <web-nav-menu class="nav-menu-demo2" id="nav-menu2"></web-nav-menu>`;
+  }
 
   load() {
     const navMenuNodes: any[] = [

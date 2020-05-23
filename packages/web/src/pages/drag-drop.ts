@@ -1,5 +1,4 @@
 import { Page } from '../page';
-import html from './drag-drop.html';
 import { DragDrop } from '@mazdik-lib/drag-drop';
 
 class Item {
@@ -9,7 +8,9 @@ class Item {
 
 export default class DragDropDemo implements Page {
 
-  get template(): string { return html; }
+  get template(): string {
+    return `<div class="drag-drop-demo" id="drag-drop-demo"></div>`;
+  }
 
   private dragDrop: DragDrop;
 

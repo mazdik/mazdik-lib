@@ -1,0 +1,93 @@
+.tree-container {
+  margin: 0;
+  white-space: nowrap;
+  padding-left: 1.25rem;
+}
+
+.treenode-content {
+  cursor: pointer;
+  display: inline-block;
+  vertical-align: middle;
+  padding: 0 .25em;
+  line-height: 1.5rem;
+  user-select: none;
+}
+
+.treenode {
+  list-style: none outside none;
+  margin: 0;
+  padding: .3125rem 0 0 0;
+}
+
+.treenode:hover {
+  cursor: pointer;
+}
+
+.treenode .highlight {
+  background: var(--dt-color-primary);
+  color: white;
+  border-color: var(--dt-color-primary-dark);
+  border-radius: .125rem;
+}
+
+.treenode .filter-found {
+  font-weight: bold;
+}
+
+.treenode .filter-on-path {
+  opacity: 0.5;
+}
+
+.treenode.filter-not-found {
+  display: none;
+}
+
+.treenode span:hover:not(.highlight) {
+  background: var(--dt-color-primary-lightest);
+  border-radius: .125rem;
+  box-shadow: inset 0 0 .0625rem var(--dt-color-secondary-light);
+}
+
+.treenode-content > i {
+  margin-right: 0.2rem;
+}
+
+.tree-loading-content {
+  text-align: center;
+}
+
+.tree-loading-content i {
+  height: 2.5rem;
+  width: 2.5rem;
+}
+
+.tree-header {
+  display: flex;
+  align-items: center;
+}
+
+.tree-body {
+  overflow: auto;
+  max-height: calc(100% - 3.125rem);
+  min-height: 12.5rem;
+}
+
+.dt-tree-icon {
+  cursor: pointer;
+  margin: 0 .2rem;
+}
+
+.dt-tree-icon:hover {
+  opacity: 0.75;
+}
+
+.dt-clearable-input .dt-tree-filter-loading {
+  top: 25%;
+  cursor:auto;
+}
+
+.tree-body .dt-icon-node {
+  display: inline-flex;
+  align-items: center;
+  height: 1em;
+}

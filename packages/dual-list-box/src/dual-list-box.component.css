@@ -1,0 +1,33 @@
+.dt-listbox {
+  display: flex;
+}
+
+.dt-listbox-panel {
+  display: flex;
+  flex-direction: column;
+  user-select: none;
+}
+
+.dt-listbox-panel button {
+  display: block;
+  margin-bottom: .25em;
+  padding: .125rem .375rem;
+}
+
+.dt-listbox-panel:nth-child(2n) {
+  padding-top: 1.5em;
+}
+
+.dt-listbox-panel:nth-child(2n+1) {
+  width: calc(50% - 2.5rem);
+}
+
+.dt-listbox-panel .dt-list-menu {
+  height: 12.5rem;
+  overflow: auto;
+  border: 1px solid var(--dt-color-secondary-light);
+}
+
+.dt-listbox-panel + .dt-listbox-panel {
+  margin-left: .5em;
+}

@@ -20,10 +20,16 @@
       "path": "./dropdown-select/tsconfig.package.json"
     },
     {
+      "path": "./dual-list-box/tsconfig.package.json"
+    },
+    {
       "path": "./inline-edit/tsconfig.package.json"
     },
     {
       "path": "./modal/tsconfig.package.json"
+    },
+    {
+      "path": "./modal-select/tsconfig.package.json"
     },
     {
       "path": "./nav-menu/tsconfig.package.json"
@@ -38,6 +44,12 @@
       "path": "./resizable/tsconfig.package.json"
     },
     {
+      "path": "./row-view/tsconfig.package.json"
+    },
+    {
+      "path": "./scroller/tsconfig.package.json"
+    },
+    {
       "path": "./select-list/tsconfig.package.json"
     },
     {
@@ -45,6 +57,9 @@
     },
     {
       "path": "./tree-lib/tsconfig.package.json"
+    },
+    {
+      "path": "./tree-view/tsconfig.package.json"
     }
   ]
 }

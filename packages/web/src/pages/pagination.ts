@@ -1,11 +1,12 @@
 import { Page } from '../page';
-import html from './pagination.html';
 import '@mazdik-lib/pagination';
 import { PaginationComponent } from '@mazdik-lib/pagination';
 
 export default class PaginationDemo implements Page {
 
-  get template(): string { return html; }
+  get template(): string {
+    return `<web-pagination class="pagination-demo"></web-pagination>`;
+  }
 
   load() {
     const component = document.querySelector('web-pagination') as PaginationComponent;

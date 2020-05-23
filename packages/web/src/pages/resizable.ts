@@ -1,10 +1,13 @@
 import { Page } from '../page';
-import html from './resizable.html';
 import { Resizable } from '@mazdik-lib/resizable';
 
 export default class ResizableDemo implements Page {
 
-  get template(): string { return html; }
+  get template(): string {
+    return `<div class="resizable-directive-demo">
+    <div class="dd-box box1" id="box1"></div>
+  </div>`;
+  }
 
   private resizable: Resizable;
 

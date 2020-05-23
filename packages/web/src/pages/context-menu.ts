@@ -1,12 +1,14 @@
 import { Page } from '../page';
-import html from './context-menu.html';
 import '@mazdik-lib/context-menu';
 import { ContextMenuComponent, MenuEventArgs } from '@mazdik-lib/context-menu';
 import { MenuItem } from '@mazdik-lib/common';
 
 export default class ContextMenuDemo implements Page {
 
-  get template(): string { return html; }
+  get template(): string {
+    return `<button class="dt-button" id="button">context menu</button>&nbsp;
+    <web-context-menu id="contextMenu"></web-context-menu>`;
+  }
 
   load() {
     const items: MenuItem[] = [

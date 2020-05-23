@@ -1,12 +1,13 @@
 import { Page } from '../page';
-import html from './tabs.html';
 import '@mazdik-lib/tabs';
 import { TabsComponent } from '@mazdik-lib/tabs';
 import { SelectItem } from '@mazdik-lib/common';
 
 export default class TabsDemo implements Page {
 
-  get template(): string { return html; }
+  get template(): string {
+    return `<web-tabs></web-tabs>`;
+  }
 
   load() {
     const tabs: SelectItem[] = [

@@ -1,0 +1,79 @@
+[
+  {
+    "id": "ASMODIANS",
+    "name": "ASMODIANS",
+    "data": {
+      "name": "Defunct",
+      "gender": "MALE",
+      "cube_size": "1",
+      "exp": 777777
+    },
+    "children": [
+      {
+        "id": "MALE",
+        "name": "MALE",
+        "data": {
+          "name": "Extaze",
+          "gender": "MALE",
+          "cube_size": "12",
+          "exp": 7347
+        }
+      },
+      {
+        "id": "FEMALE",
+        "name": "FEMALE",
+        "data": {
+          "name": "Soer",
+          "gender": "FEMALE",
+          "cube_size": "13",
+          "exp": 7347
+        }
+      }
+    ]
+  },
+  {
+    "id": "ELYOS",
+    "name": "ELYOS",
+    "data": {
+      "name": "Spartacus",
+      "gender": "FEMALE",
+      "cube_size": "2",
+      "exp": 999999
+    },
+    "children": [
+      {
+        "id": "MALE",
+        "name": "MALE",
+        "data": {
+          "name": "Chesterxd",
+          "gender": "MALE",
+          "cube_size": "21",
+          "exp": 7347
+        },
+        "children": [
+          {
+            "id": "LAZY",
+            "name": "LAZY",
+            "leaf": false,
+            "data": {
+              "name": "Chester",
+              "gender": "FEMALE",
+              "cube_size": "21",
+              "exp": 7347
+            }
+          }
+        ]
+      },
+      {
+        "id": "FEMALE",
+        "name": "FEMALE",
+        "data": {
+          "name": "Oumen",
+          "gender": "FEMALE",
+          "cube_size": "22",
+          "exp": 7347
+        }
+      }
+    ]
+  }
+]

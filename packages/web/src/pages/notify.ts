@@ -1,11 +1,18 @@
 import { Page } from '../page';
-import html from './notify.html';
 import '@mazdik-lib/notify';
 import { NotifyComponent } from '@mazdik-lib/notify';
 
 export default class NotifyDemo implements Page {
 
-  get template(): string { return html; }
+  get template(): string {
+    return `<web-notify></web-notify>
+    <button class="dt-button" id="error-button">Error</button>&nbsp;
+    <button class="dt-button" id="info-button">Info</button>&nbsp;
+    <button class="dt-button" id="notify-button">Notify</button>&nbsp;
+    <button class="dt-button" id="success-button">Success</button>&nbsp;
+    <button class="dt-button" id="warning-button">Warning</button>
+    <button class="dt-button" id="sticky-button">Sticky</button>`;
+  }
 
   load() {
     const notify = document.querySelector('web-notify') as NotifyComponent;
