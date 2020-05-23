@@ -1,30 +1,66 @@
+import { Listener } from '@mazdik-lib/common';
 import { KeyElementChangeEventArgs } from './types';
 import { DynamicFormElement } from './dynamic-form-element';
+import './input-text.component';
+import { InputTextComponent } from './input-text.component';
 
 export class DynamicFormComponent extends HTMLElement {
 
-  dynElements: DynamicFormElement[];
-  item: any;
+  item: any = {};
   isNewItem: boolean = true;
 
-  private validElements: any = {};
+  get dynElements(): DynamicFormElement[] { return this._dynElements; }
+  set dynElements(val: DynamicFormElement[]) {
+    this._dynElements = val;
+    this.render();
+  }
+  private _dynElements: DynamicFormElement[];
+
+  private elements: HTMLElement[] = [];
+  private listeners: Listener[] = [];
 
   constructor() {
     super();
   }
 
-  elemEnabled(dynElement: DynamicFormElement): boolean {
-    return (!dynElement.hidden);
+  disconnectedCallback() {
+    this.removeEventListeners();
+    this.elements = [];
   }
 
-  onValid(event: any, dynElement: DynamicFormElement) {
-    this.validElements[dynElement.name] = event;
-    this.isValid();
+  private removeEventListeners() {
+    this.listeners.forEach(x => {
+      x.target.removeEventListener(x.eventName, x.handler);
+    });
   }
 
-  isValid() {
-    const result = Object.keys(this.validElements).some(x => this.validElements[x] === false);
-    this.dispatchEvent(new CustomEvent('valid', {detail: !result}));
+  private render() {
+    this.elements = [];
+    this.dynElements.forEach(dynElement => {
+      if (!dynElement.hidden) {
+        const element = document.createElement('web-form-input-text') as InputTextComponent;
+        element.dynElement = dynElement;
+        element.disabled = this.isDisabled(dynElement);
+
+        this.listeners.push({
+          eventName: 'valid',
+          target: element,
+          handler: this.onValid.bind(this)
+        });
+
+        this.elements.push(element);
+      }
+    });
+    this.append(...this.elements);
+  }
+
+  private isDisabled(dynElement: DynamicFormElement) {
+    return (!this.isNewItem && dynElement.disableOnEdit);
+  }
+
+  private onValid() {
+    const result = this.dynElements.some(x => x.hasError);
+    this.dispatchEvent(new CustomEvent('valid', {detail: !result}))
   }
 
   onLoaded(event) {
@@ -34,10 +70,6 @@ export class DynamicFormComponent extends HTMLElement {
   onKeyElementChange(event: KeyElementChangeEventArgs) {
     this.item[event.keyElementName] = event.keyElementValue;
     this.item[event.elementName] = event.elementValue;
-  }
-
-  isDisabled(dynElement: DynamicFormElement) {
-    return (!this.isNewItem && dynElement.disableOnEdit);
   }
 
   onSelectPopupNameChanged(value: any, dynElement: DynamicFormElement) {

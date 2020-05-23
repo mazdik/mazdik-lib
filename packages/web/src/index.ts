@@ -81,6 +81,7 @@ class App {
           { id: 'dual-list-box', name: 'Dual list box' },
           { id: 'modal-select', name: 'Modal select' },
           { id: 'tree-view', name: 'Tree view' },
+          { id: 'dynamic-form', name: 'Dynamic forms' },
         ]
       },
     ];

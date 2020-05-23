@@ -1,4 +1,4 @@
-import { Listener } from '@mazdik-lib/common';
+import { Listener, isBlank } from '@mazdik-lib/common';
 import { DynamicFormElement } from './dynamic-form-element';
 
 // @Component({
@@ -25,8 +25,7 @@ export class InputTextComponent extends HTMLElement {
   get dynElement(): DynamicFormElement { return this._dynElement; }
   set dynElement(val: DynamicFormElement) {
     this._dynElement = val;
-    this.input.placeholder = this.dynElement.title;
-    this.input.value = this.dynElement.value;
+    this.initView();
   }
   private _dynElement: DynamicFormElement;
 
@@ -42,10 +41,6 @@ export class InputTextComponent extends HTMLElement {
     this.input = document.createElement('input');
     this.input.type = 'text';
     this.input.classList.add('dt-input');
-    this.appendChild(this.input);
-
-    this.validate();
-    this.addEventListeners();
   }
 
   disconnectedCallback() {
@@ -81,6 +76,17 @@ export class InputTextComponent extends HTMLElement {
   private validate() {
     this.dynElement.validate();
     this.dispatchEvent(new CustomEvent('valid', { detail: !this.dynElement.hasError }));
+  }
+
+  private initView() {
+    this.innerHTML = '';
+    this.appendChild(this.input);
+
+    this.input.placeholder = this.dynElement.title;
+    this.input.value = !isBlank(this.dynElement.value) ? this.dynElement.value : null;
+    this.validate();
+
+    this.addEventListeners();
   }
 
   private createWrapperElement(dynElement: DynamicFormElement): HTMLElement {
