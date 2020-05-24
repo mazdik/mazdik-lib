@@ -6,7 +6,7 @@ import { InputTextComponent } from './input-text.component';
 
 export class DynamicFormComponent extends HTMLElement {
 
-  item: any = {};
+  item: { [key: string]: any } = {};
   isNewItem: boolean = true;
 
   get dynElements(): DynamicFormElement[] { return this._dynElements; }
@@ -38,6 +38,7 @@ export class DynamicFormComponent extends HTMLElement {
     this.elements = [];
     this.dynElements.forEach(dynElement => {
       if (!dynElement.hidden) {
+        dynElement.item = this.item;
         const element = document.createElement('web-form-input-text') as InputTextComponent;
         element.dynElement = dynElement;
         element.disabled = this.isDisabled(dynElement);

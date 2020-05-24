@@ -1,25 +1,9 @@
-import { SelectItem, InputType, inputIsDateType } from '@mazdik-lib/common';
-import { GetOptionsFunc } from './types';
+import { SelectItem, inputIsDateType } from '@mazdik-lib/common';
+import { DynamicFormElementBase } from './dynamic-form-element-base';
 
-export class DynamicFormElement {
+export class DynamicFormElement extends DynamicFormElementBase {
 
-  title: string;
-  name: string;
-  item: any;
-  options?: SelectItem[];
-  optionsUrl?: string;
-  type?: InputType;
-  validatorFunc?: (name: string, value: any) => string[];
-  dependsElement?: string;
-  cellTemplate?: any;
-  hidden?: boolean;
-  keyElement?: string;
-  disableOnEdit?: boolean;
-  getOptionsFunc: GetOptionsFunc;
-  selectPlaceholder: string = 'Select...';
-  searchInputPlaceholder: string = 'Search...';
-
-  errors: string[] = [];
+  item: { [key: string]: any } = {};
 
   get value(): any {
     return this.hasKeyElement ? this.item[this.keyElement] : this.item[this.name];
@@ -42,6 +26,13 @@ export class DynamicFormElement {
 
   get hasKeyElement(): boolean {
     return (this.keyElement && (this.type === 'select' || this.type === 'select-popup' || this.type === 'select-dropdown'));
+  }
+
+  private errors: string[] = [];
+
+  constructor(init: Partial<DynamicFormElementBase>) {
+    super();
+    Object.assign(this, init);
   }
 
   getOptions(dependsValue?: any): SelectItem[] {
