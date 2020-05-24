@@ -22,7 +22,7 @@ import { InputOptionComponent } from './input-option.component';
 //   `,
 //   changeDetection: ChangeDetectionStrategy.OnPush,
 // })
-export class SelectPopupComponent extends InputOptionComponent {
+export class SelectModalComponent extends InputOptionComponent {
 
   //@Output() nameChanged: EventEmitter<any> = new EventEmitter();
 

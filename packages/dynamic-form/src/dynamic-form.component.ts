@@ -3,6 +3,7 @@ import { KeyElementChangeEventArgs } from './types';
 import { DynamicFormElement } from './dynamic-form-element';
 import { InputTextComponent } from './input-text.component';
 import { SelectComponent } from './select.component';
+import { TextareaComponent } from './textarea.component';
 
 export class DynamicFormComponent extends HTMLElement {
 
@@ -23,6 +24,7 @@ export class DynamicFormComponent extends HTMLElement {
     super();
     customElements.define('web-form-input-text', InputTextComponent);
     customElements.define('web-form-select', SelectComponent);
+    customElements.define('web-form-textarea', TextareaComponent);
   }
 
   disconnectedCallback() {
@@ -45,6 +47,8 @@ export class DynamicFormComponent extends HTMLElement {
         let element;
         if (dynElement.type === 'select') {
           element = document.createElement('web-form-select') as SelectComponent;
+        } else if (dynElement.type === 'textarea') {
+          element = document.createElement('web-form-textarea') as TextareaComponent;
         } else {
           element = document.createElement('web-form-input-text') as InputTextComponent;
         }
@@ -69,11 +73,11 @@ export class DynamicFormComponent extends HTMLElement {
 
   private onValid() {
     const result = this.dynElements.some(x => x.hasError);
-    this.dispatchEvent(new CustomEvent('valid', {detail: !result}))
+    this.dispatchEvent(new CustomEvent('valid', { detail: !result }))
   }
 
   onLoaded(event) {
-    this.dispatchEvent(new CustomEvent('loaded', {detail: event}));
+    this.dispatchEvent(new CustomEvent('loaded', { detail: event }));
   }
 
   onKeyElementChange(event: KeyElementChangeEventArgs) {

@@ -14,8 +14,9 @@ export class SelectComponent extends InputOptionComponent {
   onInit() {
     super.onInit();
     this.label.after(this.select);
-
     this.loadSelect();
+    this.setSelectedIndex();
+
     this.addEventListeners();
   }
 
@@ -38,9 +39,7 @@ export class SelectComponent extends InputOptionComponent {
   }
 
   private onInput(event: any) {
-    this.dynElement.value = event.target.value;
-    this.dispatchEvent(new CustomEvent('valueChange', { detail: this.dynElement.value }));
-    this.validate();
+    this.value = event.target.value;
     this.onValueChange();
   }
 
@@ -50,13 +49,12 @@ export class SelectComponent extends InputOptionComponent {
     for (const option of options) {
       this.select.options.add(new Option(option.name, option.id));
     }
-    this.setSelectedIndex();
   }
 
   private setSelectedIndex() {
     const options = this.getOptions();
-    if (!isBlank(options) && !isBlank(this.dynElement.value)) {
-      let index = options.findIndex(x => x.id === this.dynElement.value.toString());
+    if (!isBlank(options) && !isBlank(this.value)) {
+      let index = options.findIndex(x => x.id === this.value.toString());
       index = (index >= 0) ? index + 1 : index; // + 1 selectPlaceholder
       this.select.selectedIndex = index;
     }

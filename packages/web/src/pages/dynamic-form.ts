@@ -62,7 +62,7 @@ export default class DropdownSelectDemo implements Page {
       new DynamicFormElement({
         title: 'Account name',
         name: 'account_name',
-        type: 'select-popup',
+        type: 'select-modal',
         getOptionsFunc: this.getOptions,
         optionsUrl: 'assets/accounts.json',
         keyElement: 'account_id',
@@ -83,6 +83,11 @@ export default class DropdownSelectDemo implements Page {
         options: [
           { id: '1', name: 'Online' }
         ]
+      }),
+      new DynamicFormElement({
+        title: 'Comment',
+        name: 'comment',
+        type: 'textarea',
       }),
     ];
 

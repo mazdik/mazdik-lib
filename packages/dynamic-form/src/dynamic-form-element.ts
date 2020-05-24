@@ -25,7 +25,7 @@ export class DynamicFormElement extends DynamicFormElementBase {
   }
 
   get hasKeyElement(): boolean {
-    return (this.keyElement && (this.type === 'select' || this.type === 'select-popup' || this.type === 'select-dropdown'));
+    return (this.keyElement && (this.type === 'select' || this.type === 'select-modal' || this.type === 'select-dropdown'));
   }
 
   errors: string[] = [];

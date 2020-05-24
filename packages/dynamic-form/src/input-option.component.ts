@@ -62,7 +62,7 @@ export class InputOptionComponent extends InputComponent {
     if (this.dynElement.keyElement) {
       const data = {
         keyElementName: this.dynElement.keyElement,
-        keyElementValue: this.dynElement.value,
+        keyElementValue: this.value,
         elementName: this.dynElement.name,
         elementValue: this.getName(),
       };
@@ -71,10 +71,10 @@ export class InputOptionComponent extends InputComponent {
   }
 
   setDefaultSelect() {
-    if (this.firstCascade && !isBlank(this.dynElement.value)) {
-      this.dynElement.value = '';
+    if (this.firstCascade && !isBlank(this.value)) {
+      this.value = '';
       if (this._options && this._options.length === 1) {
-        this.dynElement.value = this._options[0].id;
+        this.value = this._options[0].id;
       }
       this.onValueChange();
     }
@@ -83,7 +83,7 @@ export class InputOptionComponent extends InputComponent {
 
   getName() {
     if (this._options) {
-      const option = this._options.find(x => x.id === this.dynElement.value);
+      const option = this._options.find(x => x.id === this.value);
       return (option) ? option.name : '';
     }
   }

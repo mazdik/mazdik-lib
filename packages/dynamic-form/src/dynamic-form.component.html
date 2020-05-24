@@ -28,7 +28,7 @@
       </app-form-select>
 
       <app-form-select-popup
-        *ngSwitchCase="'select-popup'"
+        *ngSwitchCase="'select-modal'"
         [dynElement]="dynElement"
         [(value)]="(dynElement.keyElement) ? item[dynElement.keyElement] : item[dynElement.name]"
         [dependsValue]="item[dynElement.dependsElement]"

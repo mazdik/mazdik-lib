@@ -16,7 +16,7 @@ export class InputTextComponent extends InputComponent {
     super.onInit();
     this.label.after(this.input);
     this.input.placeholder = this.dynElement.title;
-    this.input.value = !isBlank(this.dynElement.value) ? this.dynElement.value : null;
+    this.input.value = !isBlank(this.value) ? this.value : null;
 
     this.addEventListeners();
   }
@@ -40,9 +40,7 @@ export class InputTextComponent extends InputComponent {
   }
 
   private onInput(event: any) {
-    this.dynElement.value = event.target.value;
-    this.dispatchEvent(new CustomEvent('valueChange', { detail: this.dynElement.value }));
-    this.validate();
+    this.value = event.target.value;
   }
 
 }

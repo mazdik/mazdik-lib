@@ -18,6 +18,15 @@ export class InputComponent extends HTMLElement {
     this.loader.style.display = val ? 'inline-block': 'none';
   }
 
+  get value(): any { return this.dynElement.value; }
+  set value(val: any) {
+    if (this.dynElement.value !== val) {
+      this.dynElement.value = val;
+      this.dispatchEvent(new CustomEvent('valueChange', { detail: this.dynElement.value }));
+      this.validate();
+    }
+  }
+
   wrapper: HTMLElement;
   loader: HTMLElement;
   label: HTMLLabelElement;
