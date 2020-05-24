@@ -4,6 +4,15 @@ import { SelectItem } from '@mazdik-lib/common';
 
 export class InputOptionComponent extends InputComponent {
 
+  get model(): any { return this._model; }
+  set model(value: any) {
+    if (this._model !== value) {
+      this._model = value;
+      this.validate();
+    }
+  }
+  private _model: any;
+
   getOptionsFunc: GetOptionsFunc;
   searchInputPlaceholder: string;
 
@@ -19,7 +28,7 @@ export class InputOptionComponent extends InputComponent {
   keyElementChange: any; //@Output() CustomEvent<KeyElementChangeEventArgs>;
   loaded: any;  //@Output()
 
-
+  loading: boolean;
   private _options: SelectItem[];
   private firstCascade: boolean = true;
 

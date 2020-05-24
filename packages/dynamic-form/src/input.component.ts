@@ -1,35 +1,64 @@
+import { Listener } from '@mazdik-lib/common';
 import { DynamicFormElement } from './dynamic-form-element';
 
-export class InputComponent {
+export class InputComponent extends HTMLElement {
 
-  dynElement: DynamicFormElement;
-  disabled: boolean;
-  placeholder: string;
-
-  get model(): any { return this._model; }
-  set model(value: any) {
-    if (this._model !== value) {
-      this._model = value;
-      this.valueChange.emit(this._model);
-      this.validate();
-    }
+  get dynElement(): DynamicFormElement { return this._dynElement; }
+  set dynElement(val: DynamicFormElement) {
+    this._dynElement = val;
+    this.onInit();
   }
-  private _model: any;
+  private _dynElement: DynamicFormElement;
 
-  valueChange: any;   //@Output()
-  valid: any;   // @Output()
+  set disabled(val: boolean) {
+    this.onDisabled(val);
+  }
 
-  loading: boolean;
+  wrapper: HTMLElement;
+  label: HTMLLabelElement;
+  helpBlock: HTMLElement;
+  listeners: Listener[] = [];
 
-  constructor() { }
+  constructor() {
+    super();
+    this.wrapper = document.createElement('div');
+    this.wrapper = document.createElement('div');
+    this.wrapper.classList.add('dt-group');
 
-  ngOnInit() {
+    this.label = document.createElement('label');
+    this.wrapper.append(this.label);
+
+    this.helpBlock = document.createElement('div');
+    this.helpBlock .classList.add('dt-help-block');
+    this.wrapper.append(this.helpBlock);
+  }
+
+  connectedCallback() {
+    this.append(this.wrapper);
+  }
+
+  disconnectedCallback() {
+    this.removeEventListeners();
+  }
+
+  private removeEventListeners() {
+    this.listeners.forEach(x => {
+      x.target.removeEventListener(x.eventName, x.handler);
+    });
+  }
+
+  onInit() {
+    this.label.textContent = this.dynElement.title;
     this.validate();
+  }
+
+  onDisabled(val: boolean) {
+
   }
 
   validate() {
     this.dynElement.validate();
-    this.valid.emit(!this.dynElement.hasError);
+    this.dispatchEvent(new CustomEvent('valid', { detail: !this.dynElement.hasError }));
   }
 
 }
