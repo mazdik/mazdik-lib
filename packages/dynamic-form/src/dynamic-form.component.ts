@@ -1,8 +1,8 @@
 import { Listener } from '@mazdik-lib/common';
 import { KeyElementChangeEventArgs } from './types';
 import { DynamicFormElement } from './dynamic-form-element';
-import './input-text.component';
 import { InputTextComponent } from './input-text.component';
+import { SelectComponent } from './select.component';
 
 export class DynamicFormComponent extends HTMLElement {
 
@@ -21,6 +21,8 @@ export class DynamicFormComponent extends HTMLElement {
 
   constructor() {
     super();
+    customElements.define('web-form-input-text', InputTextComponent);
+    customElements.define('web-form-select', SelectComponent);
   }
 
   disconnectedCallback() {
@@ -39,7 +41,13 @@ export class DynamicFormComponent extends HTMLElement {
     this.dynElements.forEach(dynElement => {
       if (!dynElement.hidden) {
         dynElement.item = this.item;
-        const element = document.createElement('web-form-input-text') as InputTextComponent;
+
+        let element;
+        if (dynElement.type === 'select') {
+          element = document.createElement('web-form-select') as SelectComponent;
+        } else {
+          element = document.createElement('web-form-input-text') as InputTextComponent;
+        }
         element.dynElement = dynElement;
         element.disabled = this.isDisabled(dynElement);
 

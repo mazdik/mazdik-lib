@@ -28,7 +28,7 @@ export class DynamicFormElement extends DynamicFormElementBase {
     return (this.keyElement && (this.type === 'select' || this.type === 'select-popup' || this.type === 'select-dropdown'));
   }
 
-  private errors: string[] = [];
+  errors: string[] = [];
 
   constructor(init: Partial<DynamicFormElementBase>) {
     super();

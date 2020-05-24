@@ -12,6 +12,20 @@ export class InputTextComponent extends InputComponent {
     this.input.classList.add('dt-input');
   }
 
+  onInit() {
+    super.onInit();
+    this.label.after(this.input);
+    this.input.placeholder = this.dynElement.title;
+    this.input.value = !isBlank(this.dynElement.value) ? this.dynElement.value : null;
+
+    this.addEventListeners();
+  }
+
+  onDisabled(val: boolean) {
+    super.onDisabled(val);
+    this.input.disabled = val;
+  }
+
   private addEventListeners() {
     this.listeners = [
       {
@@ -20,7 +34,6 @@ export class InputTextComponent extends InputComponent {
         handler: this.onInput.bind(this)
       },
     ];
-
     this.listeners.forEach(x => {
       x.target.addEventListener(x.eventName, x.handler);
     })
@@ -32,19 +45,4 @@ export class InputTextComponent extends InputComponent {
     this.validate();
   }
 
-  onInit() {
-    super.onInit();
-    this.label.after(this.input);
-    this.input.placeholder = this.dynElement.title;
-    this.input.value = !isBlank(this.dynElement.value) ? this.dynElement.value : null;
-
-    this.addEventListeners();
-  }
-
-  onDisabled(val: boolean) {
-    this.input.disabled = val;
-  }
-
 }
-
-customElements.define('web-form-input-text', InputTextComponent);

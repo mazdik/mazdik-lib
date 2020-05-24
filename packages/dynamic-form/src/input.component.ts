@@ -1,4 +1,4 @@
-import { Listener } from '@mazdik-lib/common';
+import { Listener, toggleClass } from '@mazdik-lib/common';
 import { DynamicFormElement } from './dynamic-form-element';
 
 export class InputComponent extends HTMLElement {
@@ -14,7 +14,12 @@ export class InputComponent extends HTMLElement {
     this.onDisabled(val);
   }
 
+  set loading(val: boolean) {
+    this.loader.style.display = val ? 'inline-block': 'none';
+  }
+
   wrapper: HTMLElement;
+  loader: HTMLElement;
   label: HTMLLabelElement;
   helpBlock: HTMLElement;
   listeners: Listener[] = [];
@@ -24,6 +29,11 @@ export class InputComponent extends HTMLElement {
     this.wrapper = document.createElement('div');
     this.wrapper = document.createElement('div');
     this.wrapper.classList.add('dt-group');
+
+    this.loader = document.createElement('i');
+    this.loader.classList.add('dt-loader');
+    this.loader.style.display = 'none';
+    this.wrapper.append(this.loader);
 
     this.label = document.createElement('label');
     this.wrapper.append(this.label);
@@ -53,12 +63,22 @@ export class InputComponent extends HTMLElement {
   }
 
   onDisabled(val: boolean) {
-
+    toggleClass(this.wrapper, 'disabled', val);
   }
 
   validate() {
     this.dynElement.validate();
     this.dispatchEvent(new CustomEvent('valid', { detail: !this.dynElement.hasError }));
+    toggleClass(this.wrapper, 'dt-has-error', this.dynElement.hasError);
+
+    const errorElements = [];
+    this.dynElement.errors.forEach(error => {
+      const element = document.createElement('div');
+      element.textContent = error;
+      errorElements.push(element);
+    });
+    this.helpBlock.innerHTML = '';
+    this.helpBlock.append(...errorElements);
   }
 
 }

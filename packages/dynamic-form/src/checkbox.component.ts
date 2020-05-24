@@ -29,10 +29,10 @@ import { SelectItem } from '@mazdik-lib/common';
 export class CheckboxComponent extends InputOptionComponent {
 
   isSelectActive(option: SelectItem): boolean {
-    if (Array.isArray(this.model)) {
-      return this.model.some(a => a === option.id);
+    if (Array.isArray(this.dynElement.value)) {
+      return this.dynElement.value.some(a => a === option.id);
     } else {
-      return this.model === option.id;
+      return this.dynElement.value === option.id;
     }
   }
 
@@ -42,23 +42,23 @@ export class CheckboxComponent extends InputOptionComponent {
   }
 
   check(option: SelectItem) {
-    if (Array.isArray(this.model)) {
-      if (this.model.indexOf(option.id) === -1) {
-        this.model.push(option.id);
+    if (Array.isArray(this.dynElement.value)) {
+      if (this.dynElement.value.indexOf(option.id) === -1) {
+        this.dynElement.value.push(option.id);
       }
     } else {
-      return this.model = option.id;
+      return this.dynElement.value = option.id;
     }
   }
 
   uncheck(option: SelectItem) {
-    if (Array.isArray(this.model)) {
-      const index = this.model.indexOf(option.id);
+    if (Array.isArray(this.dynElement.value)) {
+      const index = this.dynElement.value.indexOf(option.id);
       if (index > -1) {
-        this.model.splice(index, 1);
+        this.dynElement.value.splice(index, 1);
       }
     } else {
-      return this.model = null;
+      return this.dynElement.value = null;
     }
   }
 

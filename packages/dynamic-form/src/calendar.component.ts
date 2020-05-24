@@ -20,8 +20,8 @@ import { inputFormattedDate } from '@mazdik-lib/common';
 // })
 export class CalendarComponent extends InputComponent {
 
-  // get formattedDate() {
-  //   return inputFormattedDate(this.dynElement.type, this.model);
-  // }
+  get formattedDate() {
+    return inputFormattedDate(this.dynElement.type, this.dynElement.value);
+  }
 
 }

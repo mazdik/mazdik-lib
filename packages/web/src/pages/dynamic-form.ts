@@ -6,7 +6,7 @@ import { Validators } from '@mazdik-lib/common';
 export default class DropdownSelectDemo implements Page {
 
   get template(): string {
-    return `<web-dynamic-form></web-dynamic-form>`;
+    return `<web-dynamic-form class="dynamic-form-demo"></web-dynamic-form>`;
   }
 
   load() {
@@ -63,6 +63,7 @@ export default class DropdownSelectDemo implements Page {
         title: 'Account name',
         name: 'account_name',
         type: 'select-popup',
+        getOptionsFunc: this.getOptions,
         optionsUrl: 'assets/accounts.json',
         keyElement: 'account_id',
       }),

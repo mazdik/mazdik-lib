@@ -1,20 +1,7 @@
-import { GetOptionsFunc, KeyElementChangeEventArgs } from './types';
 import { InputComponent } from './input.component';
-import { SelectItem } from '@mazdik-lib/common';
+import { SelectItem, isBlank } from '@mazdik-lib/common';
 
 export class InputOptionComponent extends InputComponent {
-
-  get model(): any { return this._model; }
-  set model(value: any) {
-    if (this._model !== value) {
-      this._model = value;
-      this.validate();
-    }
-  }
-  private _model: any;
-
-  getOptionsFunc: GetOptionsFunc;
-  searchInputPlaceholder: string;
 
   get dependsValue(): any { return this._dependsValue; }
   set dependsValue(value: any) {
@@ -25,14 +12,11 @@ export class InputOptionComponent extends InputComponent {
   }
   private _dependsValue: any;
 
-  keyElementChange: any; //@Output() CustomEvent<KeyElementChangeEventArgs>;
-  loaded: any;  //@Output()
-
-  loading: boolean;
   private _options: SelectItem[];
   private firstCascade: boolean = true;
 
-  ngOnInit() {
+  onInit() {
+    super.onInit();
     if (this.dynElement.optionsUrl && !this.dynElement.dependsElement) {
       this.loadOptions();
     } else {
@@ -55,16 +39,18 @@ export class InputOptionComponent extends InputComponent {
   }
 
   loadOptions() {
-    if (this.dynElement.optionsUrl && this.getOptionsFunc) {
+    if (this.dynElement.optionsUrl && this.dynElement.getOptionsFunc) {
       this.loading = true;
-      this.getOptionsFunc(this.dynElement.optionsUrl, this._dependsValue).then((res) => {
-        this._options = res;
-        this.setDefaultSelect();
-        this.loaded.emit();
-      }).catch(error => {
-        this._options = [];
-        this.loaded.emit();
-      }).finally(() => this.loading = false);
+      this.dynElement.getOptionsFunc(this.dynElement.optionsUrl, this._dependsValue)
+        .then((res) => {
+          this._options = res;
+          this.setDefaultSelect();
+        }).catch(() => {
+          this._options = [];
+        }).finally(() => {
+          this.loading = false;
+          this.dispatchEvent(new CustomEvent('loaded', { detail: this.loading }));
+        });
     }
   }
 
@@ -74,21 +60,21 @@ export class InputOptionComponent extends InputComponent {
 
   onValueChange() {
     if (this.dynElement.keyElement) {
-      this.keyElementChange.emit({
+      const data = {
         keyElementName: this.dynElement.keyElement,
-        keyElementValue: this.model,
+        keyElementValue: this.dynElement.value,
         elementName: this.dynElement.name,
         elementValue: this.getName(),
-      });
+      };
+      this.dispatchEvent(new CustomEvent('keyElementChange', { detail: data }));
     }
   }
 
   setDefaultSelect() {
-    const initValueOnEdit = (this.firstCascade && this.model !== null && this.model !== undefined && this.model.length !== 0);
-    if (!initValueOnEdit) {
-      this.model = '';
+    if (this.firstCascade && !isBlank(this.dynElement.value)) {
+      this.dynElement.value = '';
       if (this._options && this._options.length === 1) {
-        this.model = this._options[0].id;
+        this.dynElement.value = this._options[0].id;
       }
       this.onValueChange();
     }
@@ -97,7 +83,7 @@ export class InputOptionComponent extends InputComponent {
 
   getName() {
     if (this._options) {
-      const option = this._options.find(x => x.id === this.model);
+      const option = this._options.find(x => x.id === this.dynElement.value);
       return (option) ? option.name : '';
     }
   }
