@@ -1,3 +1,4 @@
+import { SelectItem } from '@mazdik-lib/common';
 import { InputOptionComponent } from './input-option.component';
 
 export class RadioComponent extends InputOptionComponent {
@@ -7,7 +8,7 @@ export class RadioComponent extends InputOptionComponent {
 
   onInit() {
     super.onInit();
-    this.createElements();
+    this.createElements(this.getOptions());
     this.label.after(this.block);
 
     this.addEventListeners();
@@ -18,9 +19,8 @@ export class RadioComponent extends InputOptionComponent {
     this.inputs.forEach(x => x.disabled = val);
   }
 
-  private createElements() {
+  private createElements(options: SelectItem[]) {
     this.block = document.createElement('div');
-    const options = this.getOptions();
     options.forEach(option => {
       const div = document.createElement('div');
       div.classList.add('dt-radio');
