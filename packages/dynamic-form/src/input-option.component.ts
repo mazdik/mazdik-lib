@@ -1,7 +1,7 @@
-import { InputComponent } from './input.component';
+import { InputBaseComponent } from './input-base.component';
 import { SelectItem, isBlank } from '@mazdik-lib/common';
 
-export class InputOptionComponent extends InputComponent {
+export class InputOptionComponent extends InputBaseComponent {
 
   get dependsValue(): any { return this._dependsValue; }
   set dependsValue(value: any) {

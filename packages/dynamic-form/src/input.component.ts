@@ -1,93 +1,52 @@
-import { Listener, toggleClass } from '@mazdik-lib/common';
-import { DynamicFormElement } from './dynamic-form-element';
+import { isBlank, inputFormattedDate, inputIsDateType } from '@mazdik-lib/common';
+import { InputBaseComponent } from './input-base.component';
 
-export class InputComponent extends HTMLElement {
+export class InputComponent extends InputBaseComponent {
 
-  get dynElement(): DynamicFormElement { return this._dynElement; }
-  set dynElement(val: DynamicFormElement) {
-    this._dynElement = val;
-    this.onInit();
-  }
-  private _dynElement: DynamicFormElement;
-
-  set disabled(val: boolean) {
-    this.onDisabled(val);
-  }
-
-  set loading(val: boolean) {
-    this.loader.style.display = val ? 'inline-block': 'none';
-  }
-
-  get value(): any { return this.dynElement.value; }
-  set value(val: any) {
-    if (this.dynElement.value !== val) {
-      this.dynElement.value = val;
-      this.dispatchEvent(new CustomEvent('valueChange', { detail: this.dynElement.value }));
-      this.validate();
-    }
-  }
-
-  wrapper: HTMLElement;
-  loader: HTMLElement;
-  label: HTMLLabelElement;
-  helpBlock: HTMLElement;
-  listeners: Listener[] = [];
+  private input: HTMLInputElement;
 
   constructor() {
     super();
-    this.wrapper = document.createElement('div');
-    this.wrapper = document.createElement('div');
-    this.wrapper.classList.add('dt-group');
-
-    this.loader = document.createElement('i');
-    this.loader.classList.add('dt-loader');
-    this.loader.style.display = 'none';
-    this.wrapper.append(this.loader);
-
-    this.label = document.createElement('label');
-    this.wrapper.append(this.label);
-
-    this.helpBlock = document.createElement('div');
-    this.helpBlock .classList.add('dt-help-block');
-    this.wrapper.append(this.helpBlock);
-  }
-
-  connectedCallback() {
-    this.append(this.wrapper);
-  }
-
-  disconnectedCallback() {
-    this.removeEventListeners();
-  }
-
-  private removeEventListeners() {
-    this.listeners.forEach(x => {
-      x.target.removeEventListener(x.eventName, x.handler);
-    });
+    this.input = document.createElement('input');
+    this.input.classList.add('dt-input');
   }
 
   onInit() {
-    this.label.textContent = this.dynElement.title;
-    this.validate();
+    super.onInit();
+    this.label.after(this.input);
+    this.input.type = this.dynElement.type;
+    this.input.placeholder = this.dynElement.title;
+    this.input.value = this.getInputFormattedValue();
+
+    this.addEventListeners();
   }
 
   onDisabled(val: boolean) {
-    toggleClass(this.wrapper, 'disabled', val);
+    super.onDisabled(val);
+    this.input.disabled = val;
   }
 
-  validate() {
-    this.dynElement.validate();
-    this.dispatchEvent(new CustomEvent('valid', { detail: !this.dynElement.hasError }));
-    toggleClass(this.wrapper, 'dt-has-error', this.dynElement.hasError);
-
-    const errorElements = [];
-    this.dynElement.errors.forEach(error => {
-      const element = document.createElement('div');
-      element.textContent = error;
-      errorElements.push(element);
-    });
-    this.helpBlock.innerHTML = '';
-    this.helpBlock.append(...errorElements);
+  private addEventListeners() {
+    this.listeners = [
+      {
+        eventName: 'input',
+        target: this.input,
+        handler: this.onInput.bind(this)
+      },
+    ];
+    this.listeners.forEach(x => {
+      x.target.addEventListener(x.eventName, x.handler);
+    })
   }
+
+  private onInput(event: any) {
+    this.value = event.target.value;
+  }
+
+  private getInputFormattedValue() {
+    const val = inputIsDateType(this.dynElement.type) ? inputFormattedDate(this.dynElement.type, this.value) : this.value;
+    return !isBlank(val) ? val : null;
+  }
+
 
 }

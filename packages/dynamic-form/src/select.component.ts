@@ -44,7 +44,11 @@ export class SelectComponent extends InputOptionComponent {
   }
 
   private loadSelect() {
-    this.select.innerHTML = `<option value="" disabled selected hidden>${this.dynElement.selectPlaceholder}</option>`;
+    const defaultOption = new Option(this.dynElement.selectPlaceholder, '', false, true);
+    defaultOption.disabled = true;
+    defaultOption.hidden = true;
+    this.select.options.add(defaultOption);
+
     const options = this.getOptions();
     for (const option of options) {
       this.select.options.add(new Option(option.name, option.id));

@@ -1,7 +1,7 @@
 import { Listener } from '@mazdik-lib/common';
 import { KeyElementChangeEventArgs } from './types';
 import { DynamicFormElement } from './dynamic-form-element';
-import { InputTextComponent } from './input-text.component';
+import { InputComponent } from './input.component';
 import { SelectComponent } from './select.component';
 import { TextareaComponent } from './textarea.component';
 import { CheckboxComponent } from './checkbox.component';
@@ -24,7 +24,7 @@ export class DynamicFormComponent extends HTMLElement {
 
   constructor() {
     super();
-    customElements.define('web-form-input-text', InputTextComponent);
+    customElements.define('web-form-input', InputComponent);
     customElements.define('web-form-select', SelectComponent);
     customElements.define('web-form-textarea', TextareaComponent);
     customElements.define('web-form-checkbox', CheckboxComponent);
@@ -58,7 +58,7 @@ export class DynamicFormComponent extends HTMLElement {
         } else if (dynElement.type === 'radio') {
           element = document.createElement('web-form-radio') as RadioComponent;
         } else {
-          element = document.createElement('web-form-input-text') as InputTextComponent;
+          element = document.createElement('web-form-input') as InputComponent;
         }
         element.dynElement = dynElement;
         element.disabled = this.isDisabled(dynElement);

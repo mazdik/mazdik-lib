@@ -1,7 +1,7 @@
 import { isBlank } from '@mazdik-lib/common';
-import { InputComponent } from './input.component';
+import { InputBaseComponent } from './input-base.component';
 
-export class TextareaComponent extends InputComponent {
+export class TextareaComponent extends InputBaseComponent {
 
   private textarea: HTMLTextAreaElement;
 
