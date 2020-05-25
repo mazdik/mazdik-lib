@@ -4,6 +4,8 @@ import { DynamicFormElement } from './dynamic-form-element';
 import { InputTextComponent } from './input-text.component';
 import { SelectComponent } from './select.component';
 import { TextareaComponent } from './textarea.component';
+import { CheckboxComponent } from './checkbox.component';
+import { RadioComponent } from './radio.component';
 
 export class DynamicFormComponent extends HTMLElement {
 
@@ -25,6 +27,8 @@ export class DynamicFormComponent extends HTMLElement {
     customElements.define('web-form-input-text', InputTextComponent);
     customElements.define('web-form-select', SelectComponent);
     customElements.define('web-form-textarea', TextareaComponent);
+    customElements.define('web-form-checkbox', CheckboxComponent);
+    customElements.define('web-form-radio', RadioComponent);
   }
 
   disconnectedCallback() {
@@ -49,6 +53,10 @@ export class DynamicFormComponent extends HTMLElement {
           element = document.createElement('web-form-select') as SelectComponent;
         } else if (dynElement.type === 'textarea') {
           element = document.createElement('web-form-textarea') as TextareaComponent;
+        } else if (dynElement.type === 'checkbox') {
+          element = document.createElement('web-form-checkbox') as CheckboxComponent;
+        } else if (dynElement.type === 'radio') {
+          element = document.createElement('web-form-radio') as RadioComponent;
         } else {
           element = document.createElement('web-form-input-text') as InputTextComponent;
         }

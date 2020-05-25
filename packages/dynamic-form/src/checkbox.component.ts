@@ -1,32 +1,58 @@
 import { InputOptionComponent } from './input-option.component';
 import { SelectItem } from '@mazdik-lib/common';
 
-// @Component({
-//   selector: 'app-form-checkbox',
-//   template: `
-//     <div class="dt-group" [ngClass]="{'dt-has-error':dynElement.hasError}">
-//       <label [attr.for]="dynElement.name">{{dynElement.title}}</label>
-//       <i class="dt-loader" *ngIf="loading"></i>
-//       <div *ngFor="let o of getOptions()">
-//         <span class="dt-checkbox">
-//           <input
-//             type="checkbox"
-//             [name]="dynElement.name"
-//             [value]="o.id"
-//             [checked]="isSelectActive(o)"
-//             (change)="onChecked($event, o)"
-//             [disabled]="disabled"/>
-//           <label>{{o.name ? o.name : o.id}}</label>
-//         </span>
-//       </div>
-//       <div class="dt-help-block">
-//         <span *ngFor="let err of dynElement.errors">{{err}}<br></span>
-//       </div>
-//     </div>
-//   `,
-//   changeDetection: ChangeDetectionStrategy.OnPush,
-// })
 export class CheckboxComponent extends InputOptionComponent {
+
+  private block: HTMLElement;
+  private inputs: HTMLInputElement[] = [];
+
+  onInit() {
+    super.onInit();
+    this.createElements();
+    this.label.after(this.block);
+
+    this.addEventListeners();
+  }
+
+  onDisabled(val: boolean) {
+    super.onDisabled(val);
+    this.inputs.forEach(x => x.disabled = val);
+  }
+
+  private createElements() {
+    this.block = document.createElement('div');
+    const options = this.getOptions();
+    options.forEach(option => {
+      const div = document.createElement('div');
+      div.classList.add('dt-checkbox');
+      this.block.append(div)
+
+      const input = document.createElement('input');
+      input.type = 'checkbox';
+      input.name = this.dynElement.name;
+      input.value = option.id;
+      input.checked = this.isSelectActive(option);
+      div.append(input);
+
+      const label = document.createElement('label');
+      label.textContent = option.name ? option.name : option.id;
+      div.append(label);
+
+      this.inputs.push(input);
+
+      this.listeners.push({
+        eventName: 'change',
+        target: input,
+        handler: this.onChange.bind(this)
+      });
+    });
+  }
+
+  private addEventListeners() {
+    this.listeners.forEach(x => {
+      x.target.addEventListener(x.eventName, x.handler);
+    })
+  }
 
   isSelectActive(option: SelectItem): boolean {
     if (Array.isArray(this.value)) {
@@ -36,24 +62,24 @@ export class CheckboxComponent extends InputOptionComponent {
     }
   }
 
-  onChecked(e: Event, option: SelectItem) {
-    const checkbox = e.target as HTMLInputElement;
-    (checkbox.checked) ? this.check(option) : this.uncheck(option);
+  onChange(event: any) {
+    const checkbox = event.target as HTMLInputElement;
+    (checkbox.checked) ? this.check(checkbox.value) : this.uncheck(checkbox.value);
   }
 
-  check(option: SelectItem) {
+  check(val: string) {
     if (Array.isArray(this.value)) {
-      if (this.value.indexOf(option.id) === -1) {
-        this.value.push(option.id);
+      if (this.value.indexOf(val) === -1) {
+        this.value.push(val);
       }
     } else {
-      return this.value = option.id;
+      return this.value = val;
     }
   }
 
-  uncheck(option: SelectItem) {
+  uncheck(val: string) {
     if (Array.isArray(this.value)) {
-      const index = this.value.indexOf(option.id);
+      const index = this.value.indexOf(val);
       if (index > -1) {
         this.value.splice(index, 1);
       }
