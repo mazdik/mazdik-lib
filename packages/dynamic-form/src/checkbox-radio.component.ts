@@ -1,7 +1,7 @@
 import { SelectItem } from '@mazdik-lib/common';
 import { InputOptionComponent } from './input-option.component';
 
-export class CheckboxComponent extends InputOptionComponent {
+export class CheckboxRadioComponent extends InputOptionComponent {
 
   private block: HTMLElement;
   private inputs: HTMLInputElement[] = [];
@@ -23,20 +23,20 @@ export class CheckboxComponent extends InputOptionComponent {
 
   onLoadOptions() {
     super.onLoadOptions();
-    this.createElements(this.getOptions());
+    this.createElements(this.getOptions(), this.dynElement.type);
     this.addEventListeners();
   }
 
-  private createElements(options: SelectItem[]) {
+  private createElements(options: SelectItem[], type: string) {
     this.block.innerHTML = '';
     this.block = document.createElement('div');
     options.forEach(option => {
       const div = document.createElement('div');
-      div.classList.add('dt-checkbox');
+      div.classList.add('dt-' + type);
       this.block.append(div)
 
       const input = document.createElement('input');
-      input.type = 'checkbox';
+      input.type = type;
       input.name = this.dynElement.name;
       input.value = option.id;
       input.checked = this.isSelectActive(option);
@@ -71,8 +71,12 @@ export class CheckboxComponent extends InputOptionComponent {
   }
 
   onChange(event: any) {
-    const checkbox = event.target as HTMLInputElement;
-    (checkbox.checked) ? this.check(checkbox.value) : this.uncheck(checkbox.value);
+    const element = event.target as HTMLInputElement;
+    if (this.dynElement.type === 'checkbox') {
+      (element.checked) ? this.check(element.value) : this.uncheck(element.value);
+    } else {
+      this.value = event.target.value;
+    }
   }
 
   check(val: string) {

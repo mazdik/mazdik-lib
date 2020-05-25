@@ -1,5 +1,6 @@
 import { SelectItem, InputType } from '@mazdik-lib/common';
-import { GetOptionsFunc } from './types';
+
+export type GetOptionsFunc = (url: string, parentId: any) => Promise<any>;
 
 export class DynamicFormElementBase {
 
