@@ -1,29 +1,53 @@
 import { InputOptionComponent } from './input-option.component';
+import '@mazdik-lib/modal-select';
+import { ModalSelectComponent } from '@mazdik-lib/modal-select';
 
-// @Component({
-//   selector: 'app-form-select-popup',
-//   template: `
-//     <div class="dt-group" [ngClass]="{'dt-has-error':dynElement.hasError}">
-//       <label [attr.for]="dynElement.name">{{dynElement.title}}</label>
-//       <i class="dt-loader" *ngIf="loading"></i>
-//       <app-modal-select [(value)]="model"
-//                     [options]="getOptions()"
-//                     [disabled]="disabled"
-//                     [placeholder]="placeholder"
-//                     [searchInputPlaceholder]="searchInputPlaceholder"
-//                     [modalTitle]="dynElement.title"
-//                     (valueChange)="onValueChange()"
-//                     (nameChanged)="nameChanged.emit($event)">
-//       </app-modal-select>
-//       <div class="dt-help-block">
-//         <span *ngFor="let err of dynElement.errors">{{err}}<br></span>
-//       </div>
-//     </div>
-//   `,
-//   changeDetection: ChangeDetectionStrategy.OnPush,
-// })
 export class SelectModalComponent extends InputOptionComponent {
 
-  //@Output() nameChanged: EventEmitter<any> = new EventEmitter();
+  private modalSelect: ModalSelectComponent;
+
+  constructor() {
+    super();
+    this.modalSelect = document.createElement('web-modal-select') as ModalSelectComponent;
+  }
+
+  onInit() {
+    super.onInit();
+    this.label.after(this.modalSelect);
+
+    window.customElements.whenDefined('web-modal-select').then(() => {
+      this.modalSelect.title = this.dynElement.title;
+      this.modalSelect.placeholder = this.dynElement.selectPlaceholder;
+      this.modalSelect.searchInputPlaceholder = this.dynElement.searchInputPlaceholder;
+      this.modalSelect.options = this.getOptions();
+      this.modalSelect.model = this.value;
+    })
+
+    this.addEventListeners();
+  }
+
+  onDisabled(val: boolean) {
+    super.onDisabled(val);
+    // TODO
+    //this.modalSelect.disabled = val;
+  }
+
+  private addEventListeners() {
+    this.listeners = [
+      {
+        eventName: 'valueChange',
+        target: this.modalSelect,
+        handler: this.onInput.bind(this)
+      },
+    ];
+    this.listeners.forEach(x => {
+      x.target.addEventListener(x.eventName, x.handler);
+    })
+  }
+
+  private onInput(event: CustomEvent) {
+    this.value = event.detail;
+    this.onValueChange();
+  }
 
 }

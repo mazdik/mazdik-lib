@@ -47,7 +47,7 @@ export class SelectListComponent extends HTMLElement {
   }
   private _settings: SelectListSettings = new SelectListSettings();
 
-  get options(): SelectItem[] { return this._options; }
+  get options(): SelectItem[] { return this._options || []; }
   set options(val: SelectItem[]) {
     this._options = val;
     this.render();

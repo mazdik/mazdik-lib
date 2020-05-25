@@ -90,6 +90,17 @@ export class ModalSelectComponent extends HTMLElement {
 
   constructor() {
     super();
+  }
+
+  connectedCallback() {
+    this.onInit();
+  }
+
+  disconnectedCallback() {
+    this.removeEventListeners();
+  }
+
+  private onInit() {
     const id = (~~(Math.random()*1e3)).toString();
     const template = document.createElement('template');
     template.innerHTML = getTemplate(id);
@@ -106,10 +117,6 @@ export class ModalSelectComponent extends HTMLElement {
     this.pagination = this.querySelector('web-pagination');
 
     this.addEventListeners();
-  }
-
-  disconnectedCallback() {
-    this.removeEventListeners();
   }
 
   private addEventListeners() {
@@ -195,7 +202,6 @@ export class ModalSelectComponent extends HTMLElement {
     const option = (this.optionsCopy || []).find(x => x.id === this.model);
     const selectedName = (option) ? option.name : '';
     this.selectInput.value = selectedName;
-    this.dispatchEvent(new CustomEvent('nameChanged', { detail: selectedName }));
   }
 
   private updateStyles() {

@@ -6,6 +6,8 @@ import { SelectComponent } from './select.component';
 import { TextareaComponent } from './textarea.component';
 import { CheckboxComponent } from './checkbox.component';
 import { RadioComponent } from './radio.component';
+import { SelectDropdownComponent } from './select-dropdown.component';
+import { SelectModalComponent } from './select-modal.component';
 
 export class DynamicFormComponent extends HTMLElement {
 
@@ -29,6 +31,8 @@ export class DynamicFormComponent extends HTMLElement {
     customElements.define('web-form-textarea', TextareaComponent);
     customElements.define('web-form-checkbox', CheckboxComponent);
     customElements.define('web-form-radio', RadioComponent);
+    customElements.define('web-form-select-dropdown', SelectDropdownComponent);
+    customElements.define('web-form-select-modal', SelectModalComponent);
   }
 
   disconnectedCallback() {
@@ -57,6 +61,10 @@ export class DynamicFormComponent extends HTMLElement {
           element = document.createElement('web-form-checkbox') as CheckboxComponent;
         } else if (dynElement.type === 'radio') {
           element = document.createElement('web-form-radio') as RadioComponent;
+        } else if (dynElement.type === 'select-dropdown') {
+          element = document.createElement('web-form-select-dropdown') as SelectDropdownComponent;
+        } else if (dynElement.type === 'select-modal') {
+          element = document.createElement('web-form-select-modal') as SelectModalComponent;
         } else {
           element = document.createElement('web-form-input') as InputComponent;
         }
@@ -91,12 +99,6 @@ export class DynamicFormComponent extends HTMLElement {
   onKeyElementChange(event: KeyElementChangeEventArgs) {
     this.item[event.keyElementName] = event.keyElementValue;
     this.item[event.elementName] = event.elementValue;
-  }
-
-  onSelectPopupNameChanged(value: any, dynElement: DynamicFormElement) {
-    if (dynElement.keyElement) {
-      this.item[dynElement.name] = value;
-    }
   }
 
 }
