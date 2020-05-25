@@ -6,12 +6,14 @@ export class RadioComponent extends InputOptionComponent {
   private block: HTMLElement;
   private inputs: HTMLInputElement[] = [];
 
+  constructor() {
+    super();
+    this.block = document.createElement('div');
+  }
+
   onInit() {
     super.onInit();
-    this.createElements(this.getOptions());
     this.label.after(this.block);
-
-    this.addEventListeners();
   }
 
   onDisabled(val: boolean) {
@@ -19,8 +21,14 @@ export class RadioComponent extends InputOptionComponent {
     this.inputs.forEach(x => x.disabled = val);
   }
 
+  onLoadOptions() {
+    super.onLoadOptions();
+    this.createElements(this.getOptions());
+    this.addEventListeners();
+  }
+
   private createElements(options: SelectItem[]) {
-    this.block = document.createElement('div');
+    this.block.innerHTML = '';
     options.forEach(option => {
       const div = document.createElement('div');
       div.classList.add('dt-radio');

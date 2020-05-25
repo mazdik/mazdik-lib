@@ -45,7 +45,7 @@ class App {
   }
 
   private destroy(page: Page) {
-    if (page && typeof page.onDestroy === "function") {
+    if (page && typeof page.onDestroy === 'function') {
       page.onDestroy();
     }
   }

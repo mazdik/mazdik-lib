@@ -21,8 +21,8 @@ export class InputOptionComponent extends InputBaseComponent {
       this.loadOptions();
     } else {
       this._options = this.dynElement.getOptions(this.dependsValue);
+      this.onLoadOptions();
     }
-    this.validate();
   }
 
   setDependsOptions() {
@@ -31,7 +31,7 @@ export class InputOptionComponent extends InputBaseComponent {
         this.loadOptions();
       } else {
         this._options = this.dynElement.getOptions(this.dependsValue);
-        this.setDefaultSelect();
+        this.onLoadOptions();
       }
     } else {
       this._options = [];
@@ -44,7 +44,7 @@ export class InputOptionComponent extends InputBaseComponent {
       this.dynElement.getOptionsFunc(this.dynElement.optionsUrl, this._dependsValue)
         .then((res) => {
           this._options = res;
-          this.setDefaultSelect();
+          this.onLoadOptions();
         }).catch(() => {
           this._options = [];
         }).finally(() => {
@@ -52,6 +52,11 @@ export class InputOptionComponent extends InputBaseComponent {
           this.dispatchEvent(new CustomEvent('loaded', { detail: this.loading }));
         });
     }
+  }
+
+  onLoadOptions() {
+    this.setDefaultSelect();
+    this.validate();
   }
 
   getOptions(): SelectItem[] {

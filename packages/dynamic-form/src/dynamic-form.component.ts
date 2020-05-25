@@ -37,9 +37,19 @@ export class DynamicFormComponent extends HTMLElement {
         const element = this.createComponent(dynElement);
 
         this.listeners.push({
+          eventName: 'valueChange',
+          target: element,
+          handler: this.onValueChange.bind(this)
+        });
+        this.listeners.push({
           eventName: 'valid',
           target: element,
           handler: this.onValid.bind(this)
+        });
+        this.listeners.push({
+          eventName: 'keyElementChange',
+          target: element,
+          handler: this.onKeyElementChange.bind(this)
         });
         this.listeners.push({
           eventName: 'loaded',
@@ -83,18 +93,31 @@ export class DynamicFormComponent extends HTMLElement {
     return (!this.isNewItem && dynElement.disableOnEdit);
   }
 
+  private onValueChange() {
+    this.elements.forEach(element => {
+      if ('dependsValue' in element) {
+        // TODO
+        //element.dependsValue = this.item[element.dependsElement];
+        //console.log(element);
+      }
+    });
+  }
+
   private onValid() {
     const result = this.dynElements.some(x => x.hasError);
     this.dispatchEvent(new CustomEvent('valid', { detail: !result }))
   }
 
-  onLoaded(event) {
-    this.dispatchEvent(new CustomEvent('loaded', { detail: event }));
+  private onLoaded(event: CustomEvent) {
+    this.dispatchEvent(new CustomEvent('loaded', { detail: event.detail }));
   }
 
-  onKeyElementChange(event: KeyElementChangeEventArgs) {
-    this.item[event.keyElementName] = event.keyElementValue;
-    this.item[event.elementName] = event.elementValue;
+  onKeyElementChange(event: CustomEvent<KeyElementChangeEventArgs>) {
+    const args = event.detail;
+    // TODO
+    //console.log(args);
+    this.item[args.keyElementName] = args.keyElementValue;
+    this.item[args.elementName] = args.elementValue;
   }
 
 }

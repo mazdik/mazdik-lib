@@ -14,8 +14,6 @@ export class SelectComponent extends InputOptionComponent {
   onInit() {
     super.onInit();
     this.label.after(this.select);
-    this.loadSelect();
-    this.setSelectedIndex();
 
     this.addEventListeners();
   }
@@ -23,6 +21,12 @@ export class SelectComponent extends InputOptionComponent {
   onDisabled(val: boolean) {
     super.onDisabled(val);
     this.select.disabled = val;
+  }
+
+  onLoadOptions() {
+    super.onLoadOptions();
+    this.loadSelect();
+    this.setSelectedIndex();
   }
 
   private addEventListeners() {

@@ -21,7 +21,7 @@ export class SelectModalComponent extends InputOptionComponent {
       this.modalSelect.searchInputPlaceholder = this.dynElement.searchInputPlaceholder;
       this.modalSelect.options = this.getOptions();
       this.modalSelect.model = this.value;
-    })
+    });
 
     this.addEventListeners();
   }
@@ -30,6 +30,13 @@ export class SelectModalComponent extends InputOptionComponent {
     super.onDisabled(val);
     // TODO
     //this.modalSelect.disabled = val;
+  }
+
+  onLoadOptions() {
+    super.onLoadOptions();
+    window.customElements.whenDefined('web-modal-select').then(() => {
+      this.modalSelect.options = this.getOptions();
+    });
   }
 
   private addEventListeners() {

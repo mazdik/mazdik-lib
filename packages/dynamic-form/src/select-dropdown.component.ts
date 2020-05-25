@@ -22,7 +22,7 @@ export class SelectDropdownComponent extends InputOptionComponent {
       };
       this.dropdownSelect.options = this.getOptions();
       this.dropdownSelect.value = this.value;
-    })
+    });
 
     this.addEventListeners();
   }
@@ -33,6 +33,13 @@ export class SelectDropdownComponent extends InputOptionComponent {
     // this.dropdownSelect.settings = {
     //   disabled: val
     // };
+  }
+
+  onLoadOptions() {
+    super.onLoadOptions();
+    window.customElements.whenDefined('web-dropdown-select').then(() => {
+      this.dropdownSelect.options = this.getOptions();
+    })
   }
 
   private addEventListeners() {
