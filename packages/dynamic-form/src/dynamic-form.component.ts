@@ -1,7 +1,6 @@
 import { Listener } from '@mazdik-lib/common';
-import { KeyElementChangeEventArgs } from './types';
 import { DynamicFormElement } from './dynamic-form-element';
-import { InputComponent } from './input.component';
+import { InputBaseComponent } from './input-base.component';
 import './custom-elements';
 import { componentNames } from './custom-elements';
 
@@ -17,7 +16,7 @@ export class DynamicFormComponent extends HTMLElement {
   }
   private _dynElements: DynamicFormElement[];
 
-  private elements: HTMLElement[] = [];
+  private elements: InputBaseComponent[] = [];
   private listeners: Listener[] = [];
 
   constructor() {
@@ -46,16 +45,6 @@ export class DynamicFormComponent extends HTMLElement {
           target: element,
           handler: this.onValid.bind(this)
         });
-        this.listeners.push({
-          eventName: 'keyElementChange',
-          target: element,
-          handler: this.onKeyElementChange.bind(this)
-        });
-        this.listeners.push({
-          eventName: 'loaded',
-          target: element,
-          handler: this.onLoaded.bind(this)
-        });
 
         this.elements.push(element);
       }
@@ -76,13 +65,13 @@ export class DynamicFormComponent extends HTMLElement {
     });
   }
 
-  private createComponent(dynElement: DynamicFormElement): InputComponent {
+  private createComponent(dynElement: DynamicFormElement): InputBaseComponent {
     const component = componentNames.find(x => x.type === dynElement.type);
     let element;
     if (component) {
-      element = document.createElement(component.name) as InputComponent;
+      element = document.createElement(component.name) as InputBaseComponent;
     } else {
-      element = document.createElement('web-form-input') as InputComponent;
+      element = document.createElement('web-form-input') as InputBaseComponent;
     }
     element.dynElement = dynElement;
     element.disabled = this.isDisabled(dynElement);
@@ -93,12 +82,14 @@ export class DynamicFormComponent extends HTMLElement {
     return (!this.isNewItem && dynElement.disableOnEdit);
   }
 
-  private onValueChange() {
+  private onValueChange(event: CustomEvent<DynamicFormElement>) {
     this.elements.forEach(element => {
-      if ('dependsValue' in element) {
-        // TODO
-        //element.dependsValue = this.item[element.dependsElement];
-        //console.log(element);
+      if (element.dynElement.dependsElement === event.detail.name) {
+        element['dependsValue'] = this.item[element.dynElement.dependsElement];
+      }
+      if (element.dynElement.name === event.detail.keyElement) {
+        this.item[event.detail.keyElement] = event.detail.value;
+        element.updateValue();
       }
     });
   }
@@ -106,18 +97,6 @@ export class DynamicFormComponent extends HTMLElement {
   private onValid() {
     const result = this.dynElements.some(x => x.hasError);
     this.dispatchEvent(new CustomEvent('valid', { detail: !result }))
-  }
-
-  private onLoaded(event: CustomEvent) {
-    this.dispatchEvent(new CustomEvent('loaded', { detail: event.detail }));
-  }
-
-  onKeyElementChange(event: CustomEvent<KeyElementChangeEventArgs>) {
-    const args = event.detail;
-    // TODO
-    //console.log(args);
-    this.item[args.keyElementName] = args.keyElementValue;
-    this.item[args.elementName] = args.elementValue;
   }
 
 }

@@ -38,8 +38,14 @@ export class ModalSelectComponent extends HTMLElement {
   filterDelay: number = 300;
   itemsPerPage: number = 10;
   modalTitle: string = 'Search Dialog';
-  placeholder: string = 'Select';
   searchInputPlaceholder: string = 'Search...';
+
+  get placeholder(): string { return this._placeholder; }
+  set placeholder(val: string) {
+    this._placeholder = val;
+    this.selectInput.placeholder = val;
+  }
+  private _placeholder: string = 'Select';
 
   get disabled() { return this._disabled; }
   set disabled(val: boolean) {
@@ -199,8 +205,8 @@ export class ModalSelectComponent extends HTMLElement {
   }
 
   private setSelectedName() {
-    const option = (this.optionsCopy || []).find(x => x.id === this.model);
-    const selectedName = (option) ? option.name : '';
+    const option = (this.optionsCopy || []).find(x => x.id.toString() === this.model);
+    const selectedName = option ? option.name : '';
     this.selectInput.value = selectedName;
   }
 

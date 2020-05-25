@@ -26,6 +26,10 @@ export class InputComponent extends InputBaseComponent {
     this.input.disabled = val;
   }
 
+  updateValue() {
+    this.input.value = this.getInputFormattedValue();
+  }
+
   private addEventListeners() {
     this.listeners = [
       {

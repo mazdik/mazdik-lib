@@ -44,7 +44,6 @@ export class SelectComponent extends InputOptionComponent {
 
   private onInput(event: any) {
     this.value = event.target.value;
-    this.onValueChange();
   }
 
   private loadSelect() {

@@ -22,7 +22,7 @@ export class InputBaseComponent extends HTMLElement {
   set value(val: any) {
     if (this.dynElement.value !== val) {
       this.dynElement.value = val;
-      this.dispatchEvent(new CustomEvent('valueChange', { detail: this.dynElement.value }));
+      this.dispatchEvent(new CustomEvent('valueChange', { detail: this.dynElement }));
       this.validate();
     }
   }
@@ -88,6 +88,10 @@ export class InputBaseComponent extends HTMLElement {
     });
     this.helpBlock.innerHTML = '';
     this.helpBlock.append(...errorElements);
+  }
+
+  updateValue() {
+
   }
 
 }

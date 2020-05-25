@@ -29,7 +29,9 @@ export class SelectModalComponent extends InputOptionComponent {
   onDisabled(val: boolean) {
     super.onDisabled(val);
     // TODO
-    //this.modalSelect.disabled = val;
+    window.customElements.whenDefined('web-modal-select').then(() => {
+      this.modalSelect.disabled = val;
+    });
   }
 
   onLoadOptions() {
@@ -54,7 +56,6 @@ export class SelectModalComponent extends InputOptionComponent {
 
   private onInput(event: CustomEvent) {
     this.value = event.detail;
-    this.onValueChange();
   }
 
 }

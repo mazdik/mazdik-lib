@@ -49,7 +49,6 @@ export class InputOptionComponent extends InputBaseComponent {
           this._options = [];
         }).finally(() => {
           this.loading = false;
-          this.dispatchEvent(new CustomEvent('loaded', { detail: this.loading }));
         });
     }
   }
@@ -63,34 +62,14 @@ export class InputOptionComponent extends InputBaseComponent {
     return this._options;
   }
 
-  onValueChange() {
-    if (this.dynElement.keyElement) {
-      const data = {
-        keyElementName: this.dynElement.keyElement,
-        keyElementValue: this.value,
-        elementName: this.dynElement.name,
-        elementValue: this.getName(),
-      };
-      this.dispatchEvent(new CustomEvent('keyElementChange', { detail: data }));
-    }
-  }
-
   setDefaultSelect() {
     if (this.firstCascade && !isBlank(this.value)) {
       this.value = '';
       if (this._options && this._options.length === 1) {
         this.value = this._options[0].id;
       }
-      this.onValueChange();
     }
     this.firstCascade = false;
-  }
-
-  getName() {
-    if (this._options) {
-      const option = this._options.find(x => x.id === this.value);
-      return (option) ? option.name : '';
-    }
   }
 
 }

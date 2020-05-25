@@ -30,9 +30,11 @@ export class SelectDropdownComponent extends InputOptionComponent {
   onDisabled(val: boolean) {
     super.onDisabled(val);
     // TODO
-    // this.dropdownSelect.settings = {
-    //   disabled: val
-    // };
+    window.customElements.whenDefined('web-dropdown-select').then(() => {
+      this.dropdownSelect.settings = {
+        disabled: val
+      };
+    });
   }
 
   onLoadOptions() {
@@ -57,7 +59,6 @@ export class SelectDropdownComponent extends InputOptionComponent {
 
   private onInput(event: CustomEvent) {
     this.value = event.detail;
-    this.onValueChange();
   }
 
 }
