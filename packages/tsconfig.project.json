@@ -32,6 +32,9 @@
       "path": "./modal/tsconfig.package.json"
     },
     {
+      "path": "./modal-edit-form/tsconfig.package.json"
+    },
+    {
       "path": "./modal-select/tsconfig.package.json"
     },
     {

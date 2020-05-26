@@ -3,7 +3,7 @@ import '@mazdik-lib/dynamic-form';
 import { DynamicFormComponent, DynamicFormElement } from '@mazdik-lib/dynamic-form';
 import { Validators } from '@mazdik-lib/common';
 
-export default class DropdownSelectDemo implements Page {
+export default class DynamicFormDemo implements Page {
 
   get template(): string {
     return `<web-dynamic-form class="dynamic-form-demo"></web-dynamic-form>`;
