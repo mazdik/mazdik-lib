@@ -9,5 +9,5 @@ export type InputType =
   | 'date'
   | 'datetime-local'
   | 'month'
-  | 'select-popup'
+  | 'select-modal'
   | 'select-dropdown';

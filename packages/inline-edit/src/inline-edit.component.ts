@@ -34,13 +34,6 @@ export class InlineEditComponent extends HTMLElement {
     return inputIsDateType(this.type);
   }
 
-  get inputFormattedValue() {
-    if (this.isDateType) {
-      return inputFormattedDate(this.type, this.value);
-    }
-    return this.value;
-  }
-
   private listeners: Listener[] = [];
   private inlineDataView: HTMLElement;
   private select: HTMLSelectElement;
@@ -141,7 +134,7 @@ export class InlineEditComponent extends HTMLElement {
       if (this.type === 'number') {
         this.input.step = 'any';
       }
-      this.input.value = this.inputFormattedValue || null;
+      this.input.value = this.getInputFormattedValue();
       this.appendChild(this.input);
       this.input.focus();
     }
@@ -168,14 +161,18 @@ export class InlineEditComponent extends HTMLElement {
 
   private firstInitValue() {
     if (!this.initValue) {
-      this.input.value = this.inputFormattedValue || null;
+      this.input.value = this.getInputFormattedValue();
       this.setSelectedIndex();
       this.initValue = true;
     }
   }
 
   private loadSelect() {
-    this.select.innerHTML = `<option value="" disabled selected hidden>${this.selectPlaceholder}</option>`;
+    const defaultOption = new Option(this.selectPlaceholder, '', false, true);
+    defaultOption.disabled = true;
+    defaultOption.hidden = true;
+    this.select.options.add(defaultOption);
+
     for (const option of this.options) {
       this.select.options.add(new Option(option.name, option.id));
     }
@@ -188,6 +185,11 @@ export class InlineEditComponent extends HTMLElement {
       index = (index >= 0) ? index + 1 : index; // + 1 selectPlaceholder
       this.select.selectedIndex = index;
     }
+  }
+
+  private getInputFormattedValue() {
+    const val = this.isDateType ? inputFormattedDate(this.type, this.value) : this.value;
+    return !isBlank(val) ? val : null;
   }
 
   private setViewValue() {

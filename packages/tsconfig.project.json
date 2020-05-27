@@ -23,10 +23,16 @@
       "path": "./dual-list-box/tsconfig.package.json"
     },
     {
+      "path": "./dynamic-form/tsconfig.package.json"
+    },
+    {
       "path": "./inline-edit/tsconfig.package.json"
     },
     {
       "path": "./modal/tsconfig.package.json"
+    },
+    {
+      "path": "./modal-edit-form/tsconfig.package.json"
     },
     {
       "path": "./modal-select/tsconfig.package.json"

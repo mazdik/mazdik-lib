@@ -56,6 +56,18 @@ export class DropdownSelectComponent extends HTMLElement {
 
   constructor() {
     super();
+  }
+
+  connectedCallback() {
+    this.onInit();
+  }
+
+  disconnectedCallback() {
+    this.dropdown.removeEventListeners();
+    this.removeEventListeners();
+  }
+
+  private onInit() {
     const id = (~~(Math.random()*1e3)).toString();
     const template = document.createElement('template');
     template.innerHTML = getTemplate(id);
@@ -73,15 +85,7 @@ export class DropdownSelectComponent extends HTMLElement {
     this.addEventListeners();
   }
 
-  disconnectedCallback() {
-    this.dropdown.removeEventListeners();
-
-    this.listeners.forEach(x => {
-      x.target.removeEventListener(x.eventName, x.handler);
-    });
-  }
-
-  addEventListeners() {
+  private addEventListeners() {
     this.listeners = [
       {
         eventName: 'open',
@@ -108,6 +112,12 @@ export class DropdownSelectComponent extends HTMLElement {
     this.listeners.forEach(x => {
       x.target.addEventListener(x.eventName, x.handler);
     })
+  }
+
+  private removeEventListeners() {
+    this.listeners.forEach(x => {
+      x.target.removeEventListener(x.eventName, x.handler);
+    });
   }
 
   open(event: MouseEvent) {

@@ -45,7 +45,7 @@ class App {
   }
 
   private destroy(page: Page) {
-    if (page && typeof page.onDestroy === "function") {
+    if (page && typeof page.onDestroy === 'function') {
       page.onDestroy();
     }
   }
@@ -81,6 +81,8 @@ class App {
           { id: 'dual-list-box', name: 'Dual list box' },
           { id: 'modal-select', name: 'Modal select' },
           { id: 'tree-view', name: 'Tree view' },
+          { id: 'dynamic-form', name: 'Dynamic forms' },
+          { id: 'modal-edit-form', name: 'Modal edit form' },
         ]
       },
     ];

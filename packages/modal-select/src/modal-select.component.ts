@@ -1,4 +1,4 @@
-import { SelectItem, arrayPaginate, Listener, toggleClass } from '@mazdik-lib/common';
+import { SelectItem, arrayPaginate, Listener, toggleClass, isBlank } from '@mazdik-lib/common';
 import '@mazdik-lib/modal';
 import { ModalComponent } from '@mazdik-lib/modal';
 import '@mazdik-lib/pagination';
@@ -38,8 +38,14 @@ export class ModalSelectComponent extends HTMLElement {
   filterDelay: number = 300;
   itemsPerPage: number = 10;
   modalTitle: string = 'Search Dialog';
-  placeholder: string = 'Select';
   searchInputPlaceholder: string = 'Search...';
+
+  get placeholder(): string { return this._placeholder; }
+  set placeholder(val: string) {
+    this._placeholder = val;
+    this.selectInput.placeholder = val;
+  }
+  private _placeholder: string = 'Select';
 
   get disabled() { return this._disabled; }
   set disabled(val: boolean) {
@@ -90,6 +96,17 @@ export class ModalSelectComponent extends HTMLElement {
 
   constructor() {
     super();
+  }
+
+  connectedCallback() {
+    this.onInit();
+  }
+
+  disconnectedCallback() {
+    this.removeEventListeners();
+  }
+
+  private onInit() {
     const id = (~~(Math.random()*1e3)).toString();
     const template = document.createElement('template');
     template.innerHTML = getTemplate(id);
@@ -106,10 +123,6 @@ export class ModalSelectComponent extends HTMLElement {
     this.pagination = this.querySelector('web-pagination');
 
     this.addEventListeners();
-  }
-
-  disconnectedCallback() {
-    this.removeEventListeners();
   }
 
   private addEventListeners() {
@@ -192,15 +205,16 @@ export class ModalSelectComponent extends HTMLElement {
   }
 
   private setSelectedName() {
-    const option = (this.optionsCopy || []).find(x => x.id === this.model);
-    const selectedName = (option) ? option.name : '';
+    const value = !isBlank(this.model) ? this.model.toString() : '';
+    const option = (this.optionsCopy || []).find(x => x.id.toString() === value);
+    const selectedName = option ? option.name : '';
     this.selectInput.value = selectedName;
-    this.dispatchEvent(new CustomEvent('nameChanged', { detail: selectedName }));
   }
 
   private updateStyles() {
+    const value = !isBlank(this.model) ? this.model.toString() : '';
     this.selectListElements.forEach(element => {
-      toggleClass(element, 'active', element.dataset.id === this.model);
+      toggleClass(element, 'active', element.dataset.id === value);
     });
     this.clearSearchIcon.style.display = this.filterInput.value.length > 0 ? 'block' : 'none';
   }
