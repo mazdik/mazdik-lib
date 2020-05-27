@@ -17,7 +17,8 @@ export class InputOptionComponent extends InputBaseComponent {
 
   onInit() {
     super.onInit();
-    if (this.dynElement.optionsUrl && !this.dynElement.dependsElement) {
+    this._dependsValue = this.dynElement.item[this.dynElement.dependsElement];
+    if (this.dynElement.optionsUrl) {
       this.loadOptions();
     } else {
       this._options = this.dynElement.getOptions(this.dependsValue);

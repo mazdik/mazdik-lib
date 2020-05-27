@@ -1,4 +1,4 @@
-import { SelectItem, inputIsDateType } from '@mazdik-lib/common';
+import { SelectItem, inputIsDateType, isBlank } from '@mazdik-lib/common';
 import { DynamicFormElementBase } from './dynamic-form-element-base';
 
 export class DynamicFormElement extends DynamicFormElementBase {
@@ -37,7 +37,7 @@ export class DynamicFormElement extends DynamicFormElementBase {
 
   getOptions(dependsValue?: any): SelectItem[] {
     if (this.options) {
-      if (this.dependsElement && dependsValue) {
+      if (this.dependsElement && !isBlank(dependsValue)) {
         return this.options.filter((value) => value.parentId === dependsValue);
       } else {
         return this.options;

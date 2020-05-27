@@ -99,7 +99,7 @@ export default class ModalEditFormDemo implements Page {
     'id': 96491,
     'name': 'Defunct',
     'race': 'ASMODIANS',
-    'note': '',
+    'note': 'ASM2',
     'gender': 'MALE',
     'exp': 7734770,
     'last_online': '2013-04-14T22:51:14',

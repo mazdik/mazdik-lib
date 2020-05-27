@@ -1,4 +1,4 @@
-import { SelectItem, arrayPaginate, Listener, toggleClass } from '@mazdik-lib/common';
+import { SelectItem, arrayPaginate, Listener, toggleClass, isBlank } from '@mazdik-lib/common';
 import '@mazdik-lib/modal';
 import { ModalComponent } from '@mazdik-lib/modal';
 import '@mazdik-lib/pagination';
@@ -205,14 +205,16 @@ export class ModalSelectComponent extends HTMLElement {
   }
 
   private setSelectedName() {
-    const option = (this.optionsCopy || []).find(x => x.id.toString() === this.model);
+    const value = !isBlank(this.model) ? this.model.toString() : '';
+    const option = (this.optionsCopy || []).find(x => x.id.toString() === value);
     const selectedName = option ? option.name : '';
     this.selectInput.value = selectedName;
   }
 
   private updateStyles() {
+    const value = !isBlank(this.model) ? this.model.toString() : '';
     this.selectListElements.forEach(element => {
-      toggleClass(element, 'active', element.dataset.id === this.model);
+      toggleClass(element, 'active', element.dataset.id === value);
     });
     this.clearSearchIcon.style.display = this.filterInput.value.length > 0 ? 'block' : 'none';
   }
