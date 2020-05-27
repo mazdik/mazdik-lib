@@ -6,8 +6,13 @@ import { componentNames } from './custom-elements';
 
 export class DynamicFormComponent extends HTMLElement {
 
-  item: { [key: string]: any } = {};
-  isNewItem: boolean = true;
+  get item(): { [key: string]: any } { return this._item; }
+  set item(val:  { [key: string]: any }) {
+    this._item = val;
+    this.isNewItem = val ? false : true;
+    this.render()
+  }
+  private _item: { [key: string]: any } = {};
 
   get dynElements(): DynamicFormElement[] { return this._dynElements; }
   set dynElements(val: DynamicFormElement[]) {
@@ -18,6 +23,7 @@ export class DynamicFormComponent extends HTMLElement {
 
   private elements: InputBaseComponent[] = [];
   private listeners: Listener[] = [];
+  private isNewItem: boolean = true;
 
   constructor() {
     super();
@@ -29,7 +35,9 @@ export class DynamicFormComponent extends HTMLElement {
   }
 
   private render() {
+    this.removeEventListeners();
     this.elements = [];
+
     this.dynElements.forEach(dynElement => {
       if (!dynElement.hidden) {
         dynElement.item = this.item;
@@ -49,6 +57,7 @@ export class DynamicFormComponent extends HTMLElement {
         this.elements.push(element);
       }
     });
+    this.innerHTML = '';
     this.append(...this.elements);
     this.addEventListeners();
   }

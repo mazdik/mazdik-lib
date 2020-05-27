@@ -1,60 +1,168 @@
+import '@mazdik-lib/modal';
+import '@mazdik-lib/dynamic-form';
+import '@mazdik-lib/row-view';
 import { ModalComponent } from '@mazdik-lib/modal';
-import { DynamicFormElement, GetOptionsFunc } from '@mazdik-lib/dynamic-form';
-import { KeyValuePair } from '@mazdik-lib/row-view';
-//import { DataManager } from '../ng-crud-table/base/data-manager';
+import { DynamicFormComponent, DynamicFormElement } from '@mazdik-lib/dynamic-form';
+import { RowViewComponent, KeyValuePair } from '@mazdik-lib/row-view';
+import { Listener } from '@mazdik-lib/common';
+
+function getTemplate(id: string) {
+  return `
+  <web-modal>
+    <template select="app-modal-header">
+      <span id="modalEditFormTitle${id}">Modal</span>
+    </template>
+    <template select="app-modal-body">
+      <web-dynamic-form></web-dynamic-form>
+      <web-row-view></web-row-view>
+    </template>
+    <template select="app-modal-footer">
+      <button class="dt-button" id="modalEditFormSave${id}">Save</button>
+      <button class="dt-button dt-green" id="modalEditFormClose${id}" style="float: right;">Close</button>
+    </ng-container>
+    </template>
+  </web-modal>
+  `;
+}
 
 export class ModalEditFormComponent extends HTMLElement {
 
-  dataManager: any; //DataManager;
-  isNewItem: boolean;
-  detailView: boolean;
+  item: { [key: string]: any } = {};
 
-  private childModal: ModalComponent;
+  set dynElements(val: DynamicFormElement[]) {
+    this.dynamicForm.dynElements = val;
+  }
 
-  dynElements: DynamicFormElement[];
-  formValid: boolean = true;
-  transposedData: KeyValuePair[];
-  getOptionsFunc: GetOptionsFunc;
+  set modalTitle(val: string) {
+    this.modalEditFormTitle.textContent = val;
+  }
+
+  set saveMessage(val: string) {
+    this.modalEditFormSave.textContent = val;
+  }
+
+  set closeMessage(val: string) {
+    this.modalEditFormClose.textContent = val;
+  }
+
+  private isNewItem: boolean;
+  private modalEditFormTitle: HTMLElement;
+  private modalEditFormSave: HTMLButtonElement;
+  private modalEditFormClose: HTMLButtonElement;
+  private modal: ModalComponent;
+  private dynamicForm: DynamicFormComponent;
+  private rowView: RowViewComponent;
+  private listeners: Listener[] = [];
 
   constructor() {
     super();
   }
 
-  ngOnInit() {
-    this.getOptionsFunc = this.dataManager.service.getOptions.bind(this.dataManager.service);
+  connectedCallback() {
+    this.onInit();
   }
 
-  get modalTitle() {
-    if (!this.detailView) {
-      return this.isNewItem ? this.dataManager.messages.titleCreate :
-        this.dataManager.messages.titleUpdate;
-    } else {
-      return this.dataManager.messages.titleDetailView;
-    }
+  disconnectedCallback() {
+    this.removeEventListeners();
   }
 
-  save() {
+  private onInit() {
+    const id = (~~(Math.random() * 1e3)).toString();
+    const template = document.createElement('template');
+    template.innerHTML = getTemplate(id);
+    this.appendChild(template.content.cloneNode(true));
+
+    this.modalEditFormTitle = this.querySelector('#modalEditFormTitle' + id);
+    this.modalEditFormSave = this.querySelector('#modalEditFormSave' + id);
+    this.modalEditFormClose = this.querySelector('#modalEditFormClose' + id);
+    this.modal = this.querySelector('web-modal') as ModalComponent;
+    this.dynamicForm = this.querySelector('web-dynamic-form') as DynamicFormComponent;
+    this.rowView = this.querySelector('web-row-view') as RowViewComponent;
+
+    this.dynamicForm.style.display = 'none';
+    this.rowView.style.display = 'none';
+    this.addEventListeners();
+  }
+
+  private addEventListeners() {
+    this.listeners = [
+      {
+        eventName: 'valid',
+        target: this.dynamicForm,
+        handler: this.onFormValid.bind(this)
+      },
+      {
+        eventName: 'click',
+        target: this.modalEditFormSave,
+        handler: this.onClickSave.bind(this)
+      },
+      {
+        eventName: 'click',
+        target: this.modalEditFormClose,
+        handler: this.onClickClose.bind(this)
+      },
+    ];
+
+    this.listeners.forEach(x => {
+      x.target.addEventListener(x.eventName, x.handler);
+    })
+  }
+
+  private removeEventListeners() {
+    this.listeners.forEach(x => {
+      x.target.removeEventListener(x.eventName, x.handler);
+    });
+  }
+
+  private onClickSave() {
     if (this.isNewItem) {
-      this.dataManager.create(this.dataManager.item);
+      this.dispatchEvent(new CustomEvent('create', { detail: this.item }));
     } else {
-      this.dataManager.update(this.dataManager.item);
+      this.dispatchEvent(new CustomEvent('update', { detail: this.item }));
     }
-    this.childModal.hide();
-    //this.cd.markForCheck();
+    this.modal.hide();
   }
 
-  open() {
-    this.childModal.show();
-    //this.cd.markForCheck();
+  private onClickClose() {
+    this.modal.hide();
   }
 
-  close() {
-    this.childModal.hide();
-    //this.cd.markForCheck();
+  private onFormValid(event: CustomEvent<boolean>) {
+    this.modalEditFormSave.disabled = !event.detail;
   }
 
-  onFormValid(event: any) {
-    this.formValid = event;
+  create() {
+    this.rowView.style.display = 'none';
+    this.dynamicForm.style.display = 'block';
+    this.modalEditFormSave.style.visibility = 'visible';
+    this.dynamicForm.item = {};
+    this.isNewItem = true;
+    this.modal.show();
+  }
+
+  update() {
+    this.rowView.style.display = 'none';
+    this.dynamicForm.style.display = 'block';
+    this.modalEditFormSave.style.visibility = 'visible';
+    this.dynamicForm.item = this.item;
+    this.isNewItem = false;
+    this.modal.show();
+  }
+
+  view() {
+    this.rowView.style.display = 'block';
+    this.dynamicForm.style.display = 'none';
+    this.modalEditFormSave.style.visibility = 'hidden';
+    this.rowView.data = this.getData();
+    this.modal.show();
+  }
+
+  private getData() {
+    const result: KeyValuePair[] = [];
+    Object.keys(this.item).forEach(key => {
+      result.push({ key, value: this.item[key] });
+    });
+    return result;
   }
 
 }
