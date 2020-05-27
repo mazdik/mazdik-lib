@@ -2,7 +2,7 @@ import '@mazdik-lib/modal';
 import '@mazdik-lib/dynamic-form';
 import '@mazdik-lib/row-view';
 import { ModalComponent } from '@mazdik-lib/modal';
-import { DynamicFormComponent, DynamicFormElement } from '@mazdik-lib/dynamic-form';
+import { DynamicFormComponent, DynamicFormElement, Dict } from '@mazdik-lib/dynamic-form';
 import { RowViewComponent, KeyValuePair } from '@mazdik-lib/row-view';
 import { Listener } from '@mazdik-lib/common';
 
@@ -27,7 +27,7 @@ function getTemplate(id: string) {
 
 export class ModalEditFormComponent extends HTMLElement {
 
-  item: { [key: string]: any } = {};
+  item: Dict = {};
 
   set dynElements(val: DynamicFormElement[]) {
     this.dynamicForm.dynElements = val;

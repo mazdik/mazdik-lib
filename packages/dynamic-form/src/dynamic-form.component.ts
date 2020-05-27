@@ -4,15 +4,17 @@ import { InputBaseComponent } from './input-base.component';
 import './custom-elements';
 import { componentNames } from './custom-elements';
 
+export type Dict  = { [key: string]: any };
+
 export class DynamicFormComponent extends HTMLElement {
 
-  get item(): { [key: string]: any } { return this._item; }
-  set item(val:  { [key: string]: any }) {
+  get item(): Dict { return this._item; }
+  set item(val: Dict) {
     this._item = val;
     this.isNewItem = val ? false : true;
-    this.render()
+    this.render();
   }
-  private _item: { [key: string]: any } = {};
+  private _item: Dict = {};
 
   get dynElements(): DynamicFormElement[] { return this._dynElements; }
   set dynElements(val: DynamicFormElement[]) {

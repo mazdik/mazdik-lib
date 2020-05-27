@@ -63,7 +63,7 @@ export class InputOptionComponent extends InputBaseComponent {
   }
 
   setDefaultSelect() {
-    if (this.firstCascade && !isBlank(this.value)) {
+    if (this.firstCascade && isBlank(this.value)) {
       this.value = '';
       if (this._options && this._options.length === 1) {
         this.value = this._options[0].id;
