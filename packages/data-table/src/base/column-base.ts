@@ -1,10 +1,9 @@
-import { AggregateType, DataType } from './types';
+import { AggregateType, DataType, PipeTransform } from './types';
 import { SelectItem, InputType } from '@mazdik-lib/common';
 
 type FilterValuesFunc = (columnName: string) => Promise<SelectItem[]>;
 type CellClassFunc = (obj: any) => any;
 type TemplateRef<T> = any;
-type PipeTransform = any;
 
 export class ColumnBase {
 

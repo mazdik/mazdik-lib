@@ -1,4 +1,11 @@
-import { Column } from '../src/base/column';
+import { Column, PipeTransform } from '../src/base';
+
+export class UpperCasePipe implements PipeTransform {
+  transform(value: string): string {
+    if (!value) return value;
+    return value.toUpperCase();
+  }
+}
 
 describe('Column', () => {
 

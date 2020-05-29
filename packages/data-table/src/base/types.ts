@@ -72,3 +72,7 @@ export interface CellEventArgs {
   fromCell?: HTMLElement;
   editMode?: boolean;
 }
+
+export interface PipeTransform {
+  transform(value: any, ...args: any[]): any;
+}
