@@ -1,0 +1,234 @@
+.datatable *,
+.datatable *::before,
+.datatable *::after {
+  box-sizing: border-box;
+}
+
+.datatable {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.datatable-header-cell,
+.datatable-body-cell {
+  display: flex;
+  align-items: center;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.datatable-body-cell {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  height: 100%;
+}
+
+.fixed-header .datatable-header-row {
+  white-space: nowrap;
+}
+
+.fixed-header .datatable-header-cell,
+.fixed-header .dt-sort-header {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.datatable-body-row,
+.datatable-header-row {
+  display: flex;
+  position: relative;
+}
+
+.datatable-body-cell:focus,
+.datatable-header-cell:focus {
+  outline: none;
+}
+
+.datatable-header {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.datatable-body {
+  position: relative;
+  display: block;
+}
+
+.datatable-body-row {
+  white-space: nowrap;
+  outline: none;
+}
+
+/* sticky columns */
+.dt-sticky {
+  z-index: 1;
+  position: sticky;
+}
+
+.datatable-body-cell.dt-sticky {
+  background-color: white;
+}
+
+/******/
+.datatable-header-cell {
+  background-color: var(--dt-color-primary);
+  color: white;
+  user-select: none;
+}
+
+.datatable-header-cell:hover {
+  background-color: var(--dt-color-primary-darker);
+}
+
+.datatable-header-cell:hover .column-menu-icon {
+  visibility: visible;
+}
+
+.datatable-body-cell:first-child,
+.datatable-header-cell:first-child {
+  border-left: 1px solid var(--dt-color-secondary-light);
+}
+
+.datatable-body-cell,
+.datatable-header-cell {
+  padding: .25rem .1875rem;
+  border-right: 1px solid var(--dt-color-secondary-light);
+  border-bottom: 1px solid var(--dt-color-secondary-light);
+}
+
+.datatable-body-cell:focus {
+  box-shadow: 0 0 0 .125rem var(--dt-color-primary) inset;
+}
+
+.dt-dropdown + .datatable-body {
+  border-top: 1px solid var(--dt-color-secondary-light);
+}
+
+.dt-sort-header {
+  cursor: pointer;
+}
+
+.column-menu-icon {
+  position: absolute;
+  top: 50%;
+  right: .625rem; /* - resize-handle */
+  margin-top: -.375rem; /* (height + padding)/2 */
+  text-align: right;
+  visibility: hidden;
+  cursor: pointer;
+}
+
+.is-filter {
+  visibility: visible;
+}
+
+.cell-editing {
+  padding: 0;
+  margin: 0;
+}
+
+.cell-error input:focus,
+.cell-error select:focus {
+  border: 1px solid var(--dt-color-danger);
+}
+
+.cell-error {
+  box-shadow: 0 0 0 .0625rem var(--dt-color-danger) inset;
+}
+
+.row-selected {
+  background-color: var(--dt-color-primary-lightest);
+  color: black;
+}
+
+.row-selected .dt-sticky {
+  background-color: var(--dt-color-primary-lightest);
+  color: black;
+}
+
+.datatable-empty-row {
+  padding: 0 0 .3125rem .3125rem;
+}
+
+.datatable-group-header {
+  border-right: 1px solid var(--dt-color-secondary-light);
+  border-bottom: 1px solid var(--dt-color-secondary-light);
+}
+
+.dt-hide {
+  height: 0;
+  overflow-y: hidden;
+}
+
+.datatable-group-header .datatable-body-cell {
+  border: none;
+  border-left: 1px solid var(--dt-color-secondary-light);
+}
+
+.datatable-group-header,
+.datatable-group-header .dt-sticky,
+.datatable-group-row,
+.datatable-group-row .dt-sticky {
+  background: var(--dt-color-secondary-lightest);
+  color: var(--dt-color-secondary-medium);
+  font-weight: bold;
+}
+
+.column-resizer-helper {
+  width: .125rem;
+  position: absolute;
+  z-index: 10;
+  display: none;
+  background: var(--dt-color-success);
+  top: 0;
+}
+
+.datatable-unselectable .datatable-header-cell:hover {
+  background-color: var(--dt-color-primary);
+}
+
+.datatable-unselectable .datatable-header-cell:hover .column-menu-icon {
+  visibility: hidden;
+}
+
+.action-cell {
+  justify-content: center;
+}
+
+.cell-changed::before {
+  content: '';
+  border: .1875rem solid;
+  border-color: currentColor currentColor transparent transparent;
+  display: block;
+  position: absolute;
+  top: 0;
+  right: 0;
+  color: var(--dt-color-primary);
+}
+
+.dropdown-filter-menu {
+  position: absolute;
+  z-index: 2;
+  display: none;
+  padding: .3125rem;
+  background-color: white;
+  border: 1px solid var(--dt-color-secondary-light);
+  border-radius: .125rem;
+  box-shadow: 0 .375rem .75rem rgba(0, 0, 0, .175);
+  min-width: 12.5rem;
+  max-width: 40rem;
+}
+
+.filter-action {
+  margin: 0;
+  padding: .5rem .625rem;
+  background-color: transparent;
+  border: none;
+  outline:none;
+  cursor:pointer;
+  color: white;
+}
