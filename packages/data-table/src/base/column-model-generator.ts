@@ -1,7 +1,6 @@
 import { ColumnBase } from './column-base';
 import { Column } from './column';
 import { Settings } from './settings';
-import { supportsStickyPosition } from '@mazdik-lib/common';
 
 export class ColumnModelGenerator {
 
@@ -46,10 +45,8 @@ export class ColumnModelGenerator {
     const frozenColumns = [];
     const scrollableColumns = [];
     let columnIndex = 0;
-    const canSticky = supportsStickyPosition();
 
     columns.forEach((column) => {
-      column.frozen = column.frozen && canSticky;
       this.setColumnSettings(column);
       if (!column.tableHidden) {
         if (column.frozen) {

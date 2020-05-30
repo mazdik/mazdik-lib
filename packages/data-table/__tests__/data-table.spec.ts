@@ -38,13 +38,9 @@ describe('DataTable', () => {
   });
 
   it('should be able to add row', () => {
-    const spy = jasmine.createSpy('changed spy');
-    dataTable.events.rowsChanged$.subscribe(spy);
-
     const row = { date: new Date(2020, 8, 5), gender: 'f' };
     dataTable.addRow(row);
 
-    expect(spy).toHaveBeenCalledTimes(1);
     expect(dataTable.rows.length).toBe(5);
     expect(dataTable.pager.total).toBe(5);
     expect(Object.keys(dataTable.rows[4])).toContain('$$uid');
@@ -53,25 +49,17 @@ describe('DataTable', () => {
   });
 
   it('should be able to delete row', () => {
-    const spy = jasmine.createSpy('changed spy');
-    dataTable.events.rowsChanged$.subscribe(spy);
-
     expect(dataTable.rows.length).toBe(4);
     dataTable.deleteRow(dataTable.rows[dataTable.rows.length - 1]);
 
-    expect(spy).toHaveBeenCalledTimes(1);
     expect(dataTable.rows.length).toBe(3);
     expect(dataTable.pager.total).toBe(3);
   });
 
   it('should be able to merge row', () => {
-    const spy = jasmine.createSpy('changed spy');
-    dataTable.events.rowsChanged$.subscribe(spy);
-
     const row = { date: new Date(2020, 8, 5), gender: 'male' };
     dataTable.mergeRow(dataTable.rows[0], row);
 
-    expect(spy).toHaveBeenCalledTimes(1);
     expect(dataTable.rows[0].date).toEqual(new Date(2020, 8, 5));
     expect(dataTable.rows[0].gender).toBe('male');
   });
@@ -85,14 +73,10 @@ describe('DataTable', () => {
   });
 
   it('should be able to revert row changes', () => {
-    const spy = jasmine.createSpy('changed spy');
-    dataTable.events.rowsChanged$.subscribe(spy);
-
     dataTable.rows[3].date = new Date(2022, 4, 3);
     expect(dataTable.rowChanged(dataTable.rows[3])).toBe(true);
     dataTable.revertRowChanges(dataTable.rows[3]);
 
-    expect(spy).toHaveBeenCalledTimes(1);
     expect(dataTable.rows[3].date).toEqual(new Date(2018, 4, 3));
   });
 

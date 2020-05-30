@@ -33,8 +33,17 @@ describe('KeyboardAction', () => {
       expect(event.fromCell).toBeDefined();
     });
 
-    const ev = new KeyboardEvent('keydown', { keyCode } as KeyboardEventInit);
-    keyboardAction.handleEvent(ev, fixture, 6, 6);
+    fixture.addEventListener('keydown', event => {
+      keyboardAction.handleEvent(event, fixture, 6, 6);
+    });
+
+    const ev = new KeyboardEvent('keydown', {
+      bubbles : true,
+      cancelable : true,
+      shiftKey,
+      keyCode,
+    } as KeyboardEventInit);
+    fixture.dispatchEvent(ev);
   }
 
   describe('action keys', () => {
