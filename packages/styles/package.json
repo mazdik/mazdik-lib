@@ -1,0 +1,8 @@
+{
+  "name": "@mazdik-lib/styles",
+  "version": "0.1.0",
+  "main": "./all.css",
+  "publishConfig": {
+    "access": "public"
+  }
+}
