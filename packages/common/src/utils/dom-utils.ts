@@ -33,16 +33,6 @@ export function findAncestor(el, selectors) {
   return null;
 }
 
-export function supportsStickyPosition(): boolean {
-  if (!('CSS' in window)) {
-    return false;
-  }
-  return (
-    CSS.supports('position', 'sticky') ||
-    CSS.supports('position', '-webkit-sticky')
-  );
-}
-
 export function toggleClass(element: HTMLElement, className: string, state: boolean) {
   if (state) {
     element.classList.add(className);

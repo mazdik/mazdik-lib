@@ -1,5 +1,5 @@
 import './styles/app.css';
-import './styles/all.css';
+import '@mazdik-lib/styles';
 import '@mazdik-lib/modal';
 import '@mazdik-lib/nav-menu';
 import { NavMenuComponent } from '@mazdik-lib/nav-menu';

@@ -8,6 +8,12 @@
       "path": "./context-menu/tsconfig.package.json"
     },
     {
+      "path": "./crud-table/tsconfig.package.json"
+    },
+    {
+      "path": "./data-table/tsconfig.package.json"
+    },
+    {
       "path": "./drag-drop/tsconfig.package.json"
     },
     {
