@@ -9,3 +9,4 @@ export * from './base/data-filter';
 export * from './base/data-aggregation';
 export * from './base/column-model-generator';
 export * from './base/dt-messages';
+export * from './data-table.component';
