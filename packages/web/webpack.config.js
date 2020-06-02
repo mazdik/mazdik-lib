@@ -7,7 +7,7 @@ const isProduction = process.env.NODE_ENV == 'production';
 
 module.exports = {
   mode: isProduction ? 'production' : 'development',
-  entry: './src/index.ts',
+  entry: './src/main.ts',
   devtool: isProduction ? 'none' : 'cheap-module-source-map',
   output: {
     path: path.resolve(__dirname, 'lib'),
