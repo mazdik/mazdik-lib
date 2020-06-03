@@ -25,12 +25,12 @@ export class DataTableComponent extends HTMLElement {
   private render() {
     this.createHeader();
     this.createBody();
-    this.style.width = '6000px'; // TODO
   }
 
   private createHeader() {
     const header = document.createElement('div');
     header.classList.add('datatable-header', 'dt-sticky-header');
+    header.style.width = this.table.dimensions.columnsTotalWidth + 'px';
 
     const rowEl = document.createElement('div');
     rowEl.classList.add('datatable-header-row');
@@ -41,6 +41,10 @@ export class DataTableComponent extends HTMLElement {
       cellEl.classList.add('datatable-header-cell');
       cellEl.textContent = column.title;
       cellEl.style.width = column.width + 'px';
+      if (column.frozen) {
+        cellEl.classList.add('dt-sticky');
+        cellEl.style.left = column.left + 'px';
+      }
       rowEl.append(cellEl);
     });
 
@@ -50,6 +54,7 @@ export class DataTableComponent extends HTMLElement {
   private createBody() {
     const body = document.createElement('div');
     body.classList.add('datatable-body');
+    body.style.width = this.table.dimensions.columnsTotalWidth + 'px';
 
     this.table.rows.forEach(row => {
       const rowEl = document.createElement('div');
@@ -62,9 +67,12 @@ export class DataTableComponent extends HTMLElement {
         cellEl.classList.add('datatable-body-cell');
         cellEl.textContent = row[column.name];
         cellEl.style.width = column.width + 'px';
+        if (column.frozen) {
+          cellEl.classList.add('dt-sticky');
+          cellEl.style.left = column.left + 'px';
+        }
         rowEl.append(cellEl);
       });
-      //rowEl.style.width = '6000px'; // TODO
     });
 
     this.append(body);

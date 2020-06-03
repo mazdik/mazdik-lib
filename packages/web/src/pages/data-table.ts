@@ -6,7 +6,7 @@ import { getColumnsPlayers } from '../shared/columns';
 export default class SelectListDemo implements Page {
 
   get template(): string {
-    return `<web-data-table></web-data-table>`;
+    return `<web-data-table style="height:300px"></web-data-table>`;
   }
 
   load() {
