@@ -61,7 +61,7 @@ export class ModalComponent extends HTMLElement {
 
     const template = document.createElement('template');
     template.innerHTML = getTemplate();
-    this.appendChild(template.content.cloneNode(true));
+    this.append(template.content.cloneNode(true));
 
     this.modalOverlay = this.querySelector('#modalOverlay');
     this.modalRoot = this.querySelector('#modalRoot');
@@ -164,13 +164,13 @@ export class ModalComponent extends HTMLElement {
     const body = this.querySelector('[select="app-modal-body"]') as HTMLTemplateElement;
     const footer = this.querySelector('[select="app-modal-footer"]') as HTMLTemplateElement;
     if (header) {
-      this.titlebar.appendChild(header.content);
+      this.titlebar.append(header.content);
     }
     if (body) {
-      this.modalBody.appendChild(body.content);
+      this.modalBody.append(body.content);
     }
     if (footer) {
-      this.modalFooter.appendChild(footer.content);
+      this.modalFooter.append(footer.content);
     }
   }
 

@@ -85,9 +85,9 @@ export class NavMenuComponent extends HTMLElement {
     const fragment = document.createDocumentFragment();
     this.nodes.forEach(node => {
       const element = this.createTreeDom(node);
-      fragment.appendChild(element);
+      fragment.append(element);
     });
-    this.appendChild(fragment);
+    this.append(fragment);
   }
 
   private createTreeDom(node: TreeNode): HTMLElement {
@@ -96,17 +96,17 @@ export class NavMenuComponent extends HTMLElement {
 
     const navItem = new NavItem(node);
     this.navItems.push(navItem);
-    div.appendChild(navItem.element);
+    div.append(navItem.element);
 
     if (node.hasChildren) {
       const headingChildren = document.createElement('div');
       headingChildren.classList.add('heading-children');
-      div.appendChild(headingChildren);
+      div.append(headingChildren);
       updateExpandedStyles(node.expanded, headingChildren);
 
       node.children.forEach(childNode => {
         const dom = this.createTreeDom(childNode);
-        headingChildren.appendChild(dom);
+        headingChildren.append(dom);
       });
     }
     return div;

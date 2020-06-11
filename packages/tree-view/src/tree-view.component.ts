@@ -55,7 +55,7 @@ export class TreeViewComponent extends HTMLElement {
     const id = (~~(Math.random()*1e3)).toString();
     const template = document.createElement('template');
     template.innerHTML = getTemplate(id);
-    this.appendChild(template.content.cloneNode(true));
+    this.append(template.content.cloneNode(true));
 
     this.treeContainer = this.querySelector('#treeContainer'+id);
     this.loadingIcon = this.querySelector('#loadingIcon'+id);
@@ -141,10 +141,10 @@ export class TreeViewComponent extends HTMLElement {
     const fragment = document.createDocumentFragment();
     this.tree.nodes.forEach(node => {
       const element = this.createTreeDom(node);
-      fragment.appendChild(element);
+      fragment.append(element);
     });
     this.treeContainer.innerHTML = '';
-    this.treeContainer.appendChild(fragment);
+    this.treeContainer.append(fragment);
   }
 
   private createTreeDom(node: TreeNode, viewNode?: TreeViewNode): HTMLElement {
@@ -153,12 +153,12 @@ export class TreeViewComponent extends HTMLElement {
     if (node.hasChildren) {
       const childrenContainer = document.createElement('ul');
       childrenContainer.classList.add('tree-container');
-      treeViewNode.element.appendChild(childrenContainer);
+      treeViewNode.element.append(childrenContainer);
       updateExpandedStyles(node.expanded, childrenContainer);
 
       node.children.forEach(childNode => {
         const dom = this.createTreeDom(childNode);
-        childrenContainer.appendChild(dom);
+        childrenContainer.append(dom);
       });
     }
     return treeViewNode.element;

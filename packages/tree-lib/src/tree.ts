@@ -8,7 +8,7 @@ export class Tree implements ITree {
   selectedNode: TreeNode;
   filterLoading: boolean;
   serverSideFiltering: boolean;
-  filterLoadingFunc: Function;
+  filterLoadingFunc: (state: boolean) => void;
 
   get nodes(): TreeNode[] { return this._nodes; }
   set nodes(val: TreeNode[]) {

@@ -28,7 +28,7 @@ export class NotifyComponent extends HTMLElement {
 
   sendMessage(message: Message) {
     const item = NotifyItem.createElement(message);
-    this.appendChild(item);
+    this.append(item);
 
     if (!message.sticky) {
       this.initTimeout(item, message.life);

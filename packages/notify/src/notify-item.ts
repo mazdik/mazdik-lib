@@ -9,12 +9,12 @@ export class NotifyItem {
     item.classList.add(cls);
 
     if (message.title) {
-      item.appendChild(this.addTitle(message.title));
+      item.append(this.addTitle(message.title));
     }
     if (message.text) {
-      item.appendChild(this.addText(message.text));
+      item.append(this.addText(message.text));
     }
-    item.appendChild(this.addClose(item));
+    item.append(this.addClose(item));
     return item;
   }
 
