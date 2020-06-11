@@ -21,16 +21,16 @@ export class TreeViewNode {
     element.dataset.id = this.node.$$id.toString();
 
     this.expanderIconElement = document.createElement('i');
-    element.appendChild(this.expanderIconElement);
+    element.append(this.expanderIconElement);
 
     this.nodeContentElement = document.createElement('span');
 
     this.iconElement = document.createElement('i');
-    this.nodeContentElement.appendChild(this.iconElement);
+    this.nodeContentElement.append(this.iconElement);
 
     const text = document.createTextNode(this.node.name);
-    this.nodeContentElement.appendChild(text);
-    element.appendChild(this.nodeContentElement);
+    this.nodeContentElement.append(text);
+    element.append(this.nodeContentElement);
 
     this.element = element;
   }

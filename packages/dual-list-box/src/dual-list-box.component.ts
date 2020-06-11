@@ -97,7 +97,7 @@ export class DualListBoxComponent extends HTMLElement {
     const id = (~~(Math.random() * 1e3)).toString();
     const template = document.createElement('template');
     template.innerHTML = getTemplate(id);
-    this.appendChild(template.content.cloneNode(true));
+    this.append(template.content.cloneNode(true));
 
     this.sourceList = this.querySelector('#sourceList' + id);
     this.targetList = this.querySelector('#targetList' + id);

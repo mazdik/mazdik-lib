@@ -21,7 +21,7 @@ export class ContextMenuComponent extends HTMLElement {
   constructor() {
     super();
     this.listMenu = document.createElement('ul');
-    this.appendChild(this.listMenu);
+    this.append(this.listMenu);
     this.classList.add('dt-context-menu');
     this.dropdown = new DropDown(this);
     this.addEventListeners();

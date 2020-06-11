@@ -71,7 +71,7 @@ export class DropdownSelectComponent extends HTMLElement {
     const id = (~~(Math.random()*1e3)).toString();
     const template = document.createElement('template');
     template.innerHTML = getTemplate(id);
-    this.appendChild(template.content.cloneNode(true));
+    this.append(template.content.cloneNode(true));
 
     this.classList.add('dt-dropdown-select');
     this.dropdown = new DropDown(this);

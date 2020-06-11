@@ -62,29 +62,29 @@ export class RowViewComponent extends HTMLElement {
     table.classList.add('dt-detail-view');
 
     const thead = document.createElement('thead');
-    table.appendChild(thead);
+    table.append(thead);
 
     const tr = document.createElement('tr');
-    thead.appendChild(tr);
+    thead.append(tr);
 
     const th = document.createElement('th');
     th.textContent = '№';
-    tr.appendChild(th);
+    tr.append(th);
 
     this.headerKey = document.createElement('th');
     this.headerKey.classList.add('sortable');
     this.headerKey.textContent = this.headerKeyMessage;
-    tr.appendChild(this.headerKey);
+    tr.append(this.headerKey);
 
     this.headerValue = document.createElement('th');
     this.headerValue.classList.add('sortable');
     this.headerValue.textContent = this.headerValueMessage;
-    tr.appendChild(this.headerValue);
+    tr.append(this.headerValue);
 
     this.tbody = document.createElement('tbody');
-    table.appendChild(this.tbody);
+    table.append(this.tbody);
 
-    this.appendChild(table);
+    this.append(table);
   }
 
   private renderRows() {
@@ -95,15 +95,15 @@ export class RowViewComponent extends HTMLElement {
 
       const td = document.createElement('td');
       td.textContent = (i + 1).toString();
-      tr.appendChild(td);
+      tr.append(td);
 
       const tdKey = document.createElement('td');
       tdKey.textContent = x.key;
-      tr.appendChild(tdKey);
+      tr.append(tdKey);
 
       const tdValue = document.createElement('td');
       tdValue.textContent = x.value;
-      tr.appendChild(tdValue);
+      tr.append(tdValue);
 
       elements.push(tr);
     });

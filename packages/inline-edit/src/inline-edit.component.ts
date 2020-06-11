@@ -46,7 +46,7 @@ export class InlineEditComponent extends HTMLElement {
 
     this.inlineDataView = document.createElement('div');
     this.inlineDataView.classList.add('dt-inline-data');
-    this.appendChild(this.inlineDataView);
+    this.append(this.inlineDataView);
 
     this.select = document.createElement('select');
     this.input = document.createElement('input');
@@ -127,7 +127,7 @@ export class InlineEditComponent extends HTMLElement {
 
   private appendInput() {
     if (this.type === 'select') {
-      this.appendChild(this.select);
+      this.append(this.select);
       this.select.focus();
     } else {
       this.input.type = this.type;
@@ -135,7 +135,7 @@ export class InlineEditComponent extends HTMLElement {
         this.input.step = 'any';
       }
       this.input.value = this.getInputFormattedValue();
-      this.appendChild(this.input);
+      this.append(this.input);
       this.input.focus();
     }
   }
