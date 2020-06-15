@@ -122,11 +122,7 @@
 }
 
 .column-menu-icon {
-  position: absolute;
-  top: 50%;
-  right: .625rem; /* - resize-handle */
-  margin-top: -.375rem; /* (height + padding)/2 */
-  text-align: right;
+  margin: 0 .2rem 0 auto;
   visibility: hidden;
   cursor: pointer;
 }

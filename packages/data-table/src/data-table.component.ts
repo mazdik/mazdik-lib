@@ -1,4 +1,5 @@
 import { DataTable } from './base';
+import { HeaderCell } from './header-cell';
 
 export class DataTableComponent extends HTMLElement {
 
@@ -8,6 +9,8 @@ export class DataTableComponent extends HTMLElement {
     this.render();
   }
   private _table: DataTable;
+
+  private headerCells: HeaderCell[] = [];
 
   constructor() {
     super();
@@ -25,6 +28,7 @@ export class DataTableComponent extends HTMLElement {
   private render() {
     this.createHeader();
     this.createBody();
+    this.createDropdownMenu();
   }
 
   private createHeader() {
@@ -37,15 +41,9 @@ export class DataTableComponent extends HTMLElement {
     header.append(rowEl);
 
     this.table.preparedColumns.forEach(column => {
-      const cellEl = document.createElement('div');
-      cellEl.classList.add('datatable-header-cell');
-      cellEl.textContent = column.title;
-      cellEl.style.width = column.width + 'px';
-      if (column.frozen) {
-        cellEl.classList.add('dt-sticky');
-        cellEl.style.left = column.left + 'px';
-      }
-      rowEl.append(cellEl);
+      const headerCell = new HeaderCell(this.table, column);
+      this.headerCells.push(headerCell);
+      rowEl.append(headerCell.element);
     });
 
     this.append(header);
@@ -76,6 +74,13 @@ export class DataTableComponent extends HTMLElement {
     });
 
     this.append(body);
+  }
+
+  private createDropdownMenu() {
+    const dropdownMenuEl = document.createElement('div');
+    dropdownMenuEl.classList.add('dropdown-filter-menu');
+    dropdownMenuEl.style.display = 'none';
+    this.append(dropdownMenuEl);
   }
 
 }
