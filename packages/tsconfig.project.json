@@ -71,6 +71,9 @@
       "path": "./tree-lib/tsconfig.package.json"
     },
     {
+      "path": "./tree-table/tsconfig.package.json"
+    },
+    {
       "path": "./tree-view/tsconfig.package.json"
     }
   ]
