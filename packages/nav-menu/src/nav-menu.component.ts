@@ -132,10 +132,10 @@ export class NavMenuComponent extends HTMLElement {
   }
 
   ensureVisible(id: string) {
-    const node = this.tree.getNodeById(id);
-    if (node) {
-      node.ensureVisible();
-      node.setSelected();
+    const navItem = this.navItems.find(x => x.node.id && x.node.id.toString() === id);
+    if (navItem) {
+      navItem.node.ensureVisible();
+      navItem.node.setSelected();
     }
     this.updateAllItemsStyles();
   }
