@@ -1,5 +1,6 @@
-import { DataTable } from './base';
+import { DataTable, Cell } from './base';
 import { HeaderCell } from './header-cell';
+import { BodyCell } from './body-cell';
 
 export class DataTableComponent extends HTMLElement {
 
@@ -11,6 +12,7 @@ export class DataTableComponent extends HTMLElement {
   private _table: DataTable;
 
   private headerCells: HeaderCell[] = [];
+  private bodyCells: BodyCell[] = [];
 
   constructor() {
     super();
@@ -61,15 +63,10 @@ export class DataTableComponent extends HTMLElement {
       body.append(rowEl);
 
       this.table.preparedColumns.forEach(column => {
-        const cellEl = document.createElement('div');
-        cellEl.classList.add('datatable-body-cell');
-        cellEl.textContent = row[column.name];
-        cellEl.style.width = column.width + 'px';
-        if (column.frozen) {
-          cellEl.classList.add('dt-sticky');
-          cellEl.style.left = column.left + 'px';
-        }
-        rowEl.append(cellEl);
+        const cell = new Cell(row, column);
+        const bodyCell = new BodyCell(this.table, cell);
+        this.bodyCells.push(bodyCell);
+        rowEl.append(bodyCell.element);
       });
     });
 
