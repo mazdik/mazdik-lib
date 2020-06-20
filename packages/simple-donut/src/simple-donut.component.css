@@ -1,0 +1,17 @@
+.simple-donut-container {
+  position: relative;
+  display: inline-block;
+}
+
+.simple-donut-container p {
+  margin: 0;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 1.2em;
+}
+
+.simple-donut-container svg {
+  transform: rotate(-90deg);
+}

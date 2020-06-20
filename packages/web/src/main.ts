@@ -83,6 +83,7 @@ class App {
           { id: 'tree-view', name: 'Tree view' },
           { id: 'dynamic-form', name: 'Dynamic forms' },
           { id: 'modal-edit-form', name: 'Modal edit form' },
+          { id: 'simple-donut', name: 'Simple donut' },
           { id: 'data-table', name: 'Data table' },
         ]
       },
