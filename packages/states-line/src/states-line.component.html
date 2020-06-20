@@ -1,0 +1,12 @@
+<div class="state-info">
+  <ng-content select=".app-state-info"></ng-content>
+</div>
+<div class="state-line" *ngFor="let serie of series">
+  <div class="state-line-col"
+    *ngFor="let line of serie"
+    [ngClass]="line.class"
+    [style.width]="line.percent + '%'"
+    [style.backgroundColor]="line.color"
+    title={{line.tooltip}}>
+  </div>
+</div>
