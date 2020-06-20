@@ -86,10 +86,19 @@ export class StatesLineComponent extends HTMLElement {
   private formatTime(time: number): string {
     if (time === 86400) {
       return '24:00:00';
+    } else if (time < 86400) {
+      const date = new Date(null);
+      date.setSeconds(time);
+      return date.toISOString().substr(11, 8);
+    } else {
+      const days = Math.floor(time / (3600 * 24));
+      time -= days * 3600 * 24;
+      const hours = Math.floor(time / 3600);
+      time -= hours * 3600;
+      const minutes = Math.floor(time / 60);
+      time -= minutes * 60;
+      return days + ' ' + hours + ':' + minutes + ':' + time;
     }
-    const date = new Date(null);
-    date.setSeconds(time);
-    return date.toISOString().substr(11, 8);
   }
 
   private render() {
