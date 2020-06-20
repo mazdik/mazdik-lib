@@ -85,6 +85,7 @@ class App {
           { id: 'modal-edit-form', name: 'Modal edit form' },
           { id: 'simple-donut', name: 'Simple donut' },
           { id: 'states-line', name: 'States line' },
+          { id: 'states-line-interval', name: 'States line interval' },
           { id: 'data-table', name: 'Data table' },
         ]
       },

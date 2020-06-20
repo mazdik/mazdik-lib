@@ -38,6 +38,7 @@
     "@mazdik-lib/select-list": "0.1.0",
     "@mazdik-lib/simple-donut": "0.1.0",
     "@mazdik-lib/states-line": "0.1.0",
+    "@mazdik-lib/states-line-interval": "0.1.0",
     "@mazdik-lib/styles": "0.1.0",
     "@mazdik-lib/tabs": "0.1.0",
     "@mazdik-lib/tree-lib": "0.1.0",

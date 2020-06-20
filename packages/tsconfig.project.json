@@ -71,6 +71,9 @@
       "path": "./states-line/tsconfig.package.json"
     },
     {
+      "path": "./states-line-interval/tsconfig.package.json"
+    },
+    {
       "path": "./tabs/tsconfig.package.json"
     },
     {

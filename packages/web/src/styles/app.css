@@ -211,3 +211,6 @@
 .states-line-demo2 { height: 2rem; width: 30rem; }
 .states-line-demo2 .state-line { height: 30% }
 .states-line-demo2 .state-line-col { height: 100%; border-radius: 0; }
+
+/* StatesLineIntervalDemo */
+.states-line-interval-demo { height: 7rem; width: 60rem; }

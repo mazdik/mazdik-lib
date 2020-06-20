@@ -16,6 +16,9 @@ export class StatesLineComponent extends HTMLElement {
 
   constructor() {
     super();
+  }
+
+  connectedCallback() {
     this.classList.add('states-line');
   }
 
