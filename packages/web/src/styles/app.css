@@ -81,24 +81,24 @@
   border-color: #c3e6cb;
 }
 
-/* PanelDemoComponent */
+/* PanelDemo */
 .panel-demo1 .ui-modal-header { background-color: red !important; }
 .panel-demo2 .ui-modal-header { background-color: #4CAF50 !important; }
 .panel-demo3 .ui-modal-header { background-color: #ff9800 !important; }
 
-/* NestedModalDemoComponent */
+/* NestedModalDemo */
 .nested-modal-demo1 .ui-modal { width: 37.5rem; }
 .nested-modal-demo2 .ui-modal { width: 34.375rem; }
 .nested-modal-demo3 .ui-modal { width: 31.25rem; }
 
-/* NestedModalsDemoComponent */
+/* NestedModalsDemo */
 .nested-modals-demo > .ui-modal { width: 68.75rem; }
 
-/* ModalDataTableDemoComponent */
+/* ModalDataTableDemo */
 .rank-modal .ui-modal { width: 56.25rem; }
 .inventory-modal .ui-modal { width: 56.25rem; }
 
-/* MultiSelectDemoComponent */
+/* MultiSelectDemo */
 .multi-select-demo {width: 37.5rem;}
 .multi-select-demo .datatable-body-cell {padding: 0; margin: 0;}
 .multi-select-demo .datatable-body-cell > .cell-data,
@@ -106,38 +106,38 @@
 .multi-select-demo-block {position: relative;}
 .multi-select-demo-block .dt-dropdown-select-list {width: 15.625rem;}
 
-/* FrozenTableDemoComponent */
+/* FrozenTableDemo */
 .frozen-table-demo {display: flex;}
 .frozen-table-demo .tab2 {overflow-x: auto;}
 .frozen-table-demo .frozen .dt-scroller {overflow-y: hidden; overflow-x: scroll}
 
-/* VerticalGroupDemoComponent */
+/* VerticalGroupDemo */
 .vertical-group-demo {display: flex;}
 .vertical-group-demo .tab2 {overflow-x: auto;}
 .vertical-group-demo .vertical .cell-data {transform: rotate(-90deg); overflow: visible;}
 .vertical-group-demo .vertical .datatable-header-cell, .vertical .datatable-body-cell {width: 3.125rem;}
 .vertical-group-demo .vertical .datatable-body {overflow-y: hidden; overflow-x: scroll}
 
-/* DynamicFormDemoComponent */
+/* DynamicFormDemo */
 .dynamic-form-demo {display: block; width: 25rem;}
 
-/* DualListBoxDemoComponent */
+/* DualListBoxDemo */
 .dual-list-box-demo {min-width: 25rem; max-width: 37.5rem}
 
-/* ScrollerDemoComponent */
+/* ScrollerDemo */
 .scroller-demo .dt-scrollable-content > div {height: 2.5rem;}
 .scroller-demo.dt-scroller {width: 12.5rem;}
 
-/* SelectListDemoComponent */
+/* SelectListDemo */
 .select-list-demo {display: flex;}
 .select-list-demo .sl-column {margin-right: 1.875rem; width: 15.625rem; padding: .625rem; border: 1px solid #eee; border-radius: .0625rem;}
 
-/* DraggableDirectiveDemoComponent */
+/* DraggableDirectiveDemo */
 .draggable-directive-demo .dd-box {position: absolute; width: 12.5rem; height: 12.5rem;}
 .draggable-directive-demo .box1 {background-color: #009ccc;}
 .draggable-directive-demo .box2 {background-color: #f2cb1d; left: 31.25rem;}
 
-/* ResizableDirectiveDemoComponent */
+/* ResizableDirectiveDemo */
 .resizable-directive-demo .dd-box {position: absolute; width: 12.5rem; height: 12.5rem;}
 .resizable-directive-demo .box1 {
   background-color: #009ccc;
@@ -147,21 +147,21 @@
   max-height: 31.25rem;
 }
 
-/* PaginationDemoComponent */
+/* PaginationDemo */
 .pagination-demo {width: 30rem;}
 
-/* ModalSelectDemoComponent */
+/* ModalSelectDemo */
 .modal-select-demo {display: block; width: 18.75rem;}
 
-/* InlineEditDemoComponent */
+/* InlineEditDemo */
 .inline-edit-demo {display: flex; height: 2.5rem;}
 .inline-edit-demo-cell.dt-inline-editor {width: 12.5rem; line-height: 2.5rem; border: 1px solid #eee;}
 
-/* DropdownSelectDemoComponent */
+/* DropdownSelectDemo */
 .dropdown-select-demo {display: flex;}
 .dropdown-select-demo .sl-column {margin-right: 1.875rem; width: 15.625rem;}
 
-/* DragDropDemoComponent */
+/* DragDropDemo */
 .drag-drop-demo { display: flex; }
 .drag-drop-demo .dd-column { width: 20%; min-height: 31.25rem; }
 .drag-drop-demo .dd-column + .dd-column { margin-left: .625rem; }
@@ -183,16 +183,16 @@
 .drag-drop-demo .dd-title { background: rgba(0, 0, 0, .1); padding: .125rem .25rem; }
 .drag-drop-demo .dd-text { padding: .1875rem .25rem .0625rem; line-height: 1.2; }
 
-/* DropdownDirectiveDemoComponent */
+/* DropdownDirectiveDemo */
 .dropdown-directive-demo .navbar,
 .dropdown-directive-demo .navbar-expand,
 .dropdown-directive-demo .dropdown-menu
 { background-color: #2578cf; }
 
-/* HeaderDemoComponent */
+/* HeaderDemo */
 .header-demo .datatable-header-cell {justify-content: center;}
 
-/* NavMenuDemoComponent */
+/* NavMenuDemo */
 .nav-menu-demo1 { width: 13.75rem; }
 .nav-menu-demo2 { width: 13.75rem; height: 18rem; }
 .nav-menu-demo2.nav-collapsed { width: 65px; }
@@ -200,8 +200,17 @@
 .nav-menu-demo1 .vertical-menu-item, .nav-menu-demo2 .vertical-menu-item  { display: flex; }
 .nav-menu-demo1 .nav-menu-icon, .nav-menu-demo2 .nav-menu-icon { padding-right: 1.4rem; }
 
-/* RowViewDemoComponent */
+/* RowViewDemo */
 .row-view-demo { display: block; width: 30rem; }
 
-/* TreeViewDemoComponent */
+/* TreeViewDemo */
 .tree-view-demo { display: block; width: 280px; height: 500px; border-right: 1px solid #eee; }
+
+/* StatesLineDemo */
+.states-line-demo1 { height: 5rem; width: 30rem; }
+.states-line-demo2 { height: 2rem; width: 30rem; }
+.states-line-demo2 .state-line { height: 30% }
+.states-line-demo2 .state-line-col { height: 100%; border-radius: 0; }
+
+/* StatesLineIntervalDemo */
+.states-line-interval-demo { height: 7rem; width: 60rem; }

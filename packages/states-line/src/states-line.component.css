@@ -1,0 +1,28 @@
+.states-line {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+.state-line {
+  display: flex;
+  width: 100%;
+  height: 20%;
+}
+
+.state-line-col {
+  display: flex;
+  height: 50%;
+  border-radius: .1875rem;
+}
+
+.state-top {
+  align-self: flex-start;
+}
+
+.state-bottom {
+  align-self: flex-end;
+}

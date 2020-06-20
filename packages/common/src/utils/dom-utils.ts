@@ -40,3 +40,14 @@ export function toggleClass(element: HTMLElement, className: string, state: bool
     element.classList.remove(className);
   }
 }
+
+// res = {'class1': true, 'class2': true}
+export function addClass(element: HTMLElement, res: any) {
+  if (typeof res === 'string') {
+    element.classList.add(res);
+  } else if (typeof res === 'object') {
+    Object.keys(res).forEach(key => {
+      toggleClass(element, key, res[key] === true);
+    });
+  }
+}

@@ -65,10 +65,22 @@
       "path": "./select-list/tsconfig.package.json"
     },
     {
+      "path": "./simple-donut/tsconfig.package.json"
+    },
+    {
+      "path": "./states-line/tsconfig.package.json"
+    },
+    {
+      "path": "./states-line-interval/tsconfig.package.json"
+    },
+    {
       "path": "./tabs/tsconfig.package.json"
     },
     {
       "path": "./tree-lib/tsconfig.package.json"
+    },
+    {
+      "path": "./tree-table/tsconfig.package.json"
     },
     {
       "path": "./tree-view/tsconfig.package.json"

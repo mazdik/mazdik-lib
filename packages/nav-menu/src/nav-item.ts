@@ -1,20 +1,16 @@
-import { TreeNode } from '@mazdik-lib/tree-lib';
+import { toggleClass } from '@mazdik-lib/common';
+import { NavTreeNode } from './nav-tree-node';
 
 export function updateExpandedStyles(expanded: boolean, element: HTMLElement) {
-  if (expanded) {
-    element.classList.add('expanded');
-    element.classList.remove('collapsed');
-  } else {
-    element.classList.remove('expanded');
-    element.classList.add('collapsed');
-  }
+  toggleClass(element, 'expanded', expanded);
+  toggleClass(element, 'collapsed', !expanded);
 }
 
 export class NavItem {
 
   element: HTMLElement
 
-  constructor(public node: TreeNode) {
+  constructor(public node: NavTreeNode) {
     this.element = this.createNavItemElement(node);
   }
 
@@ -29,7 +25,7 @@ export class NavItem {
     return `${icon}<span class="menu-item-text">${name}</span>${rotating}`;
   }
 
-  private createNavItemElement(node: TreeNode): HTMLElement {
+  private createNavItemElement(node: NavTreeNode): HTMLElement {
     const iconClass = node.icon ? 'nav-menu-icon ' + node.icon : '';
     const element = document.createElement('a');
     element.innerHTML = this.getTemplate(node.name, iconClass, node.hasChildren);
@@ -40,17 +36,9 @@ export class NavItem {
     return element;
   }
 
-  private updateNavItemStyles(node: TreeNode, element: HTMLElement) {
-    if (node.isSelected) {
-      element.classList.add('active');
-    } else {
-      element.classList.remove('active');
-    }
-    if (node.hasChildren) {
-      element.classList.add('heading');
-    } else {
-      element.classList.add('heading');
-    }
+  private updateNavItemStyles(node: NavTreeNode, element: HTMLElement) {
+    toggleClass(element, 'active', node.isSelected);
+    toggleClass(element, 'heading', node.hasChildren);
     updateExpandedStyles(node.expanded, element);
   }
 

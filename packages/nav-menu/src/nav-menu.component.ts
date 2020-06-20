@@ -1,18 +1,19 @@
-import { Listener, isBlank } from '@mazdik-lib/common';
-import { TreeNode, Tree } from '@mazdik-lib/tree-lib';
+import { Listener, isBlank, toggleClass } from '@mazdik-lib/common';
+import { NavTree } from './nav-tree';
+import { NavTreeNode } from './nav-tree-node';
 import { NavItem, updateExpandedStyles } from './nav-item';
 
 export class NavMenuComponent extends HTMLElement {
 
-  get nodes(): TreeNode[] { return this.tree.nodes; }
-  set nodes(val: TreeNode[]) {
+  get nodes(): NavTreeNode[] { return this.tree.nodes; }
+  set nodes(val: NavTreeNode[]) {
     this.tree.nodes = val;
     this.render();
     this.updateStyles();
   }
   minimize: boolean;
 
-  private tree: Tree = new Tree();
+  private tree: NavTree = new NavTree();
   private collapsed: boolean = true;
   private listeners: Listener[] = [];
   private navItems: NavItem[] = [];
@@ -59,13 +60,8 @@ export class NavMenuComponent extends HTMLElement {
 
   private updateStyles() {
     if (this.minimize) {
-      if (this.collapsed) {
-        this.classList.add('nav-collapsed');
-        this.classList.remove('nav-expanded');
-      } else {
-        this.classList.remove('nav-collapsed');
-        this.classList.add('nav-expanded');
-      }
+      toggleClass(this, 'nav-collapsed', this.collapsed);
+      toggleClass(this, 'nav-expanded', !this.collapsed);
     } else {
       this.classList.add('nav-expanded');
     }
@@ -90,7 +86,7 @@ export class NavMenuComponent extends HTMLElement {
     this.append(fragment);
   }
 
-  private createTreeDom(node: TreeNode): HTMLElement {
+  private createTreeDom(node: NavTreeNode): HTMLElement {
     const div = document.createElement('div');
     div.classList.add('nav-item');
 
@@ -132,10 +128,10 @@ export class NavMenuComponent extends HTMLElement {
   }
 
   ensureVisible(id: string) {
-    const node = this.tree.getNodeById(id);
-    if (node) {
-      node.ensureVisible();
-      node.setSelected();
+    const navItem = this.navItems.find(x => x.node.id && x.node.id.toString() === id);
+    if (navItem) {
+      navItem.node.ensureVisible();
+      navItem.node.setSelected();
     }
     this.updateAllItemsStyles();
   }
