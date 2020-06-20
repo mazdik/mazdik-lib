@@ -3,31 +3,34 @@ import { StateLine } from './state-line';
 
 export class StatesLineComponent extends HTMLElement {
 
-  points: StatePoint[][];
   dateFrom: Date;
   dateTo: Date;
 
-  series: StateLine[][] = [];
+  set points(val: StatePoint[][]) {
+    this.init();
+    this.series = this.prepareSeries(val);
+    this.render();
+  }
+
+  private series: StateLine[][] = [];
 
   constructor() {
     super();
+    this.classList.add('states-line');
   }
 
-  onInit() {
+  init() {
     if (!this.dateFrom) {
       this.dateFrom = new Date();
     }
     if (!this.dateTo) {
       this.dateTo = new Date(this.dateFrom.getFullYear(), this.dateFrom.getMonth(), this.dateFrom.getDate() + 1);
     }
-    this.prepareSeries();
   }
 
-  private prepareSeries() {
-    this.points.forEach(p => {
-      const lines = this.prepareLines(p);
-      this.series.push(lines);
-    });
+  private prepareSeries(points: StatePoint[][]): StateLine[][] {
+    const series = points.map(p => this.prepareLines(p));
+    return series;
   }
 
   private prepareLines(points: StatePoint[]): StateLine[] {
@@ -84,6 +87,27 @@ export class StatesLineComponent extends HTMLElement {
     const date = new Date(null);
     date.setSeconds(time);
     return date.toISOString().substr(11, 8);
+  }
+
+  private render() {
+    const lineElements = [];
+    this.series.forEach(serie => {
+      const lineEl = document.createElement('div');
+      lineEl.classList.add('state-line');
+      lineElements.push(lineEl);
+
+      serie.forEach(col => {
+        const colEl = document.createElement('div');
+        colEl.classList.add('state-line-col');
+        colEl.classList.add(col.class);
+        colEl.style.width = col.percent + '%';
+        colEl.style.backgroundColor = col.color;
+        colEl.title = col.tooltip;
+        lineEl.append(colEl);
+      });
+    });
+    this.innerHTML = '';
+    this.append(...lineElements);
   }
 
 }

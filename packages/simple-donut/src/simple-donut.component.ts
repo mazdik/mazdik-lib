@@ -57,6 +57,7 @@ export class SimpleDonutComponent extends HTMLElement {
     circle2.setAttribute('stroke-dashoffset', this.strokeDashoffset.toString());
     svg.append(circle2);
 
+    this.innerHTML = '';
     this.append(element);
   }
 
