@@ -49,6 +49,9 @@ export class PaginationComponent extends HTMLElement {
 
   constructor() {
     super();
+  }
+
+  connectedCallback() {
     this.classList.add('pagination');
     this.render();
     this.addEventListeners();

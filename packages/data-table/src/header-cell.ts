@@ -74,14 +74,11 @@ export class HeaderCell {
       this.table.sorter.setOrder(this.column.name);
       this.table.events.onSort();
     }
-    this.updateStyles();
   }
 
   private onClickColumnMenu(event: MouseEvent) {
     const {left, top} = EventHelper.getColumnPosition(event, this.table.dimensions.columnMenuWidth);
     this.table.events.onColumnMenuClick({left, top, column: this.column} as ColumnMenuEventArgs);
-    console.log(left);
-    console.log(top);
   }
 
   updateStyles() {

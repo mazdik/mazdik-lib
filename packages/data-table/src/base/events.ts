@@ -3,6 +3,8 @@ import { ColumnMenuEventArgs, CellEventArgs, CellEventType } from './types';
 
 export class Events {
 
+  element: HTMLElement;
+
   readonly selectionSource = new Subject();
   private readonly sortSource = new Subject();
   private readonly filterSource = new Subject();
@@ -31,16 +33,23 @@ export class Events {
   readonly checkboxSource$ = this.checkboxSource.asObservable();
   readonly cellSource$ = this.cellSource.asObservable();
 
+  constructor() {
+    this.element = document.createElement('div');
+  }
+
   onSort() {
     this.sortSource.next();
+    this.element.dispatchEvent(new CustomEvent('sort'));
   }
 
   onFilter() {
     this.filterSource.next();
+    this.element.dispatchEvent(new CustomEvent('filter'));
   }
 
   onSelectionChange() {
     this.selectionSource.next();
+    this.element.dispatchEvent(new CustomEvent('selection'));
   }
 
   onPage() {
@@ -49,38 +58,47 @@ export class Events {
 
   onColumnMenuClick(data: ColumnMenuEventArgs) {
     this.columnMenuSource.next(data);
+    this.element.dispatchEvent(new CustomEvent('columnMenu', { detail: data }));
   }
 
   onResizeBegin() {
     this.resizeBeginSource.next();
+    this.element.dispatchEvent(new CustomEvent('resizeBegin'));
   }
 
   onResize(data: any) {
     this.resizeSource.next(data);
+    this.element.dispatchEvent(new CustomEvent('resize'));
   }
 
   onResizeEnd() {
     this.resizeEndSource.next();
+    this.element.dispatchEvent(new CustomEvent('resizeEnd'));
   }
 
   onRowsChanged() {
     this.rowsChanged.next();
+    this.element.dispatchEvent(new CustomEvent('rowsChanged'));
   }
 
   onScroll(data: any) {
     this.scrollSource.next(data);
+    this.element.dispatchEvent(new CustomEvent('scroll'));
   }
 
   onLoading(data: boolean) {
     this.loadingSource.next(data);
+    this.element.dispatchEvent(new CustomEvent('loading', { detail: data }));
   }
 
   onCheckbox(data: any) {
     this.checkboxSource.next(data);
+    this.element.dispatchEvent(new CustomEvent('checkbox', { detail: data }));
   }
 
   onCell(data: CellEventArgs) {
     this.cellSource.next(data);
+    this.element.dispatchEvent(new CustomEvent('cell', { detail: data }));
   }
 
   onMouseover(data: CellEventArgs) {
