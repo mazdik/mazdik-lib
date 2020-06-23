@@ -1,10 +1,11 @@
 import { Listener } from '@mazdik-lib/common';
+import '@mazdik-lib/pagination';
+import { PaginationComponent, PageEvent } from '@mazdik-lib/pagination';
 import { DataTable } from './base';
 import { HeaderCell } from './header-cell';
 import { BodyCell } from './body-cell';
 import { BodyRow } from './body-row';
-import '@mazdik-lib/pagination';
-import { PaginationComponent, PageEvent } from '@mazdik-lib/pagination';
+import { Filter } from './filter';
 
 export class DataTableComponent extends HTMLElement {
 
@@ -26,6 +27,7 @@ export class DataTableComponent extends HTMLElement {
 
   private footer: HTMLElement;
   private resizeHelper: HTMLElement;
+  private filter: Filter;
   private pagination: PaginationComponent;
   private listeners: Listener[] = [];
 
@@ -42,6 +44,8 @@ export class DataTableComponent extends HTMLElement {
 
   disconnectedCallback() {
     this.removeEventListeners();
+    this.headerCells.forEach(x => x.destroy());
+    this.filter.destroy();
   }
 
   private addEventListeners() {
@@ -50,6 +54,11 @@ export class DataTableComponent extends HTMLElement {
         eventName: 'sort',
         target: this.table.events.element,
         handler: this.onSort.bind(this)
+      },
+      {
+        eventName: 'scroll',
+        target: this,
+        handler: this.onScroll.bind(this)
       },
     ];
     this.listeners.forEach(x => {
@@ -66,7 +75,6 @@ export class DataTableComponent extends HTMLElement {
   private render() {
     this.createHeaderCells();
     this.createRows();
-    this.createDropdownMenu();
     this.updateStyles();
 
     if (this.table.settings.paginator) {
@@ -84,6 +92,8 @@ export class DataTableComponent extends HTMLElement {
       this.listeners.push(listener);
       listener.target.addEventListener(listener.eventName, listener.handler);
     }
+    this.filter = new Filter(this.table);
+    this.append(this.filter.element);
   }
 
   private createHeader() {
@@ -138,13 +148,6 @@ export class DataTableComponent extends HTMLElement {
     this.append(this.resizeHelper);
   }
 
-  private createDropdownMenu() {
-    const dropdownMenuEl = document.createElement('div');
-    dropdownMenuEl.classList.add('dropdown-filter-menu');
-    dropdownMenuEl.style.display = 'none';
-    this.append(dropdownMenuEl);
-  }
-
   updateStyles() {
     this.header.style.width = this.table.dimensions.columnsTotalWidth + 'px';
     this.body.style.width = this.table.dimensions.columnsTotalWidth + 'px';
@@ -189,6 +192,10 @@ export class DataTableComponent extends HTMLElement {
 
     this.updateHeaderStyles();
     this.createRows();
+  }
+
+  private onScroll(event) {
+    this.filter.hide();
   }
 
 }
