@@ -52,32 +52,20 @@ export class ModalComponent extends HTMLElement {
   private preMaximizePageY: number;
 
   private listeners: Listener[] = [];
+  private isInitialized: boolean;
 
   private draggableDirective: Draggable;
   private resizableDirective: Resizable;
 
   constructor() {
     super();
+  }
 
-    const template = document.createElement('template');
-    template.innerHTML = getTemplate();
-    this.append(template.content.cloneNode(true));
-
-    this.modalOverlay = this.querySelector('#modalOverlay');
-    this.modalRoot = this.querySelector('#modalRoot');
-    this.modalBody = this.querySelector('#modalBody');
-    this.modalHeader = this.querySelector('#modalHeader');
-    this.modalFooter = this.querySelector('#modalFooter');
-    this.maximizeIcon = this.querySelector('#maximizeIcon');
-    this.closeIcon = this.querySelector('#closeIcon');
-    this.titlebar = this.querySelector('#titlebar');
-
-    this.setDialogStyles();
-    this.setMaximizeIconStyles();
-    this.renderContent();
-
-    this.draggableDirective = new Draggable(this.modalRoot);
-    this.resizableDirective = new Resizable(this.modalRoot);
+  connectedCallback() {
+    if (!this.isInitialized) {
+      this.onInit();
+      this.isInitialized = true;
+    }
   }
 
   disconnectedCallback() {
@@ -97,6 +85,28 @@ export class ModalComponent extends HTMLElement {
         this.open ? this.show() : this.hide();
         break;
     }
+  }
+
+  private onInit() {
+    const template = document.createElement('template');
+    template.innerHTML = getTemplate();
+    this.append(template.content.cloneNode(true));
+
+    this.modalOverlay = this.querySelector('#modalOverlay');
+    this.modalRoot = this.querySelector('#modalRoot');
+    this.modalBody = this.querySelector('#modalBody');
+    this.modalHeader = this.querySelector('#modalHeader');
+    this.modalFooter = this.querySelector('#modalFooter');
+    this.maximizeIcon = this.querySelector('#maximizeIcon');
+    this.closeIcon = this.querySelector('#closeIcon');
+    this.titlebar = this.querySelector('#titlebar');
+
+    this.setDialogStyles();
+    this.setMaximizeIconStyles();
+    this.renderContent();
+
+    this.draggableDirective = new Draggable(this.modalRoot);
+    this.resizableDirective = new Resizable(this.modalRoot);
   }
 
   addEventListeners() {
