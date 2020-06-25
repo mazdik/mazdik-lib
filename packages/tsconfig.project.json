@@ -65,6 +65,9 @@
       "path": "./select-list/tsconfig.package.json"
     },
     {
+      "path": "./simple-bar-chart/tsconfig.package.json"
+    },
+    {
       "path": "./simple-donut/tsconfig.package.json"
     },
     {

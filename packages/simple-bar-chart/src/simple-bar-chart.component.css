@@ -1,0 +1,42 @@
+.simple-bar-vertical {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+}
+
+.simple-bar-vertical * {
+  box-sizing: border-box;
+}
+
+.simple-bar-vertical-top {
+  display: flex;
+  height: 100%;
+  width: 100%;
+}
+
+.simple-bar-vertical-bottom {
+  display: flex;
+  width: 100%;
+  padding-left: 3rem;
+  justify-content: space-around;
+}
+
+.simple-bar-vertical-left {
+  display: flex;
+  height: 100%;
+  width: 3rem;
+  border-right: 1px #99C6E3 solid;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.simple-bar-vertical-main {
+  display: flex;
+  height: 100%;
+  width: 100%;
+  background: repeating-linear-gradient(to bottom, #99C6E3, #99C6E3 1px, #fff 1px, #fff 20%);
+  border-bottom: 1px #99C6E3 solid;
+  justify-content: space-around;
+  align-items: flex-end;
+}
