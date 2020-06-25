@@ -53,13 +53,17 @@ export class DropdownSelectComponent extends HTMLElement {
   private button: HTMLButtonElement;
 
   private listeners: Listener[] = [];
+  private isInitialized: boolean;
 
   constructor() {
     super();
   }
 
   connectedCallback() {
-    this.onInit();
+    if (!this.isInitialized) {
+      this.onInit();
+      this.isInitialized = true;
+    }
   }
 
   disconnectedCallback() {

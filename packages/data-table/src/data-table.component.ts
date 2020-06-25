@@ -30,22 +30,30 @@ export class DataTableComponent extends HTMLElement {
   private filter: Filter;
   private pagination: PaginationComponent;
   private listeners: Listener[] = [];
+  private isInitialized: boolean;
 
   constructor() {
     super();
   }
 
   connectedCallback() {
-    this.classList.add('datatable');
-    this.createHeader();
-    this.createBody();
-    this.createFooter();
+    if (!this.isInitialized) {
+      this.onInit();
+      this.isInitialized = true;
+    }
   }
 
   disconnectedCallback() {
     this.removeEventListeners();
     this.headerCells.forEach(x => x.destroy());
     this.filter.destroy();
+  }
+
+  private onInit() {
+    this.classList.add('datatable');
+    this.createHeader();
+    this.createBody();
+    this.createFooter();
   }
 
   private addEventListeners() {

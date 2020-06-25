@@ -53,13 +53,17 @@ export class ModalEditFormComponent extends HTMLElement {
   private dynamicForm: DynamicFormComponent;
   private rowView: RowViewComponent;
   private listeners: Listener[] = [];
+  private isInitialized: boolean;
 
   constructor() {
     super();
   }
 
   connectedCallback() {
-    this.onInit();
+    if (!this.isInitialized) {
+      this.onInit();
+      this.isInitialized = true;
+    }
   }
 
   disconnectedCallback() {

@@ -93,13 +93,17 @@ export class ModalSelectComponent extends HTMLElement {
   private clearSearchIcon: HTMLElement;
   private modalSelectTitle: HTMLElement;
   private selectListElements: HTMLElement[] = [];
+  private isInitialized: boolean;
 
   constructor() {
     super();
   }
 
   connectedCallback() {
-    this.onInit();
+    if (!this.isInitialized) {
+      this.onInit();
+      this.isInitialized = true;
+    }
   }
 
   disconnectedCallback() {

@@ -24,12 +24,20 @@ export class SimpleBarChartComponent extends HTMLElement {
   private left: HTMLElement;
   private main: HTMLElement;
   private bottom: HTMLElement;
+  private isInitialized: boolean;
 
   constructor() {
     super();
   }
 
   connectedCallback() {
+    if (!this.isInitialized) {
+      this.onInit();
+      this.isInitialized = true;
+    }
+  }
+
+  private onInit() {
     this.classList.add('simple-bar-vertical');
 
     const top = document.createElement('div');

@@ -1,6 +1,7 @@
 import { Listener } from '@mazdik-lib/common';
 import { DropDown } from '@mazdik-lib/dropdown';
 import { DataTable, Column, ColumnMenuEventArgs } from './base';
+import { ListFilter } from './list-filter';
 
 export class Filter {
 
@@ -10,17 +11,20 @@ export class Filter {
   private left: number;
   private top: number;
   private column: Column = new Column({});
+  private listFilter: ListFilter;
 
   constructor(private table: DataTable) {
     this.createFilterElements();
     this.addEventListeners();
     this.dropdown = new DropDown(this.element);
     this.updateStyles();
+    this.listFilter = new ListFilter(this.table);
   }
 
   destroy() {
     this.removeEventListeners();
     this.dropdown.removeEventListeners();
+    this.listFilter.destroy();
   }
 
   private addEventListeners() {
@@ -73,6 +77,12 @@ export class Filter {
       this.left = event.left;
       this.dropdown.closeDropdown();
       this.dropdown.openDropdown();
+    }
+    this.element.innerHTML = '';
+    if (this.isListFilter) {
+      this.element.append(this.listFilter.element);
+      this.listFilter.column = this.column;
+      this.listFilter.isOpen = this.dropdown.isOpen;
     }
     this.updateStyles();
   }

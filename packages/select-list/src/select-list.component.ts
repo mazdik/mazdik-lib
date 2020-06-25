@@ -85,9 +85,24 @@ export class SelectListComponent extends HTMLElement {
   private filteredOptions: SelectItem[];
 
   private listeners: Listener[] = [];
+  private isInitialized: boolean;
 
   constructor() {
     super();
+  }
+
+  connectedCallback() {
+    if (!this.isInitialized) {
+      this.onInit();
+      this.isInitialized = true;
+    }
+  }
+
+  disconnectedCallback() {
+    this.removeEventListeners();
+  }
+
+  private onInit() {
     const id = (~~(Math.random()*1e3)).toString();
     const template = document.createElement('template');
     template.innerHTML = getTemplate(id);
@@ -103,10 +118,6 @@ export class SelectListComponent extends HTMLElement {
 
     this.contentInit();
     this.addEventListeners();
-  }
-
-  disconnectedCallback() {
-    this.removeEventListeners();
   }
 
   addEventListeners() {
