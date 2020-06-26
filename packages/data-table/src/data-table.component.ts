@@ -59,6 +59,11 @@ export class DataTableComponent extends HTMLElement {
   private addEventListeners() {
     this.listeners = [
       {
+        eventName: 'filter',
+        target: this.table.events.element,
+        handler: this.onFilter.bind(this)
+      },
+      {
         eventName: 'sort',
         target: this.table.events.element,
         handler: this.onSort.bind(this)
@@ -189,6 +194,19 @@ export class DataTableComponent extends HTMLElement {
     }
     this.table.selection.clearSelection();
 
+    this.createRows();
+  }
+
+  private onFilter() {
+    this.table.pager.current = 1;
+    if (this.table.clientSide) {
+      this.table.loadLocalRows();
+    }
+    this.table.selection.clearSelection();
+
+    this.pagination.totalItems = this.table.pager.total;
+    this.pagination.perPage = this.table.pager.perPage;
+    this.pagination.currentPage = this.table.pager.current;
     this.createRows();
   }
 

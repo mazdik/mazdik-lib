@@ -14,11 +14,15 @@ export class Filter {
   private listFilter: ListFilter;
 
   constructor(private table: DataTable) {
-    this.createFilterElements();
-    this.addEventListeners();
+    this.element = document.createElement('div');
+    this.element.classList.add('dropdown-filter-menu');
     this.dropdown = new DropDown(this.element);
-    this.updateStyles();
+
     this.listFilter = new ListFilter(this.table);
+    this.element.append(this.listFilter.element);
+
+    this.updateStyles();
+    this.addEventListeners();
   }
 
   destroy() {
@@ -39,6 +43,11 @@ export class Filter {
         target: this.element,
         handler: this.updateStyles.bind(this)
       },
+      {
+        eventName: 'filterClose',
+        target: this.listFilter.element,
+        handler: this.onFilterClose.bind(this)
+      },
     ];
     this.listeners.forEach(x => {
       x.target.addEventListener(x.eventName, x.handler);
@@ -51,16 +60,12 @@ export class Filter {
     });
   }
 
-  private createFilterElements() {
-    this.element = document.createElement('div');
-    this.element.classList.add('dropdown-filter-menu');
-  }
-
   updateStyles() {
     this.element.style.left = this.left + 'px';
     this.element.style.top = this.top + 'px';
     this.element.style.width = this.table.dimensions.columnMenuWidth + 'px';
     this.element.style.display = (this.dropdown.isOpen && this.column.filter) ? 'block' : 'none';
+    this.listFilter.element.style.display = this.isListFilter ? 'block' : 'none';
   }
 
   private onColumnMenu(event: CustomEvent<ColumnMenuEventArgs>) {
@@ -78,11 +83,8 @@ export class Filter {
       this.dropdown.closeDropdown();
       this.dropdown.openDropdown();
     }
-    this.element.innerHTML = '';
     if (this.isListFilter) {
-      this.element.append(this.listFilter.element);
-      this.listFilter.column = this.column;
-      this.listFilter.isOpen = this.dropdown.isOpen;
+      this.listFilter.onOpenChange(this.column, this.dropdown.isOpen);
     }
     this.updateStyles();
   }
