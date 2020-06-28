@@ -32,6 +32,7 @@ export class InputBaseComponent extends HTMLElement {
   label: HTMLLabelElement;
   helpBlock: HTMLElement;
   listeners: Listener[] = [];
+  private isInitialized: boolean;
 
   constructor() {
     super();
@@ -53,7 +54,10 @@ export class InputBaseComponent extends HTMLElement {
   }
 
   connectedCallback() {
-    this.append(this.wrapper);
+    if (!this.isInitialized) {
+      this.append(this.wrapper);
+      this.isInitialized = true;
+    }
   }
 
   disconnectedCallback() {

@@ -17,6 +17,7 @@ export class RowViewComponent extends HTMLElement {
   private reverse: boolean = true;
   private orderedData: KeyValuePair[];
   private listeners: Listener[] = [];
+  private isInitialized: boolean;
 
   private headerKey: HTMLElement;
   private headerValue: HTMLElement;
@@ -24,12 +25,22 @@ export class RowViewComponent extends HTMLElement {
 
   constructor() {
     super();
-    this.renderTable();
-    this.addEventListeners();
+  }
+
+  connectedCallback() {
+    if (!this.isInitialized) {
+      this.onInit();
+      this.isInitialized = true;
+    }
   }
 
   disconnectedCallback() {
     this.removeEventListeners();
+  }
+
+  private onInit() {
+    this.renderTable();
+    this.addEventListeners();
   }
 
   private addEventListeners() {

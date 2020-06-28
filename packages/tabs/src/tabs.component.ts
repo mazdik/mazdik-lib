@@ -14,15 +14,26 @@ export class TabsComponent extends HTMLElement {
   private selected: string;
   private tabElements: HTMLElement[] = [];
   private listeners: Listener[] = [];
+  private isInitialized: boolean;
 
   constructor() {
     super();
-    this.classList.add('dt-tab');
-    this.addEventListeners();
+  }
+
+  connectedCallback() {
+    if (!this.isInitialized) {
+      this.onInit();
+      this.isInitialized = true;
+    }
   }
 
   disconnectedCallback() {
     this.removeEventListeners();
+  }
+
+  private onInit() {
+    this.classList.add('dt-tab');
+    this.addEventListeners();
   }
 
   private addEventListeners() {

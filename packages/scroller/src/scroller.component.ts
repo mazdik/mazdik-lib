@@ -41,9 +41,24 @@ export class ScrollerComponent extends HTMLElement {
   private previousEnd: number;
   private rowHeightCache: RowHeightCache = new RowHeightCache();
   private scrollListener: any;
+  private isInitialized: boolean;
 
   constructor() {
     super();
+  }
+
+  connectedCallback() {
+    if (!this.isInitialized) {
+      this.onInit();
+      this.isInitialized = true;
+    }
+  }
+
+  disconnectedCallback() {
+    this.removeEventListener('scroll', this.scrollListener);
+  }
+
+  private onInit() {
     this.classList.add('dt-scroller', 'dt-virtual-scroll');
 
     this.contentEl = document.createElement('div');
@@ -56,10 +71,6 @@ export class ScrollerComponent extends HTMLElement {
 
     this.scrollListener = this.onScrolled.bind(this);
     this.addEventListener('scroll', this.scrollListener);
-  }
-
-  disconnectedCallback() {
-    this.removeEventListener('scroll', this.scrollListener);
   }
 
   private initChunkRows() {

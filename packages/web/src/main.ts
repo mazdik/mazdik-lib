@@ -86,6 +86,7 @@ class App {
           { id: 'simple-donut', name: 'Simple donut' },
           { id: 'states-line', name: 'States line' },
           { id: 'states-line-interval', name: 'States line interval' },
+          { id: 'simple-bar-chart', name: 'Simple bar chart' },
           { id: 'data-table', name: 'Data table' },
         ]
       },

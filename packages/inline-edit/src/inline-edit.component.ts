@@ -39,9 +39,24 @@ export class InlineEditComponent extends HTMLElement {
   private select: HTMLSelectElement;
   private input: HTMLInputElement;
   private initValue: boolean = false;
+  private isInitialized: boolean;
 
   constructor() {
     super();
+  }
+
+  connectedCallback() {
+    if (!this.isInitialized) {
+      this.onInit();
+      this.isInitialized = true;
+    }
+  }
+
+  disconnectedCallback() {
+    this.removeEventListeners();
+  }
+
+  private onInit() {
     this.classList.add('dt-inline-editor');
 
     this.inlineDataView = document.createElement('div');
@@ -52,10 +67,6 @@ export class InlineEditComponent extends HTMLElement {
     this.input = document.createElement('input');
 
     this.addEventListeners();
-  }
-
-  disconnectedCallback() {
-    this.removeEventListeners();
   }
 
   private addEventListeners() {

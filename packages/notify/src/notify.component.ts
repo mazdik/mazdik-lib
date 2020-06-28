@@ -14,6 +14,9 @@ export class NotifyComponent extends HTMLElement {
 
   constructor() {
     super();
+  }
+
+  connectedCallback() {
     this.classList.add('dt-notify-container');
   }
 

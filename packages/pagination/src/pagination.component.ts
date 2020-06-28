@@ -46,16 +46,27 @@ export class PaginationComponent extends HTMLElement {
   private rangeLabel: HTMLElement;
   private navigation: HTMLElement;
   private pageElements: HTMLElement[] = [];
+  private isInitialized: boolean;
 
   constructor() {
     super();
-    this.classList.add('pagination');
-    this.render();
-    this.addEventListeners();
+  }
+
+  connectedCallback() {
+    if (!this.isInitialized) {
+      this.onInit();
+      this.isInitialized = true;
+    }
   }
 
   disconnectedCallback() {
     this.removeEventListeners();
+  }
+
+  private onInit() {
+    this.classList.add('pagination');
+    this.render();
+    this.addEventListeners();
   }
 
   private addEventListeners() {

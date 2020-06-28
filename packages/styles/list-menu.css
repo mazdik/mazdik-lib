@@ -28,6 +28,10 @@
   background-color: var(--dt-color-secondary-lighter);
 }
 
+.dt-list-menu-select-all {
+  border-bottom: .0625rem solid var(--dt-color-secondary-lighter);
+}
+
 .dt-list-menu-row {
   display: flex;
   justify-content: space-between;

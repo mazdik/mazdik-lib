@@ -17,14 +17,17 @@ export class ContextMenuComponent extends HTMLElement {
   private dropdown: DropDown;
   private listeners: Listener[] = [];
   private listMenu: HTMLElement;
+  private isInitialized: boolean;
 
   constructor() {
     super();
-    this.listMenu = document.createElement('ul');
-    this.append(this.listMenu);
-    this.classList.add('dt-context-menu');
-    this.dropdown = new DropDown(this);
-    this.addEventListeners();
+  }
+
+  connectedCallback() {
+    if (!this.isInitialized) {
+      this.onInit();
+      this.isInitialized = true;
+    }
   }
 
   disconnectedCallback() {
@@ -33,6 +36,14 @@ export class ContextMenuComponent extends HTMLElement {
     this.listeners.forEach(x => {
       x.target.removeEventListener(x.eventName, x.handler);
     });
+  }
+
+  private onInit() {
+    this.listMenu = document.createElement('ul');
+    this.append(this.listMenu);
+    this.classList.add('dt-context-menu');
+    this.dropdown = new DropDown(this);
+    this.addEventListeners();
   }
 
   private addEventListeners() {

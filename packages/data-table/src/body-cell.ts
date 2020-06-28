@@ -1,12 +1,14 @@
 import { toggleClass, addClass } from '@mazdik-lib/common';
-import { DataTable, Cell } from './base';
+import { Row, Column, Cell } from './base';
 
 export class BodyCell {
 
   element: HTMLElement;
   editing: boolean;
+  cell: Cell;
 
-  constructor(private table: DataTable, private cell: Cell) {
+  constructor(row: Row, column: Column) {
+    this.cell = new Cell(row, column);
     this.cell.updateViewValue();
     this.cell.validate();
     this.createCellElements();
