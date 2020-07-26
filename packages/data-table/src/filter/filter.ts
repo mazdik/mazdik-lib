@@ -1,7 +1,8 @@
 import { Listener } from '@mazdik-lib/common';
 import { DropDown } from '@mazdik-lib/dropdown';
-import { DataTable, Column, ColumnMenuEventArgs } from './base';
+import { DataTable, Column, ColumnMenuEventArgs } from '../base';
 import { ListFilter } from './list-filter';
+import { RangeFilter } from './range-filter';
 
 export class Filter {
 
@@ -12,6 +13,7 @@ export class Filter {
   private top: number;
   private column: Column = new Column({});
   private listFilter: ListFilter;
+  private rangeFilter: RangeFilter;
 
   constructor(private table: DataTable) {
     this.element = document.createElement('div');
@@ -21,6 +23,9 @@ export class Filter {
     this.listFilter = new ListFilter(this.table);
     this.element.append(this.listFilter.element);
 
+    this.rangeFilter = new RangeFilter(this.table);
+    this.element.append(this.rangeFilter.element);
+
     this.updateStyles();
     this.addEventListeners();
   }
@@ -29,6 +34,7 @@ export class Filter {
     this.removeEventListeners();
     this.dropdown.removeEventListeners();
     this.listFilter.destroy();
+    this.rangeFilter.destroy();
   }
 
   private addEventListeners() {
@@ -46,6 +52,11 @@ export class Filter {
       {
         eventName: 'filterClose',
         target: this.listFilter.element,
+        handler: this.onFilterClose.bind(this)
+      },
+      {
+        eventName: 'filterClose',
+        target: this.rangeFilter.element,
         handler: this.onFilterClose.bind(this)
       },
     ];
@@ -66,6 +77,7 @@ export class Filter {
     this.element.style.width = this.table.dimensions.columnMenuWidth + 'px';
     this.element.style.display = (this.dropdown.isOpen && this.column.filter) ? 'block' : 'none';
     this.listFilter.element.style.display = this.isListFilter ? 'block' : 'none';
+    this.rangeFilter.element.style.display = this.isRangeFilter ? 'block' : 'none';
   }
 
   private onColumnMenu(event: CustomEvent<ColumnMenuEventArgs>) {
@@ -85,6 +97,8 @@ export class Filter {
     }
     if (this.isListFilter) {
       this.listFilter.onOpenChange(this.column, this.dropdown.isOpen);
+    } else if (this.rangeFilter) {
+      this.rangeFilter.onOpenChange(this.column);
     }
     this.updateStyles();
   }
