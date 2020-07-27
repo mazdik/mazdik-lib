@@ -3,10 +3,13 @@
   "compilerOptions": {
     "outDir": "./lib",
     "rootDir": "./src",
-    "composite": false,
-    "declaration": false
+    "composite": true
   },
-  "references": [],
+  "references": [
+    {
+      "path": "../common/tsconfig.package.json"
+    }
+  ],
   "include": [
     "src"
   ],

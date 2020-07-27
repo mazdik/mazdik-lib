@@ -1,7 +1,7 @@
 import '@mazdik-lib/select-list';
 import { SelectListComponent } from '@mazdik-lib/select-list';
 import { Listener } from '@mazdik-lib/common';
-import { DataTable, Column, FilterOperator } from './base';
+import { DataTable, Column, FilterOperator } from '../base';
 
 export class ListFilter {
 

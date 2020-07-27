@@ -5,7 +5,7 @@ import { DataTable } from './base';
 import { HeaderCell } from './header-cell';
 import { BodyCell } from './body-cell';
 import { BodyRow } from './body-row';
-import { Filter } from './filter';
+import { Filter } from './filter/filter';
 
 export class DataTableComponent extends HTMLElement {
 

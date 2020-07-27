@@ -25,6 +25,7 @@
     "@mazdik-lib/dropdown-select": "0.1.0",
     "@mazdik-lib/dual-list-box": "0.1.0",
     "@mazdik-lib/dynamic-form": "0.1.0",
+    "@mazdik-lib/file-upload": "0.1.0",
     "@mazdik-lib/inline-edit": "0.1.0",
     "@mazdik-lib/modal": "0.1.0",
     "@mazdik-lib/modal-edit-form": "0.1.0",

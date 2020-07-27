@@ -32,6 +32,9 @@
       "path": "./dynamic-form/tsconfig.package.json"
     },
     {
+      "path": "./file-upload/tsconfig.package.json"
+    },
+    {
       "path": "./inline-edit/tsconfig.package.json"
     },
     {
