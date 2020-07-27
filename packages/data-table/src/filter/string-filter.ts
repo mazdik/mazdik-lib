@@ -11,7 +11,7 @@ export class StringFilter {
   private matchMode: string;
   private value: any;
   private operators: SelectItem[];
-  private defaultMatchMode = FilterOperator.EQUALS;
+  private defaultMatchMode = FilterOperator.STARTS_WITH;
 
   private select: HTMLSelectElement;
   private input: HTMLInputElement;
