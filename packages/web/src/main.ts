@@ -87,6 +87,7 @@ class App {
           { id: 'states-line', name: 'States line' },
           { id: 'states-line-interval', name: 'States line interval' },
           { id: 'simple-bar-chart', name: 'Simple bar chart' },
+          { id: 'file-upload', name: 'File upload' },
           { id: 'data-table', name: 'Data table' },
         ]
       },

@@ -1,0 +1,41 @@
+.file-upload {
+  display: flex;
+  border: dashed 3px #eee;
+  overflow: auto;
+}
+
+.file-upload-label {
+  display: flex;
+  flex-grow: 1;
+  position: relative;
+  justify-content: center;
+}
+
+.file-upload-input {
+  opacity: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.file-upload-content {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.file-upload-content-mock {
+  display: flex;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+  font-size: 10rem;
+  color: #eee;
+}
+
+.file-upload-row {
+  padding: .3rem;
+}
