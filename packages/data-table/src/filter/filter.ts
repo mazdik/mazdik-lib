@@ -3,6 +3,7 @@ import { DropDown } from '@mazdik-lib/dropdown';
 import { DataTable, Column, ColumnMenuEventArgs } from '../base';
 import { ListFilter } from './list-filter';
 import { RangeFilter } from './range-filter';
+import { StringFilter } from './string-filter';
 
 export class Filter {
 
@@ -14,6 +15,17 @@ export class Filter {
   private column: Column = new Column({});
   private listFilter: ListFilter;
   private rangeFilter: RangeFilter;
+  private stringFilter: StringFilter;
+
+  private get isListFilter(): boolean {
+    return (this.column.options || this.column.filterValues) ? true : false;
+  }
+  private get isRangeFilter(): boolean {
+    return (!this.isListFilter && (this.column.type === 'number' || this.column.isDateType)) ? true : false;
+  }
+  private get isStringFilter(): boolean {
+    return (!this.isListFilter && !this.isRangeFilter) ? true : false;
+  }
 
   constructor(private table: DataTable) {
     this.element = document.createElement('div');
@@ -26,6 +38,9 @@ export class Filter {
     this.rangeFilter = new RangeFilter(this.table);
     this.element.append(this.rangeFilter.element);
 
+    this.stringFilter = new StringFilter(this.table);
+    this.element.append(this.stringFilter.element);
+
     this.updateStyles();
     this.addEventListeners();
   }
@@ -35,6 +50,7 @@ export class Filter {
     this.dropdown.removeEventListeners();
     this.listFilter.destroy();
     this.rangeFilter.destroy();
+    this.stringFilter.destroy();
   }
 
   private addEventListeners() {
@@ -59,6 +75,11 @@ export class Filter {
         target: this.rangeFilter.element,
         handler: this.onFilterClose.bind(this)
       },
+      {
+        eventName: 'filterClose',
+        target: this.stringFilter.element,
+        handler: this.onFilterClose.bind(this)
+      },
     ];
     this.listeners.forEach(x => {
       x.target.addEventListener(x.eventName, x.handler);
@@ -78,6 +99,7 @@ export class Filter {
     this.element.style.display = (this.dropdown.isOpen && this.column.filter) ? 'block' : 'none';
     this.listFilter.element.style.display = this.isListFilter ? 'block' : 'none';
     this.rangeFilter.element.style.display = this.isRangeFilter ? 'block' : 'none';
+    this.stringFilter.element.style.display = this.isStringFilter ? 'block' : 'none';
   }
 
   private onColumnMenu(event: CustomEvent<ColumnMenuEventArgs>) {
@@ -97,8 +119,10 @@ export class Filter {
     }
     if (this.isListFilter) {
       this.listFilter.onOpenChange(this.column, this.dropdown.isOpen);
-    } else if (this.rangeFilter) {
+    } else if (this.isRangeFilter) {
       this.rangeFilter.onOpenChange(this.column);
+    } else if (this.isStringFilter) {
+      this.stringFilter.onOpenChange(this.column);
     }
     this.updateStyles();
   }
@@ -111,18 +135,6 @@ export class Filter {
   onFilterClose() {
     this.dropdown.toggleDropdown();
     this.updateStyles();
-  }
-
-  get isListFilter(): boolean {
-    return (this.column.options || this.column.filterValues) ? true : false;
-  }
-
-  get isRangeFilter(): boolean {
-    return (!this.isListFilter && (this.column.type === 'number' || this.column.isDateType)) ? true : false;
-  }
-
-  get isStringFilter(): boolean {
-    return (!this.isListFilter && !this.isRangeFilter) ? true : false;
   }
 
 }

@@ -22,6 +22,13 @@ export class RangeFilter {
   private cancelButton: HTMLButtonElement;
   private clearButton: HTMLButtonElement;
 
+  private get isValueFilter() {
+    return !this.table.dataFilter.isNonValueFilter(this.matchMode);
+  }
+  private get isRangeFilter() {
+    return this.matchMode === FilterOperator.IN_RANGE;
+  }
+
   constructor(private table: DataTable) {
     this.operators = [
       { id: FilterOperator.EQUALS, name: this.table.messages.equals },
@@ -140,14 +147,6 @@ export class RangeFilter {
     this.setSelectedIndex();
   }
 
-  get isValueFilter() {
-    return !this.table.dataFilter.isNonValueFilter(this.matchMode);
-  }
-
-  get isRangeFilter() {
-    return this.matchMode === FilterOperator.IN_RANGE;
-  }
-
   private saveFilter() {
     this.table.dataFilter.setFilter(this.value, this.column.name, this.matchMode, this.valueTo, this.column.dataType);
     this.table.events.onFilter();
@@ -159,13 +158,6 @@ export class RangeFilter {
         this.input.focus();
       }, 1);
     }
-  }
-
-  private lastDate(name: LastDateType) {
-    this.matchMode = FilterOperator.GREATER_THAN_OR_EQUAL;
-    this.value = inputFormattedDate(this.column.type, getLastDate(name).toISOString());
-    this.saveFilter();
-    this.element.dispatchEvent(new CustomEvent('filterClose', { detail: true }));
   }
 
   private loadSelect() {
@@ -269,6 +261,13 @@ export class RangeFilter {
       event.stopPropagation();
       this.lastDate(el.dataset.id as LastDateType);
     }
+  }
+
+  private lastDate(name: LastDateType) {
+    this.matchMode = FilterOperator.GREATER_THAN_OR_EQUAL;
+    this.value = inputFormattedDate(this.column.type, getLastDate(name).toISOString());
+    this.saveFilter();
+    this.element.dispatchEvent(new CustomEvent('filterClose', { detail: true }));
   }
 
 }
