@@ -17,6 +17,7 @@ export class DataTableComponent extends HTMLElement {
   }
   private _table: DataTable;
 
+  private main: HTMLElement;
   private header: HTMLElement;
   private headerRow: HTMLElement;
   private headerCells: HeaderCell[] = [];
@@ -50,7 +51,10 @@ export class DataTableComponent extends HTMLElement {
   }
 
   private onInit() {
-    this.classList.add('datatable');
+    this.classList.add('datatable-wrapper');
+    this.main = document.createElement('div');
+    this.main.classList.add('datatable');
+    this.append(this.main);
     this.createHeader();
     this.createBody();
     this.createFooter();
@@ -70,7 +74,7 @@ export class DataTableComponent extends HTMLElement {
       },
       {
         eventName: 'scroll',
-        target: this,
+        target: this.main,
         handler: this.onScroll.bind(this)
       },
     ];
@@ -117,7 +121,7 @@ export class DataTableComponent extends HTMLElement {
     this.headerRow.classList.add('datatable-header-row');
     this.header.append(this.headerRow);
 
-    this.append(this.header);
+    this.main.append(this.header);
   }
 
   private createHeaderCells() {
@@ -131,7 +135,7 @@ export class DataTableComponent extends HTMLElement {
   private createBody() {
     this.body = document.createElement('div');
     this.body.classList.add('datatable-body');
-    this.append(this.body);
+    this.main.append(this.body);
   }
 
   private createRows() {
@@ -154,7 +158,7 @@ export class DataTableComponent extends HTMLElement {
   private createFooter() {
     this.footer = document.createElement('div');
     this.footer.classList.add('datatable-footer');
-    this.after(this.footer);
+    this.append(this.footer);
 
     this.resizeHelper = document.createElement('div');
     this.resizeHelper.classList.add('column-resizer-helper');
