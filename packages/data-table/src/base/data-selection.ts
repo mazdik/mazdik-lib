@@ -1,4 +1,4 @@
-import { Subject } from 'rxjs';
+import { Events } from './events';
 
 export class DataSelection<T> {
 
@@ -8,13 +8,13 @@ export class DataSelection<T> {
 
   private selection = new Set<T>();
 
-  constructor(private readonly _multiple = false, private readonly selectionSource: Subject<any>) {
+  constructor(private readonly _multiple = false, private readonly events: Events) {
   }
 
   selectValue(value: T) {
     if (!this.isSelected(value)) {
       this._markSelected(value);
-      this.selectionSource.next();
+      this.events.onSelectionChange();
     }
   }
 
@@ -27,7 +27,7 @@ export class DataSelection<T> {
 
   clearSelection(): void {
     this._unmarkAll();
-    this.selectionSource.next();
+    this.events.onSelectionChange();
   }
 
   isSelected(value: T): boolean {
@@ -47,17 +47,17 @@ export class DataSelection<T> {
 
   select(...values: T[]): void {
     values.forEach(value => this._markSelected(value));
-    this.selectionSource.next();
+    this.events.onSelectionChange();
   }
 
   deselect(...values: T[]): void {
     values.forEach(value => this._unmarkSelected(value));
-    this.selectionSource.next();
+    this.events.onSelectionChange();
   }
 
   toggle(value: T): void {
     this.isSelected(value) ? this._unmarkSelected(value) : this._markSelected(value);
-    this.selectionSource.next();
+    this.events.onSelectionChange();
   }
 
   isEmpty(): boolean {

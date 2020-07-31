@@ -1,4 +1,4 @@
-import { ColumnBase, Settings, DataTable, Row } from '../src/base/index';
+import { ColumnBase, Settings, DataTable, Row, CellEventArgs } from '../src/base';
 
 describe('DataTable', () => {
   const settings = new Settings({});
@@ -65,8 +65,8 @@ describe('DataTable', () => {
   });
 
   it('should be able cell to edit mode', () => {
-    dataTable.events.cellSource$.subscribe(res => {
-      expect(res.editMode).toBe(true);
+    dataTable.events.element.addEventListener('cell', (event: CustomEvent<CellEventArgs>) => {
+      expect(event.detail.editMode).toBe(true);
     });
 
     dataTable.editCell(0, 1, true);

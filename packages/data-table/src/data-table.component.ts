@@ -1,7 +1,7 @@
 import { Listener } from '@mazdik-lib/common';
 import '@mazdik-lib/pagination';
 import { PaginationComponent, PageEvent } from '@mazdik-lib/pagination';
-import { DataTable } from './base';
+import { DataTable, EventHelper } from './base';
 import { HeaderCell } from './header-cell';
 import { BodyCell } from './body-cell';
 import { BodyRow } from './body-row';
@@ -73,9 +73,19 @@ export class DataTableComponent extends HTMLElement {
         handler: this.onSort.bind(this)
       },
       {
+        eventName: 'selection',
+        target: this.table.events.element,
+        handler: this.onSelection.bind(this)
+      },
+      {
         eventName: 'scroll',
         target: this.main,
         handler: this.onScroll.bind(this)
+      },
+      {
+        eventName: 'click',
+        target: this.body,
+        handler: this.onСlickBody.bind(this)
       },
     ];
     this.listeners.forEach(x => {
@@ -224,8 +234,22 @@ export class DataTableComponent extends HTMLElement {
     this.createRows();
   }
 
+  private onSelection() {
+    this.updateBodyStyles();
+  }
+
   private onScroll(event) {
     this.filter.hide();
+  }
+
+  private onСlickBody(event: any) {
+    const cellEventArgs = EventHelper.findCellEvent(event, this.body);
+    if (cellEventArgs) {
+      this.table.events.onClickCell(cellEventArgs);
+      if (!this.table.settings.selectionMode) {
+        this.table.selectRow(cellEventArgs.rowIndex);
+      }
+    }
   }
 
 }

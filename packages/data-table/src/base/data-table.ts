@@ -58,7 +58,7 @@ export class DataTable {
     this.events = new Events();
     this.pager = new DataPager();
     this.sorter = new DataSort(this.settings.multipleSort);
-    this.selection = new DataSelection(this.settings.selectionMultiple, this.events.selectionSource);
+    this.selection = new DataSelection(this.settings.selectionMultiple, this.events);
     this.dimensions = new Dimensions(this.settings, this.columns);
     this.rowGroup = new RowGroup(this.settings.groupRowsBy, this.columns);
     this.localDataSource = new LocalDataSource(this.dataFilter, this.pager, this.sorter, this.settings);
