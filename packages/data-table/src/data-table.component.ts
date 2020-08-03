@@ -2,10 +2,10 @@ import { Listener } from '@mazdik-lib/common';
 import '@mazdik-lib/pagination';
 import { PaginationComponent, PageEvent } from '@mazdik-lib/pagination';
 import { DataTable, EventHelper } from './base';
-import { BodyCell } from './body-cell';
-import { BodyRow } from './body-row';
-import { Filter } from './filter/filter';
 import { Header } from './header';
+import { Body } from './body';
+import { Footer } from './footer';
+import { Filter } from './filter/filter';
 
 export class DataTableComponent extends HTMLElement {
 
@@ -19,13 +19,8 @@ export class DataTableComponent extends HTMLElement {
 
   private main: HTMLElement;
   private header: Header;
-
-  private body: HTMLElement;
-  private bodyRows: BodyRow[] = [];
-  private bodyCells: BodyCell[] = [];
-
-  private footer: HTMLElement;
-  private resizeHelper: HTMLElement;
+  private body: Body;
+  private footer: Footer;
   private filter: Filter;
   private pagination: PaginationComponent;
   private listeners: Listener[] = [];
@@ -79,7 +74,7 @@ export class DataTableComponent extends HTMLElement {
       },
       {
         eventName: 'click',
-        target: this.body,
+        target: this.body.element,
         handler: this.onСlickBody.bind(this)
       },
     ];
@@ -97,16 +92,21 @@ export class DataTableComponent extends HTMLElement {
   private render() {
     this.header = new Header(this.table);
     this.main.append(this.header.element);
-    this.createBody();
-    this.createFooter();
+
+    this.body = new Body(this.table);
+    this.main.append(this.body.element);
+
+    this.footer = new Footer(this.table);
+    this.append(this.footer.element);
+    this.append(this.footer.resizeHelper);
 
     this.header.createHeaderCells();
-    this.createRows();
+    this.body.createRows();
     this.updateStyles();
 
     if (this.table.settings.paginator) {
       this.pagination = document.createElement('web-pagination') as PaginationComponent;
-      this.footer.append(this.pagination);
+      this.footer.element.append(this.pagination);
       this.pagination.totalItems = this.table.pager.total;
       this.pagination.perPage = this.table.pager.perPage;
       this.pagination.currentPage = this.table.pager.current;
@@ -123,52 +123,14 @@ export class DataTableComponent extends HTMLElement {
     this.append(this.filter.element);
   }
 
-  private createBody() {
-    this.body = document.createElement('div');
-    this.body.classList.add('datatable-body');
-    this.main.append(this.body);
-  }
-
-  private createRows() {
-    this.bodyRows = [];
-    this.body.innerHTML = '';
-    this.bodyCells = [];
-    this.table.rows.forEach(row => {
-      const bodyRow = new BodyRow(this.table, row);
-      this.bodyRows.push(bodyRow);
-      this.body.append(bodyRow.element);
-
-      this.table.preparedColumns.forEach(column => {
-        const bodyCell = new BodyCell(row, column);
-        this.bodyCells.push(bodyCell);
-        bodyRow.element.append(bodyCell.element);
-      });
-    });
-  }
-
-  private createFooter() {
-    this.footer = document.createElement('div');
-    this.footer.classList.add('datatable-footer');
-    this.append(this.footer);
-
-    this.resizeHelper = document.createElement('div');
-    this.resizeHelper.classList.add('column-resizer-helper');
-    this.append(this.resizeHelper);
-  }
-
   updateStyles() {
     this.header.element.style.width = this.table.dimensions.columnsTotalWidth + 'px';
-    this.body.style.width = this.table.dimensions.columnsTotalWidth + 'px';
-  }
-
-  updateBodyStyles() {
-    this.bodyRows.forEach(x => x.updateStyles());
-    this.bodyCells.forEach(x => x.updateStyles());
+    this.body.element.style.width = this.table.dimensions.columnsTotalWidth + 'px';
   }
 
   updateAllStyles() {
     this.header.updateHeaderStyles();
-    this.updateBodyStyles();
+    this.body.updateBodyStyles();
   }
 
   private onPageChanged(event: CustomEvent<PageEvent>): void {
@@ -185,7 +147,7 @@ export class DataTableComponent extends HTMLElement {
     }
     this.table.selection.clearSelection();
 
-    this.createRows();
+    this.body.createRows();
   }
 
   private onFilter() {
@@ -198,7 +160,7 @@ export class DataTableComponent extends HTMLElement {
     this.pagination.totalItems = this.table.pager.total;
     this.pagination.perPage = this.table.pager.perPage;
     this.pagination.currentPage = this.table.pager.current;
-    this.createRows();
+    this.body.createRows();
   }
 
   private onSort() {
@@ -208,11 +170,11 @@ export class DataTableComponent extends HTMLElement {
     this.table.selection.clearSelection();
 
     this.header.updateHeaderStyles();
-    this.createRows();
+    this.body.createRows();
   }
 
   private onSelection() {
-    this.updateBodyStyles();
+    this.body.updateBodyStyles();
   }
 
   private onScroll() {
@@ -220,7 +182,7 @@ export class DataTableComponent extends HTMLElement {
   }
 
   private onСlickBody(event: any) {
-    const cellEventArgs = EventHelper.findCellEvent(event, this.body);
+    const cellEventArgs = EventHelper.findCellEvent(event, this.body.element);
     if (cellEventArgs) {
       this.table.events.onClickCell(cellEventArgs);
       if (!this.table.settings.selectionMode) {
