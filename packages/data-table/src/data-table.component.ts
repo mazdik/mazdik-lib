@@ -2,10 +2,10 @@ import { Listener } from '@mazdik-lib/common';
 import '@mazdik-lib/pagination';
 import { PaginationComponent, PageEvent } from '@mazdik-lib/pagination';
 import { DataTable, EventHelper } from './base';
-import { HeaderCell } from './header-cell';
 import { BodyCell } from './body-cell';
 import { BodyRow } from './body-row';
 import { Filter } from './filter/filter';
+import { Header } from './header';
 
 export class DataTableComponent extends HTMLElement {
 
@@ -18,9 +18,7 @@ export class DataTableComponent extends HTMLElement {
   private _table: DataTable;
 
   private main: HTMLElement;
-  private header: HTMLElement;
-  private headerRow: HTMLElement;
-  private headerCells: HeaderCell[] = [];
+  private header: Header;
 
   private body: HTMLElement;
   private bodyRows: BodyRow[] = [];
@@ -46,7 +44,7 @@ export class DataTableComponent extends HTMLElement {
 
   disconnectedCallback() {
     this.removeEventListeners();
-    this.headerCells.forEach(x => x.destroy());
+    this.header.destroy();
     this.filter.destroy();
   }
 
@@ -55,9 +53,6 @@ export class DataTableComponent extends HTMLElement {
     this.main = document.createElement('div');
     this.main.classList.add('datatable');
     this.append(this.main);
-    this.createHeader();
-    this.createBody();
-    this.createFooter();
   }
 
   private addEventListeners() {
@@ -100,7 +95,12 @@ export class DataTableComponent extends HTMLElement {
   }
 
   private render() {
-    this.createHeaderCells();
+    this.header = new Header(this.table);
+    this.main.append(this.header.element);
+    this.createBody();
+    this.createFooter();
+
+    this.header.createHeaderCells();
     this.createRows();
     this.updateStyles();
 
@@ -121,25 +121,6 @@ export class DataTableComponent extends HTMLElement {
     }
     this.filter = new Filter(this.table);
     this.append(this.filter.element);
-  }
-
-  private createHeader() {
-    this.header = document.createElement('div');
-    this.header.classList.add('datatable-header', 'dt-sticky-header');
-
-    this.headerRow = document.createElement('div');
-    this.headerRow.classList.add('datatable-header-row');
-    this.header.append(this.headerRow);
-
-    this.main.append(this.header);
-  }
-
-  private createHeaderCells() {
-    this.table.preparedColumns.forEach(column => {
-      const headerCell = new HeaderCell(this.table, column);
-      this.headerCells.push(headerCell);
-      this.headerRow.append(headerCell.element);
-    });
   }
 
   private createBody() {
@@ -176,12 +157,8 @@ export class DataTableComponent extends HTMLElement {
   }
 
   updateStyles() {
-    this.header.style.width = this.table.dimensions.columnsTotalWidth + 'px';
+    this.header.element.style.width = this.table.dimensions.columnsTotalWidth + 'px';
     this.body.style.width = this.table.dimensions.columnsTotalWidth + 'px';
-  }
-
-  updateHeaderStyles() {
-    this.headerCells.forEach(x => x.updateStyles());
   }
 
   updateBodyStyles() {
@@ -190,7 +167,7 @@ export class DataTableComponent extends HTMLElement {
   }
 
   updateAllStyles() {
-    this.updateHeaderStyles();
+    this.header.updateHeaderStyles();
     this.updateBodyStyles();
   }
 
@@ -230,7 +207,7 @@ export class DataTableComponent extends HTMLElement {
     }
     this.table.selection.clearSelection();
 
-    this.updateHeaderStyles();
+    this.header.updateHeaderStyles();
     this.createRows();
   }
 
@@ -238,7 +215,7 @@ export class DataTableComponent extends HTMLElement {
     this.updateBodyStyles();
   }
 
-  private onScroll(event) {
+  private onScroll() {
     this.filter.hide();
   }
 
