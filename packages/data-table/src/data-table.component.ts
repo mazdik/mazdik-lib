@@ -1,7 +1,5 @@
 import { Listener } from '@mazdik-lib/common';
-import '@mazdik-lib/pagination';
-import { PaginationComponent, PageEvent } from '@mazdik-lib/pagination';
-import { DataTable, EventHelper } from './base';
+import { DataTable } from './base';
 import { Header } from './header';
 import { Body } from './body';
 import { Footer } from './footer';
@@ -22,7 +20,6 @@ export class DataTableComponent extends HTMLElement {
   private body: Body;
   private footer: Footer;
   private filter: Filter;
-  private pagination: PaginationComponent;
   private listeners: Listener[] = [];
   private isInitialized: boolean;
 
@@ -40,6 +37,8 @@ export class DataTableComponent extends HTMLElement {
   disconnectedCallback() {
     this.removeEventListeners();
     this.header.destroy();
+    this.body.destroy();
+    this.footer.destroy();
     this.filter.destroy();
   }
 
@@ -68,14 +67,14 @@ export class DataTableComponent extends HTMLElement {
         handler: this.onSelection.bind(this)
       },
       {
+        eventName: 'page',
+        target: this.table.events.element,
+        handler: this.onPage.bind(this)
+      },
+      {
         eventName: 'scroll',
         target: this.main,
         handler: this.onScroll.bind(this)
-      },
-      {
-        eventName: 'click',
-        target: this.body.element,
-        handler: this.onСlickBody.bind(this)
       },
     ];
     this.listeners.forEach(x => {
@@ -99,26 +98,12 @@ export class DataTableComponent extends HTMLElement {
     this.footer = new Footer(this.table);
     this.append(this.footer.element);
     this.append(this.footer.resizeHelper);
+    this.footer.createPagination(); // after append
 
     this.header.createHeaderCells();
     this.body.createRows();
     this.updateStyles();
 
-    if (this.table.settings.paginator) {
-      this.pagination = document.createElement('web-pagination') as PaginationComponent;
-      this.footer.element.append(this.pagination);
-      this.pagination.totalItems = this.table.pager.total;
-      this.pagination.perPage = this.table.pager.perPage;
-      this.pagination.currentPage = this.table.pager.current;
-      this.pagination.pageSizeOptions = (this.table.settings.virtualScroll) ? [] : this.table.pager.pageSizeOptions;
-      const listener = {
-        eventName: 'pageChanged',
-        target: this.pagination,
-        handler: this.onPageChanged.bind(this)
-      };
-      this.listeners.push(listener);
-      listener.target.addEventListener(listener.eventName, listener.handler);
-    }
     this.filter = new Filter(this.table);
     this.append(this.filter.element);
   }
@@ -133,10 +118,7 @@ export class DataTableComponent extends HTMLElement {
     this.body.updateBodyStyles();
   }
 
-  private onPageChanged(event: CustomEvent<PageEvent>): void {
-    this.table.pager.current = event.detail.currentPage;
-    this.table.pager.perPage = event.detail.perPage;
-    this.table.events.onPage();
+  private onPage(): void {
     if (this.table.settings.virtualScroll) {
       // TODO
       // this.body.scroller.setPageOffsetY(event.detail.currentPage);
@@ -146,7 +128,6 @@ export class DataTableComponent extends HTMLElement {
       }
     }
     this.table.selection.clearSelection();
-
     this.body.createRows();
   }
 
@@ -156,10 +137,6 @@ export class DataTableComponent extends HTMLElement {
       this.table.loadLocalRows();
     }
     this.table.selection.clearSelection();
-
-    this.pagination.totalItems = this.table.pager.total;
-    this.pagination.perPage = this.table.pager.perPage;
-    this.pagination.currentPage = this.table.pager.current;
     this.body.createRows();
   }
 
@@ -179,16 +156,6 @@ export class DataTableComponent extends HTMLElement {
 
   private onScroll() {
     this.filter.hide();
-  }
-
-  private onСlickBody(event: any) {
-    const cellEventArgs = EventHelper.findCellEvent(event, this.body.element);
-    if (cellEventArgs) {
-      this.table.events.onClickCell(cellEventArgs);
-      if (!this.table.settings.selectionMode) {
-        this.table.selectRow(cellEventArgs.rowIndex);
-      }
-    }
   }
 
 }
