@@ -25,6 +25,10 @@
   height: 100%;
 }
 
+.datatable-header-cell {
+  position: relative;
+}
+
 .fixed-header .datatable-header-row {
   white-space: nowrap;
 }

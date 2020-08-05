@@ -72,6 +72,21 @@ export class DataTableComponent extends HTMLElement {
         handler: this.onPage.bind(this)
       },
       {
+        eventName: 'resizeBegin',
+        target: this.table.events.element,
+        handler: this.onColumnResizeBegin.bind(this)
+      },
+      {
+        eventName: 'resize',
+        target: this.table.events.element,
+        handler: this.onColumnResize.bind(this)
+      },
+      {
+        eventName: 'resizeEnd',
+        target: this.table.events.element,
+        handler: this.onColumnResizeEnd.bind(this)
+      },
+      {
         eventName: 'scroll',
         target: this.main,
         handler: this.onScroll.bind(this)
@@ -116,6 +131,7 @@ export class DataTableComponent extends HTMLElement {
   updateAllStyles() {
     this.header.updateHeaderStyles();
     this.body.updateBodyStyles();
+    this.updateStyles();
   }
 
   private onPage(): void {
@@ -156,6 +172,26 @@ export class DataTableComponent extends HTMLElement {
 
   private onScroll() {
     this.filter.hide();
+  }
+
+  private onColumnResizeBegin() {
+    this.main.classList.add('datatable-unselectable');
+    const height = this.main.offsetHeight;
+    this.footer.resizeHelper.style.height = height + 'px';
+  }
+
+  private onColumnResize(event: CustomEvent) {
+    const rect = this.getBoundingClientRect();
+    const containerLeft = rect.left + document.body.scrollLeft;
+    this.footer.resizeHelper.style.left = (event.detail.pageX - containerLeft + this.scrollLeft) + 'px';
+    this.footer.resizeHelper.style.display = 'block';
+  }
+
+  private onColumnResizeEnd() {
+    this.footer.resizeHelper.style.display = 'none';
+    this.main.classList.remove('datatable-unselectable');
+    this.table.dimensions.recalcColumns();
+    this.updateAllStyles();
   }
 
 }
