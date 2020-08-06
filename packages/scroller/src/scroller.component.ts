@@ -37,6 +37,8 @@ export class ScrollerComponent extends HTMLElement {
   scrollLength: number;
   start: number;
   end: number;
+  topPadding: number = 0;
+  bottomPadding: number = 0;
   private previousStart: number;
   private previousEnd: number;
   private rowHeightCache: RowHeightCache = new RowHeightCache();
@@ -77,6 +79,7 @@ export class ScrollerComponent extends HTMLElement {
     if (!isBlank(this.items) && !isBlank(this.rowHeight)) {
       this.resetPosition();
       this.chunkRows(true);
+      this.bottomPadding = this.scrollLength - this.topPadding - this.scrollHeight;
     }
   }
 
@@ -102,6 +105,8 @@ export class ScrollerComponent extends HTMLElement {
         requestAnimationFrame(() => {
           this.contentEl.style.transform = `translateY(${topPadding}px)`;
         });
+        this.topPadding = topPadding;
+        this.bottomPadding = this.scrollLength - this.topPadding - this.scrollHeight;
       }
 
       this.prevScrollYPos = this.scrollYPos;

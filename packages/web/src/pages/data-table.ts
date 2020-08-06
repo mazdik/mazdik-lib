@@ -3,10 +3,10 @@ import '@mazdik-lib/data-table';
 import { DataTableComponent, Settings, DataTable } from '@mazdik-lib/data-table';
 import { getColumnsPlayers } from '../shared/columns';
 
-export default class SelectListDemo implements Page {
+export default class DataTableDemo implements Page {
 
   get template(): string {
-    return `<web-data-table style="height:300px"></web-data-table>`;
+    return `<web-data-table class="data-table-demo"></web-data-table>`;
   }
 
   load() {
