@@ -48,7 +48,7 @@ module.exports = {
           from: 'src/assets/**/*',
           to: './assets',
           transformPath(targetPath, absolutePath) {
-            return targetPath.replace('src/assets', '');
+            return targetPath.replace(`src${path.sep}assets`, '');
           }
         }
       ]
