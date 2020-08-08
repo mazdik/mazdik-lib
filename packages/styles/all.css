@@ -20,7 +20,7 @@
 @import '../notify/src/notify.component.css';
 @import '../pagination/src/pagination.component.css';
 @import '../row-view/src/row-view.component.css';
-@import '../scroller/src/scroller.component.css';
+@import '../scroller/src/virtual-scroller.css';
 @import '../tree-view/src/tree-view.component.css';
 @import '../tabs/src/tabs.component.css';
 @import '../nav-menu/src/nav-menu.component.css';

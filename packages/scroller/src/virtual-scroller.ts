@@ -2,84 +2,61 @@ import { RowHeightCache } from './row-height-cache';
 import { ScrollerEventArgs } from './types';
 import { isBlank } from '@mazdik-lib/common';
 
-export class ScrollerComponent extends HTMLElement {
+export class VirtualScroller {
 
-  rowHeight: number;
-  itemsPerRow: number = 20;
-  rowHeightProp: string;
-
-  get items(): HTMLElement[] { return this._items; }
-  set items(val: HTMLElement[]) {
+  get items(): any[] { return this._items; }
+  set items(val: any[]) {
     this._items = val;
     this.initChunkRows();
   }
-  private _items: HTMLElement[];
+  private _items: any[];
 
-  private contentEl: HTMLElement;
-  private paddingEl: HTMLElement;
-
-  get viewRows(): HTMLElement[] {
-    return this._viewRows;
-  }
-  set viewRows(val: HTMLElement[]) {
-    this._viewRows = val;
-    this.contentEl.innerHTML = '';
-    this.contentEl.append(...val);
-    this.dispatchEvent(new CustomEvent('viewRowsChange', { detail: val }));
-  }
-  private _viewRows: HTMLElement[];
-
-  scrollYPos: number = 0;
-  scrollXPos: number = 0;
-  prevScrollYPos: number = 0;
-  prevScrollXPos: number = 0;
-  element: HTMLElement;
-  scrollLength: number;
-  start: number;
-  end: number;
-  topPadding: number = 0;
-  bottomPadding: number = 0;
+  private scrollYPos: number = 0;
+  private scrollXPos: number = 0;
+  private prevScrollYPos: number = 0;
+  private prevScrollXPos: number = 0;
+  private scrollLength: number;
+  private start: number;
+  private end: number;
   private previousStart: number;
   private previousEnd: number;
   private rowHeightCache: RowHeightCache = new RowHeightCache();
   private scrollListener: any;
-  private isInitialized: boolean;
+  private paddingEl: HTMLElement;
 
-  constructor() {
-    super();
+  constructor(
+    private scrollElement: HTMLElement,
+    private contentElement: HTMLElement,
+    private rowHeight: number,
+    private itemsPerRow: number = 20,
+    private rowHeightProp?: string) {
+    this.onInit();
   }
 
-  connectedCallback() {
-    if (!this.isInitialized) {
-      this.onInit();
-      this.isInitialized = true;
-    }
+  destroy() {
+    this.removeEventListeners();
   }
 
-  disconnectedCallback() {
-    this.removeEventListener('scroll', this.scrollListener);
+  private removeEventListeners() {
+    this.scrollElement.removeEventListener('scroll', this.scrollListener);
   }
 
   private onInit() {
-    this.classList.add('dt-scroller', 'dt-virtual-scroll');
-
-    this.contentEl = document.createElement('div');
-    this.contentEl.classList.add('dt-scrollable-content');
-    this.append(this.contentEl);
+    this.scrollElement.classList.add('dt-virtual-scroll');
+    this.contentElement.classList.add('dt-scrollable-content');
 
     this.paddingEl = document.createElement('div');
     this.paddingEl.classList.add('dt-total-padding');
-    this.append(this.paddingEl);
+    this.scrollElement.append(this.paddingEl);
 
     this.scrollListener = this.onScrolled.bind(this);
-    this.addEventListener('scroll', this.scrollListener);
+    this.scrollElement.addEventListener('scroll', this.scrollListener);
   }
 
   private initChunkRows() {
     if (!isBlank(this.items) && !isBlank(this.rowHeight)) {
       this.resetPosition();
       this.chunkRows(true);
-      this.bottomPadding = this.scrollLength - this.topPadding - this.scrollHeight;
     }
   }
 
@@ -103,10 +80,8 @@ export class ScrollerComponent extends HTMLElement {
           topPadding = this.rowHeightCache.getRowOffset(this.start - 1);
         }
         requestAnimationFrame(() => {
-          this.contentEl.style.transform = `translateY(${topPadding}px)`;
+          this.contentElement.style.transform = `translateY(${topPadding}px)`;
         });
-        this.topPadding = topPadding;
-        this.bottomPadding = this.scrollLength - this.topPadding - this.scrollHeight;
       }
 
       this.prevScrollYPos = this.scrollYPos;
@@ -117,12 +92,12 @@ export class ScrollerComponent extends HTMLElement {
         scrollYPos: this.scrollYPos,
         scrollXPos: this.scrollXPos
       };
-      this.dispatchEvent(new CustomEvent<ScrollerEventArgs>('scrollChange', { detail: eventArgs }));
+      this.scrollElement.dispatchEvent(new CustomEvent<ScrollerEventArgs>('scrollChange', { detail: eventArgs }));
     }
   }
 
   setOffsetY(offsetY: number) {
-    this.scrollTop = offsetY;
+    this.scrollElement.scrollTop = offsetY;
   }
 
   setPageOffsetY(page: number) {
@@ -149,7 +124,7 @@ export class ScrollerComponent extends HTMLElement {
       }
       this.paddingEl.style.height = this.scrollLength + 'px';
     }
-    let scrollHeight = parseFloat(this.style.height);
+    let scrollHeight = this.scrollElement.offsetHeight;
     if (scrollHeight && this.rowHeight) {
       this.itemsPerRow = Math.round(scrollHeight / this.rowHeight);
     } else {
@@ -157,8 +132,8 @@ export class ScrollerComponent extends HTMLElement {
       if (scrollHeight > 0) {
         scrollHeight -= this.rowHeight; // for lazy load
       }
+      this.scrollElement.style.height = scrollHeight + 'px';
     }
-    this.style.height = scrollHeight + 'px';
   }
 
   private chunkRows(force: boolean = false) {
@@ -180,7 +155,7 @@ export class ScrollerComponent extends HTMLElement {
       const virtualRows = this.items.slice(this.start, this.end);
       this.previousStart = this.start;
       this.previousEnd = this.end;
-      this.viewRows = virtualRows;
+      this.scrollElement.dispatchEvent(new CustomEvent('viewRowsChange', { detail: virtualRows }));
     }
   }
 
@@ -192,5 +167,3 @@ export class ScrollerComponent extends HTMLElement {
   }
 
 }
-
-customElements.define('web-scroller', ScrollerComponent);

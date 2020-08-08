@@ -1,11 +1,10 @@
 import { Page } from '../page';
-import '@mazdik-lib/scroller';
-import { ScrollerComponent } from '@mazdik-lib/scroller';
+import { VirtualScroller } from '@mazdik-lib/scroller';
 
 export default class ScrollerDemo implements Page {
 
   get template(): string {
-    return `<web-scroller class="scroller-demo"></web-scroller>`;
+    return `<div class="scroller-demo"><div class="scroller-demo-content"></div></div>`;
   }
 
   load() {
@@ -15,11 +14,15 @@ export default class ScrollerDemo implements Page {
       return element;
     });
 
-    const scroller = document.querySelector('web-scroller') as ScrollerComponent;
-    scroller.style.height = 500 + 'px';
-    scroller.rowHeight = 40;
-    scroller.itemsPerRow = 20;
-    scroller.items = items;
+    const scrollElement = document.querySelector('.scroller-demo') as HTMLElement;
+    const contentElement = document.querySelector('.scroller-demo-content') as HTMLElement;
+
+    const virtualScroller = new VirtualScroller(scrollElement, contentElement, 40, 20);
+    scrollElement.addEventListener('viewRowsChange', (event: CustomEvent<HTMLElement[]>) => {
+      contentElement.innerHTML = '';
+      contentElement.append(...event.detail);
+    });
+    virtualScroller.items = items;
   }
 
 }

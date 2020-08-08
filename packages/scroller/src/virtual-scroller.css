@@ -1,10 +1,8 @@
-.dt-scroller {
+.dt-virtual-scroll {
   display: block;
   position: relative;
   overflow: auto;
   -webkit-overflow-scrolling: touch;
-}
-.dt-virtual-scroll {
   contain: strict;
   transform: translateZ(0);
   will-change: scroll-position;
