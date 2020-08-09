@@ -10,10 +10,15 @@ export class Draggable {
     handler: (event: Event) => void;
     options?: AddEventListenerOptions | boolean;
   }>();
+  private elementWidth: number;
+  private elementHeight: number;
+  private vw: number;
+  private vh: number;
 
   constructor(private element: HTMLElement,
     private dragX: boolean = true,
-    private dragY: boolean = true) {
+    private dragY: boolean = true,
+    public inViewport: boolean = true) {
   }
 
   start(dragEventTarget: MouseEvent | TouchEvent): void {
@@ -79,6 +84,11 @@ export class Draggable {
     this.lastPageX = pageX;
     this.lastPageY = pageY;
     this.element.classList.add('dragging');
+
+    this.elementWidth = this.element.offsetWidth;
+    this.elementHeight = this.element.offsetHeight;
+    this.vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
+    this.vh = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0);
   }
 
   onDrag(pageX: number, pageY: number) {
@@ -86,12 +96,34 @@ export class Draggable {
       const deltaX = pageX - this.lastPageX;
       const deltaY = pageY - this.lastPageY;
       const coords = this.element.getBoundingClientRect();
+      let leftPos = coords.left + deltaX;
+      let topPos = coords.top + deltaY;
 
-      this.element.style.left = coords.left + deltaX + 'px';
-      this.element.style.top = coords.top + deltaY + 'px';
+      const overWidth = !this.inViewport || leftPos >= 0 && (leftPos + this.elementWidth) <= this.vw;
+      const overHeight = !this.inViewport || topPos >= 0 && (topPos + this.elementHeight) <= this.vh;
+      if (overWidth) {
+        this.lastPageX = pageX;
+      }
+      if (overHeight) {
+        this.lastPageY = pageY;
+      }
 
-      this.lastPageX = pageX;
-      this.lastPageY = pageY;
+      if (this.inViewport) {
+        if (leftPos < 0) {
+          leftPos = 0;
+        }
+        if ((leftPos + this.elementWidth) > this.vw) {
+          leftPos = this.vw - this.elementWidth;
+        }
+        if (topPos < 0) {
+          topPos = 0;
+        }
+        if ((topPos + this.elementHeight) > this.vh) {
+          topPos = this.vh - this.elementHeight;
+        }
+      }
+      this.element.style.left = leftPos + 'px';
+      this.element.style.top = topPos + 'px';
     }
   }
 
