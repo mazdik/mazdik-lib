@@ -8,6 +8,7 @@ export default class ModalBasicDemo implements Page {
 
   load() {
     const dialog = document.querySelector('#modal') as ModalComponent;
+    dialog.inViewport = true;
     document.querySelector('#button').addEventListener('click', () => dialog.show());
 
     document.querySelector('#close-button').addEventListener('click', () => dialog.hide());

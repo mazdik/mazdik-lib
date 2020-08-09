@@ -18,7 +18,7 @@ export class Draggable {
   constructor(private element: HTMLElement,
     private dragX: boolean = true,
     private dragY: boolean = true,
-    public inViewport: boolean = true) {
+    public inViewport: boolean = false) {
   }
 
   start(dragEventTarget: MouseEvent | TouchEvent): void {

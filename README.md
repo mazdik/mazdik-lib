@@ -75,7 +75,7 @@ npm install @mazdik-lib/modal
 | scrollTopEnable  | boolean    | true    |             |
 | maximizable      | boolean    | true    |             |
 | backdrop         | boolean    | true    |             |
-| inViewport       | boolean    | true    |             |
+| inViewport       | boolean    | false   |             |
 
 ### Events
 ```js

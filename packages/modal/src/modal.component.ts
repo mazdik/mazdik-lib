@@ -25,7 +25,7 @@ export class ModalComponent extends HTMLElement {
   scrollTopEnable: boolean = true;
   maximizable: boolean = true;
   backdrop: boolean = true;
-  inViewport: boolean = true;
+  inViewport: boolean = false;
 
   get open() {
     return this.hasAttribute('open');
