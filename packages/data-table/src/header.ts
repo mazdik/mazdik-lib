@@ -4,16 +4,14 @@ import { HeaderCell } from './header-cell';
 export class Header {
 
   element: HTMLElement;
-  private headerRow: HTMLElement;
   private headerCells: HeaderCell[] = [];
 
   constructor(private table: DataTable) {
     this.element = document.createElement('div');
-    this.element.classList.add('datatable-header', 'dt-sticky-header');
-
-    this.headerRow = document.createElement('div');
-    this.headerRow.classList.add('datatable-header-row');
-    this.element.append(this.headerRow);
+    this.element.classList.add('datatable-header-row');
+    if (!this.table.settings.virtualScroll) {
+      this.element.classList.add('dt-sticky-header');
+    }
   }
 
   destroy() {
@@ -22,11 +20,11 @@ export class Header {
 
   createHeaderCells() {
     this.headerCells = [];
-    this.headerRow.innerHTML = '';
+    this.element.innerHTML = '';
     this.table.preparedColumns.forEach(column => {
       const headerCell = new HeaderCell(this.table, column);
       this.headerCells.push(headerCell);
-      this.headerRow.append(headerCell.element);
+      this.element.append(headerCell.element);
     });
   }
 

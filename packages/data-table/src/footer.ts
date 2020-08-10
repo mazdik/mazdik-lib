@@ -25,13 +25,7 @@ export class Footer {
   }
 
   private addEventListeners() {
-    this.listeners = [
-      {
-        eventName: 'filter',
-        target: this.table.events.element,
-        handler: this.onFilter.bind(this)
-      },
-    ];
+    this.listeners = [];
     this.listeners.forEach(x => {
       x.target.addEventListener(x.eventName, x.handler);
     })
@@ -47,10 +41,7 @@ export class Footer {
     if (this.table.settings.paginator) {
       this.pagination = document.createElement('web-pagination') as PaginationComponent;
       this.element.append(this.pagination);
-      this.pagination.totalItems = this.table.pager.total;
-      this.pagination.perPage = this.table.pager.perPage;
-      this.pagination.currentPage = this.table.pager.current;
-      this.pagination.pageSizeOptions = (this.table.settings.virtualScroll) ? [] : this.table.pager.pageSizeOptions;
+      this.updatePagination();
       const listener = {
         eventName: 'pageChanged',
         target: this.pagination,
@@ -61,18 +52,19 @@ export class Footer {
     }
   }
 
-  private onPageChanged(event: CustomEvent<PageEvent>): void {
-    this.table.pager.current = event.detail.currentPage;
-    this.table.pager.perPage = event.detail.perPage;
-    this.table.events.onPage();
-  }
-
-  private onFilter() {
+  updatePagination() {
     if (this.table.settings.paginator) {
       this.pagination.totalItems = this.table.pager.total;
       this.pagination.perPage = this.table.pager.perPage;
       this.pagination.currentPage = this.table.pager.current;
+      this.pagination.pageSizeOptions = (this.table.settings.virtualScroll) ? [] : this.table.pager.pageSizeOptions;
     }
+  }
+
+  private onPageChanged(event: CustomEvent<PageEvent>): void {
+    this.table.pager.current = event.detail.currentPage;
+    this.table.pager.perPage = event.detail.perPage;
+    this.table.events.onPage();
   }
 
 }

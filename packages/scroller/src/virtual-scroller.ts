@@ -166,4 +166,8 @@ export class VirtualScroller {
     this.previousEnd = 0;
   }
 
+  calcPage(): number {
+    return Math.ceil(this.start / this.itemsPerRow) + 1;
+  }
+
 }

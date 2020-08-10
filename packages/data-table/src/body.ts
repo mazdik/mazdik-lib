@@ -1,5 +1,5 @@
 import { Listener } from '@mazdik-lib/common';
-import { DataTable, EventHelper, KeyboardAction, CellEventArgs, CellEventType } from './base';
+import { DataTable, EventHelper, KeyboardAction, CellEventArgs, CellEventType, Row } from './base';
 import { BodyCell } from './body-cell';
 import { BodyRow } from './body-row';
 
@@ -10,6 +10,14 @@ export class Body {
   private bodyCells: BodyCell[] = [];
   private listeners: Listener[] = [];
   private keyboardAction: KeyboardAction;
+
+  get viewRows(): Row[] {
+    return (this.table.settings.virtualScroll) ? this._viewRows : this.table.rows;
+  }
+  set viewRows(val: Row[]) {
+    this._viewRows = val;
+  }
+  private _viewRows: Row[];
 
   constructor(private table: DataTable) {
     this.element = document.createElement('div');
@@ -53,10 +61,10 @@ export class Body {
   }
 
   createRows() {
+    this.bodyRows.forEach(x => x.element.remove());
     this.bodyRows = [];
-    this.element.innerHTML = '';
     this.bodyCells = [];
-    this.table.rows.forEach(row => {
+    this.viewRows.forEach(row => {
       const bodyRow = new BodyRow(this.table, row);
       this.bodyRows.push(bodyRow);
       this.element.append(bodyRow.element);

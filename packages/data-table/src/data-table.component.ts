@@ -1,5 +1,6 @@
 import { Listener } from '@mazdik-lib/common';
-import { DataTable } from './base';
+import { VirtualScroller } from '@mazdik-lib/scroller';
+import { DataTable, Row } from './base';
 import { Header } from './header';
 import { Body } from './body';
 import { Footer } from './footer';
@@ -22,6 +23,7 @@ export class DataTableComponent extends HTMLElement {
   private filter: Filter;
   private listeners: Listener[] = [];
   private isInitialized: boolean;
+  private virtualScroller: VirtualScroller;
 
   constructor() {
     super();
@@ -40,6 +42,7 @@ export class DataTableComponent extends HTMLElement {
     this.body.destroy();
     this.footer.destroy();
     this.filter.destroy();
+    this.virtualScroller.destroy();
   }
 
   private onInit() {
@@ -87,6 +90,11 @@ export class DataTableComponent extends HTMLElement {
         handler: this.onColumnResizeEnd.bind(this)
       },
       {
+        eventName: 'rowsChanged',
+        target: this.table.events.element,
+        handler: this.onRowsChanged.bind(this)
+      },
+      {
         eventName: 'scroll',
         target: this.main,
         handler: this.onScroll.bind(this)
@@ -105,9 +113,8 @@ export class DataTableComponent extends HTMLElement {
 
   private render() {
     this.header = new Header(this.table);
-    this.main.append(this.header.element);
-
     this.body = new Body(this.table);
+    this.body.element.append(this.header.element);
     this.main.append(this.body.element);
 
     this.footer = new Footer(this.table);
@@ -116,15 +123,24 @@ export class DataTableComponent extends HTMLElement {
     this.footer.createPagination(); // after append
 
     this.header.createHeaderCells();
-    this.body.createRows();
     this.updateStyles();
 
     this.filter = new Filter(this.table);
     this.append(this.filter.element);
+
+    if (this.table.settings.virtualScroll) {
+      this.virtualScroller = new VirtualScroller(this.main, this.body.element, this.table.dimensions.rowHeight, this.table.pager.perPage);
+      const listener = {
+        eventName: 'viewRowsChange',
+        target: this.main,
+        handler: this.onViewRowsChange.bind(this)
+      };
+      this.listeners.push(listener);
+      listener.target.addEventListener(listener.eventName, listener.handler);
+    }
   }
 
   updateStyles() {
-    this.header.element.style.width = this.table.dimensions.columnsTotalWidth + 'px';
     this.body.element.style.width = this.table.dimensions.columnsTotalWidth + 'px';
   }
 
@@ -136,8 +152,7 @@ export class DataTableComponent extends HTMLElement {
 
   private onPage(): void {
     if (this.table.settings.virtualScroll) {
-      // TODO
-      // this.body.scroller.setPageOffsetY(event.detail.currentPage);
+      this.virtualScroller.setPageOffsetY(this.table.pager.current);
     } else {
       if (this.table.clientSide) {
         this.table.loadLocalRows();
@@ -154,6 +169,7 @@ export class DataTableComponent extends HTMLElement {
     }
     this.table.selection.clearSelection();
     this.body.createRows();
+    this.footer.updatePagination();
   }
 
   private onSort() {
@@ -192,6 +208,21 @@ export class DataTableComponent extends HTMLElement {
     this.main.classList.remove('datatable-unselectable');
     this.table.dimensions.recalcColumns();
     this.updateAllStyles();
+  }
+
+  private onViewRowsChange(event: CustomEvent<Row[]>) {
+    this.body.viewRows = event.detail;
+    this.table.pager.current = this.virtualScroller.calcPage();
+    this.body.createRows();
+    this.footer.updatePagination();
+  }
+
+  private onRowsChanged() {
+    if (this.table.settings.virtualScroll) {
+      this.virtualScroller.items = this.table.rows;
+    }
+    this.body.createRows();
+    this.footer.updatePagination();
   }
 
 }
