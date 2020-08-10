@@ -42,7 +42,9 @@ export class DataTableComponent extends HTMLElement {
     this.body.destroy();
     this.footer.destroy();
     this.filter.destroy();
-    this.virtualScroller.destroy();
+    if (this.table.settings.virtualScroll) {
+      this.virtualScroller.destroy();
+    }
   }
 
   private onInit() {
@@ -113,8 +115,9 @@ export class DataTableComponent extends HTMLElement {
 
   private render() {
     this.header = new Header(this.table);
+    this.main.append(this.header.element);
+
     this.body = new Body(this.table);
-    this.body.element.append(this.header.element);
     this.main.append(this.body.element);
 
     this.footer = new Footer(this.table);
@@ -141,6 +144,7 @@ export class DataTableComponent extends HTMLElement {
   }
 
   updateStyles() {
+    this.header.element.style.width = this.table.dimensions.columnsTotalWidth + 'px';
     this.body.element.style.width = this.table.dimensions.columnsTotalWidth + 'px';
   }
 
@@ -167,6 +171,9 @@ export class DataTableComponent extends HTMLElement {
     if (this.table.clientSide) {
       this.table.loadLocalRows();
     }
+    if (this.table.settings.virtualScroll) {
+      this.virtualScroller.items = this.table.rows;
+    }
     this.table.selection.clearSelection();
     this.body.createRows();
     this.footer.updatePagination();
@@ -175,6 +182,9 @@ export class DataTableComponent extends HTMLElement {
   private onSort() {
     if (this.table.clientSide) {
       this.table.loadLocalRows();
+    }
+    if (this.table.settings.virtualScroll) {
+      this.virtualScroller.items = this.table.rows;
     }
     this.table.selection.clearSelection();
 

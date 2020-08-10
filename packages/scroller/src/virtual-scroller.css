@@ -8,9 +8,6 @@
   will-change: scroll-position;
 }
 .dt-scrollable-content {
-  position: absolute;
-  top: 0;
-  left: 0;
   contain: content;
 }
 .dt-total-padding {

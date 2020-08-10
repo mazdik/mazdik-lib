@@ -126,7 +126,20 @@
 
 /* ScrollerDemo */
 .scroller-demo {width: 12.5rem; height: 31.25rem;}
-.scroller-demo-content > div {height: 2.5rem;}
+.scroller-demo-content {width: 100%;}
+.scroller-demo-content > div {height: 2.5rem; display: flex; align-items: center; border-bottom: 1px solid #eee;}
+.scroller-demo > .header {
+  height: 3rem;
+  display: flex;
+  align-items: center;
+  background-color: #009ccc;
+  color: white;
+  font-weight: bold;
+  justify-content: center;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
 
 /* SelectListDemo */
 .select-list-demo {display: flex;}

@@ -8,10 +8,7 @@ export class Header {
 
   constructor(private table: DataTable) {
     this.element = document.createElement('div');
-    this.element.classList.add('datatable-header-row');
-    if (!this.table.settings.virtualScroll) {
-      this.element.classList.add('dt-sticky-header');
-    }
+    this.element.classList.add('datatable-header-row', 'dt-sticky-header');
   }
 
   destroy() {

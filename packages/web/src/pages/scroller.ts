@@ -8,14 +8,19 @@ export default class ScrollerDemo implements Page {
   }
 
   load() {
-    const items = Array.from({length: 5000}).map((x, i) => {
+    const items = Array.from({ length: 5000 }).map((x, i) => {
       const element = document.createElement('div');
-      element.textContent = `Item #${i+1}`
+      element.textContent = `Item #${i + 1}`
       return element;
     });
 
     const scrollElement = document.querySelector('.scroller-demo') as HTMLElement;
     const contentElement = document.querySelector('.scroller-demo-content') as HTMLElement;
+
+    const headerRow = document.createElement('div');
+    headerRow.classList.add('header');
+    headerRow.textContent = 'Header';
+    scrollElement.prepend(headerRow);
 
     const virtualScroller = new VirtualScroller(scrollElement, contentElement, 40, 20);
     scrollElement.addEventListener('viewRowsChange', (event: CustomEvent<HTMLElement[]>) => {
