@@ -132,7 +132,13 @@ export class DataTableComponent extends HTMLElement {
     this.append(this.filter.element);
 
     if (this.table.settings.virtualScroll) {
-      this.virtualScroller = new VirtualScroller(this.main, this.body.element, this.table.dimensions.rowHeight, this.table.pager.perPage);
+      this.virtualScroller = new VirtualScroller(
+        this.main,
+        this.body.element,
+        this.table.dimensions.rowHeight,
+        this.table.pager.perPage,
+        this.table.settings.rowHeightProp);
+      this.virtualScroller.appendHeight = this.header.element.offsetHeight;
       const listener = {
         eventName: 'viewRowsChange',
         target: this.main,

@@ -88,7 +88,15 @@ class App {
           { id: 'states-line-interval', name: 'States line interval' },
           { id: 'simple-bar-chart', name: 'Simple bar chart' },
           { id: 'file-upload', name: 'File upload' },
+        ]
+      },
+      {
+        name: 'Data table',
+        expanded: true,
+        children: [
           { id: 'data-table', name: 'Data table' },
+          { id: 'data-table-master-detail', name: 'Master detail' },
+          { id: 'data-table-virtual-scroll', name: 'Virtual scroll' },
         ]
       },
     ];

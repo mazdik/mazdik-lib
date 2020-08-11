@@ -17,10 +17,11 @@ export class BodyRow {
   }
 
   updateStyles() {
-    this.element.style.height = this.table.dimensions.rowHeight + 'px';
+    const rowHeight = this.rowHeight();
+    this.element.style.height = rowHeight + 'px';
 
     toggleClass(this.element, 'row-selected', this.isSelected());
-    toggleClass(this.element, 'dt-hide', this.rowHeight() === 0);
+    toggleClass(this.element, 'dt-hide', rowHeight === 0);
     const cls = this.row.getRowClass();
     addClass(this.element, cls);
   }

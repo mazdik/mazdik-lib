@@ -11,6 +11,8 @@ export class VirtualScroller {
   }
   private _items: any[];
 
+  appendHeight: number = 0;
+
   private scrollYPos: number = 0;
   private scrollXPos: number = 0;
   private prevScrollYPos: number = 0;
@@ -128,7 +130,7 @@ export class VirtualScroller {
     if (scrollHeight && this.rowHeight) {
       this.itemsPerRow = Math.round(scrollHeight / this.rowHeight);
     } else {
-      scrollHeight = this.itemsPerRow * this.rowHeight;
+      scrollHeight = (this.itemsPerRow * this.rowHeight) + this.appendHeight;
       if (scrollHeight > 0) {
         scrollHeight -= this.rowHeight; // for lazy load
       }
