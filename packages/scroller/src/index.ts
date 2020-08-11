@@ -1,2 +1,2 @@
-export * from './scroller.component';
+export * from './virtual-scroller';
 export * from './types';

@@ -35,6 +35,7 @@ export class PaginationComponent extends HTMLElement {
   set pageSizeOptions(value: number[]) {
     this._pageSizeOptions = (value || []).sort((a, b) => a - b);
     this.loadSelect();
+    this.select.style.display = isBlank(value) ? 'none': 'block';
   }
   private _pageSizeOptions: number[] = [];
 

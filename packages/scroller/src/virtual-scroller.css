@@ -1,18 +1,13 @@
-.dt-scroller {
+.dt-virtual-scroll {
   display: block;
   position: relative;
   overflow: auto;
   -webkit-overflow-scrolling: touch;
-}
-.dt-virtual-scroll {
   contain: strict;
   transform: translateZ(0);
   will-change: scroll-position;
 }
 .dt-scrollable-content {
-  position: absolute;
-  top: 0;
-  left: 0;
   contain: content;
 }
 .dt-total-padding {

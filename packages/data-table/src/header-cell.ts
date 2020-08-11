@@ -1,5 +1,6 @@
 import { Listener, toggleClass } from '@mazdik-lib/common';
 import { DataTable, Column, EventHelper, ColumnMenuEventArgs } from './base';
+import { Resizable, ResizableEvent } from '@mazdik-lib/resizable';
 
 export class HeaderCell {
 
@@ -8,15 +9,20 @@ export class HeaderCell {
   private iconSort: HTMLElement;
   private iconFilter: HTMLElement;
   private listeners: Listener[] = [];
+  private resizable: Resizable;
 
   constructor(private table: DataTable, private column: Column) {
     this.createCellElements();
     this.addEventListeners();
     this.updateStyles();
+
+    this.resizable = new Resizable(this.element, false, this.column.resizeable, false, true);
+    this.resizable.addEventListeners();
   }
 
   destroy() {
     this.removeEventListeners();
+    this.resizable.destroy();
   }
 
   private addEventListeners() {
@@ -30,6 +36,21 @@ export class HeaderCell {
         eventName: 'click',
         target: this.iconFilter,
         handler: this.onClickColumnMenu.bind(this)
+      },
+      {
+        eventName: 'resizeBegin',
+        target: this.element,
+        handler: this.onResizeBegin.bind(this)
+      },
+      {
+        eventName: 'resizing',
+        target: this.element,
+        handler: this.onResize.bind(this)
+      },
+      {
+        eventName: 'resizeEnd',
+        target: this.element,
+        handler: this.onResizeEnd.bind(this)
       },
     ];
     this.listeners.forEach(x => {
@@ -98,6 +119,19 @@ export class HeaderCell {
   private isFiltered(): boolean {
     const field = (this.column.keyColumn) ? this.column.keyColumn : this.column.name;
     return this.table.dataFilter.hasFilter(field);
+  }
+
+  private onResizeBegin() {
+    this.table.events.onResizeBegin();
+  }
+
+  private onResize(event: CustomEvent<ResizableEvent>) {
+    this.table.events.onResize(event.detail.event);
+  }
+
+  private onResizeEnd(event: CustomEvent<ResizableEvent>) {
+    this.column.setWidth(event.detail.width);
+    this.table.events.onResizeEnd();
   }
 
 }

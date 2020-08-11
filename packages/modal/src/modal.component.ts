@@ -25,6 +25,7 @@ export class ModalComponent extends HTMLElement {
   scrollTopEnable: boolean = true;
   maximizable: boolean = true;
   backdrop: boolean = true;
+  inViewport: boolean = false;
 
   get open() {
     return this.hasAttribute('open');
@@ -231,6 +232,7 @@ export class ModalComponent extends HTMLElement {
     if (event.target === this.closeIcon) {
       return;
     }
+    this.draggableDirective.inViewport = this.inViewport;
     if (!this.maximized) {
       this.draggableDirective.start(event);
     }

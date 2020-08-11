@@ -1,13 +1,12 @@
-import { DataSelection } from '../src/base/data-selection';
-import { Subject } from 'rxjs';
+import { DataSelection, Events } from '../src/base';
 
 describe('DataSelection', () => {
 
   describe('single selection', () => {
     let model: DataSelection<any>;
-    const selectionSource: Subject<any> = new Subject();
+    const events = new Events();
 
-    beforeEach(() => model = new DataSelection(false, selectionSource));
+    beforeEach(() => model = new DataSelection(false, events));
 
     it('should be able to select a single value', () => {
       model.select(1);
@@ -41,9 +40,9 @@ describe('DataSelection', () => {
 
   describe('multiple selection', () => {
     let model: DataSelection<any>;
-    const selectionSource: Subject<any> = new Subject();
+    const events = new Events();
 
-    beforeEach(() => model = new DataSelection(true, selectionSource));
+    beforeEach(() => model = new DataSelection(true, events));
 
     it('should be able to select multiple options', () => {
       model.select(1);

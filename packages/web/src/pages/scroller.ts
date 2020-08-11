@@ -1,25 +1,33 @@
 import { Page } from '../page';
-import '@mazdik-lib/scroller';
-import { ScrollerComponent } from '@mazdik-lib/scroller';
+import { VirtualScroller } from '@mazdik-lib/scroller';
 
 export default class ScrollerDemo implements Page {
 
   get template(): string {
-    return `<web-scroller class="scroller-demo"></web-scroller>`;
+    return `<div class="scroller-demo"><div class="scroller-demo-content"></div></div>`;
   }
 
   load() {
-    const items = Array.from({length: 5000}).map((x, i) => {
+    const items = Array.from({ length: 5000 }).map((x, i) => {
       const element = document.createElement('div');
-      element.textContent = `Item #${i+1}`
+      element.textContent = `Item #${i + 1}`
       return element;
     });
 
-    const scroller = document.querySelector('web-scroller') as ScrollerComponent;
-    scroller.style.height = 500 + 'px';
-    scroller.rowHeight = 40;
-    scroller.itemsPerRow = 20;
-    scroller.items = items;
+    const scrollElement = document.querySelector('.scroller-demo') as HTMLElement;
+    const contentElement = document.querySelector('.scroller-demo-content') as HTMLElement;
+
+    const headerRow = document.createElement('div');
+    headerRow.classList.add('header');
+    headerRow.textContent = 'Header';
+    scrollElement.prepend(headerRow);
+
+    const virtualScroller = new VirtualScroller(scrollElement, contentElement, 40, 20);
+    scrollElement.addEventListener('viewRowsChange', (event: CustomEvent<HTMLElement[]>) => {
+      contentElement.innerHTML = '';
+      contentElement.append(...event.detail);
+    });
+    virtualScroller.items = items;
   }
 
 }

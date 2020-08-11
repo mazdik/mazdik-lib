@@ -41,11 +41,11 @@ export class EventHelper {
     if (datatable && datatable.previousSibling && datatable.previousSibling.classList.contains('dt-toolbar')) {
       top += datatable.previousSibling.offsetHeight;
     }
-    const header = datatable.querySelector('.datatable-header');
+    const header = datatable.querySelector('.datatable-header-row');
     if (header) {
       top += header.offsetHeight;
     }
-    const scroller = findAncestor(event.target, '.dt-scroller');
+    const scroller = datatable;
     const scrollTop = scroller ? scroller.scrollTop : 0;
     const scrollLeft = scroller ? scroller.scrollLeft : 0;
     left -= scrollLeft;
@@ -59,17 +59,14 @@ export class EventHelper {
 
   static getColumnPosition(event: MouseEvent, menuWidth: number, isLast: boolean = false) {
     const colElement = findAncestor(event.target, '.datatable-header-cell');
-    const isSticky = colElement.classList.contains('dt-sticky');
-    const header = findAncestor(event.target, '.datatable-header');
+    const header = findAncestor(event.target, '.datatable-header-row');
     const top = header.offsetHeight;
     let left = colElement.offsetLeft;
 
     const datatable = findAncestor(event.target, '.datatable');
-    const scroller = datatable.querySelector('.dt-scroller');
+    const scroller = datatable;
     const scrollLeft = scroller ? scroller.scrollLeft : 0;
-    if (!isSticky) {
-      left -= scrollLeft;
-    }
+    left -= scrollLeft;
     if ((event.pageX + 1 + menuWidth - document.body.scrollLeft > window.innerWidth) || isLast) {
       left = left + colElement.offsetWidth - menuWidth;
     }

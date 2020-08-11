@@ -1,6 +1,4 @@
-import { KeyboardAction } from '../src/base/keyboard-action';
-import { Events } from '../src/base/events';
-import { DataSelection } from '../src/base/data-selection';
+import { KeyboardAction, CellEventArgs, Events, DataSelection } from '../src/base';
 import { Keys } from '@mazdik-lib/common';
 
 describe('KeyboardAction', () => {
@@ -22,11 +20,12 @@ describe('KeyboardAction', () => {
   });
 
   const events = new Events();
-  const dataSelection = new DataSelection<number>(false, events.selectionSource);
+  const dataSelection = new DataSelection<number>(false, events);
   const keyboardAction = new KeyboardAction(events, dataSelection);
 
   function testKey(keyCode: number, col: number, row: number, shiftKey: boolean = false) {
-    events.cellSource$.subscribe(event => {
+    events.element.addEventListener('cell', (ev: CustomEvent<CellEventArgs>) => {
+      const event = ev.detail;
       expect(event.columnIndex).toBe(1 + col);
       expect(event.rowIndex).toBe(4 + row);
       expect(event.event).toBeDefined();
