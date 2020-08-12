@@ -1,16 +1,15 @@
 import { toggleClass, addClass } from '@mazdik-lib/common';
-import { Row, Column, Cell } from './base';
+import { DataTable, Row, Column, Cell } from './base';
 
 export class BodyCell {
 
   element: HTMLElement;
-  editing: boolean;
   cell: Cell;
+  protected editing: boolean;
 
-  constructor(row: Row, column: Column) {
+  constructor(protected table: DataTable, row: Row, column: Column) {
     this.cell = new Cell(row, column);
-    this.cell.updateViewValue();
-    this.cell.validate();
+    this.updateValue();
     this.createCellElements();
     this.updateStyles();
   }
@@ -42,6 +41,11 @@ export class BodyCell {
     toggleClass(this.element, 'cell-error', this.cell.hasError);
     const cls = this.cell.row.getCellClass(this.cell.column);
     addClass(this.element, cls);
+  }
+
+  protected updateValue(): void {
+    this.cell.updateViewValue();
+    this.cell.validate();
   }
 
 }

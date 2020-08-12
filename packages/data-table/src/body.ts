@@ -1,5 +1,5 @@
 import { Listener } from '@mazdik-lib/common';
-import { DataTable, EventHelper, KeyboardAction, CellEventArgs, CellEventType, Row } from './base';
+import { DataTable, EventHelper, KeyboardAction, CellEventArgs, CellEventType, Row, EditMode } from './base';
 import { BodyCell } from './body-cell';
 import { BodyRow } from './body-row';
 
@@ -39,6 +39,11 @@ export class Body {
         handler: this.onСlick.bind(this)
       },
       {
+        eventName: 'dblclick',
+        target: this.element,
+        handler: this.onDblClick.bind(this)
+      },
+      {
         eventName: 'keydown',
         target: this.element,
         handler: this.onKeydown.bind(this)
@@ -70,7 +75,7 @@ export class Body {
       this.element.append(bodyRow.element);
 
       this.table.preparedColumns.forEach(column => {
-        const bodyCell = new BodyCell(row, column);
+        const bodyCell = new BodyCell(this.table, row, column);
         this.bodyCells.push(bodyCell);
         bodyRow.element.append(bodyCell.element);
       });
@@ -82,13 +87,20 @@ export class Body {
     this.bodyCells.forEach(x => x.updateStyles());
   }
 
-  private onСlick(event: any) {
+  private onСlick(event: any): void {
     const cellEventArgs = EventHelper.findCellEvent(event, this.element);
     if (cellEventArgs) {
       this.table.events.onClickCell(cellEventArgs);
       if (!this.table.settings.selectionMode) {
         this.table.selectRow(cellEventArgs.rowIndex);
       }
+    }
+  }
+
+  private onDblClick(event: any): void {
+    const cellEventArgs = EventHelper.findCellEvent(event, this.element);
+    if (cellEventArgs) {
+      this.table.events.onDblClickCell(cellEventArgs);
     }
   }
 
@@ -103,10 +115,30 @@ export class Body {
   }
 
   private onCell(event: CustomEvent<CellEventArgs>) {
-    const data = event.detail;
-    const cell = this.findBodyCell(data.columnIndex, data.rowIndex);
-    if (cell && data.type === CellEventType.Activate) {
+    const ev = event.detail;
+    const cell = this.findBodyCell(ev.columnIndex, ev.rowIndex);
+    if (!cell) {
+      return;
+    }
+    if (ev.type === CellEventType.Activate) {
       cell.element.focus();
+    }
+    if (ev.type === CellEventType.DblClick) {
+      if (this.table.settings.editMode !== EditMode.EditProgrammatically) {
+        //cell.switchCellToEditMode();
+      }
+    }
+    if (ev.type === CellEventType.Keydown) {
+      if (this.table.settings.editMode !== EditMode.EditProgrammatically) {
+        //cell.onCellKeydown(ev.event);
+      }
+    }
+    if (ev.type === CellEventType.EditMode) {
+      if (ev.editMode) {
+        //cell.switchCellToEditMode();
+      } else {
+        //cell.switchCellToViewMode();
+      }
     }
   }
 
