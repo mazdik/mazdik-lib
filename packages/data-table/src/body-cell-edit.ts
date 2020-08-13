@@ -14,11 +14,13 @@ export class BodyCellEdit extends BodyCell {
   }
   protected set editing(val: boolean) {
     this._editing = val;
+    this.updateValue();
     if (val) {
       this.createInlineEditComponent();
     } else {
       this.destroyInlineEditComponent();
     }
+    this.updateStyles();
   }
   private _editing: boolean;
 
@@ -32,11 +34,6 @@ export class BodyCellEdit extends BodyCell {
         eventName: 'valueChange',
         target: this.inlineEdit,
         handler: this.onValueChange.bind(this)
-      },
-      {
-        eventName: 'focusChange',
-        target: this.inlineEdit,
-        handler: this.onInputFocus.bind(this)
       },
       {
         eventName: 'blurChange',
@@ -58,20 +55,15 @@ export class BodyCellEdit extends BodyCell {
 
   switchCellToEditMode() {
     if (this.cell.column.editable) {
+      this.tempValue = this.cell.value;
       this.editing = true;
-      this.cell.validate();
-      this.updateStyles();
     }
   }
 
   switchCellToViewMode() {
     this.editing = false;
     if (this.cell.value !== this.tempValue) {
-      this.updateValue();
-      this.table.events.onCellValueChanged({
-        columnIndex: this.cell.column.index,
-        rowIndex: this.cell.rowIndex
-      } as CellEventArgs);
+      this.table.events.onCellValueChanged({ columnIndex: this.cell.column.index, rowIndex: this.cell.rowIndex } as CellEventArgs);
     }
   }
 
@@ -93,9 +85,8 @@ export class BodyCellEdit extends BodyCell {
       this.switchCellToViewMode();
       this.element.focus();
     } else if (event.keyCode === Keys.ESCAPE) {
-      this.editing = false;
       this.cell.value = this.tempValue;
-      this.updateValue();
+      this.editing = false;
       this.element.focus();
     }
   }
@@ -103,10 +94,7 @@ export class BodyCellEdit extends BodyCell {
   private onValueChange(event: CustomEvent) {
     this.cell.value = event.detail;
     this.updateValue();
-  }
-
-  private onInputFocus() {
-    this.tempValue = this.cell.value;
+    this.updateStyles();
   }
 
   private onInputBlur() {
