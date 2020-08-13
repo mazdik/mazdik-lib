@@ -17,6 +17,7 @@
   "dependencies": {
     "@mazdik-lib/common": "0.1.0",
     "@mazdik-lib/dropdown": "0.1.0",
+    "@mazdik-lib/inline-edit": "0.1.0",
     "@mazdik-lib/pagination": "0.1.0",
     "@mazdik-lib/resizable": "0.1.0",
     "@mazdik-lib/scroller": "0.1.0",

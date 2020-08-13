@@ -1,7 +1,7 @@
 import { toggleClass, addClass } from '@mazdik-lib/common';
 import { DataTable, Row, Column, Cell } from './base';
 
-export class BodyCell {
+export abstract class BodyCell {
 
   element: HTMLElement;
   cell: Cell;
@@ -25,9 +25,14 @@ export class BodyCell {
     this.element.dataset.rowIndex = this.cell.rowIndex.toString();
     this.element.tabIndex = -1;
 
+    this.createViewElement();
+  }
+
+  protected createViewElement() {
     const cellData = document.createElement('div');
     cellData.classList.add('cell-data');
     cellData.textContent = this.cell.viewValue;
+    this.element.innerHTML = '';
     this.element.append(cellData);
   }
 
@@ -36,6 +41,7 @@ export class BodyCell {
     if (this.cell.column.frozen) {
       this.element.style.left = this.cell.column.left + 'px';
     }
+    toggleClass(this.element, 'cell-editable', this.cell.column.editable);
     toggleClass(this.element, 'cell-editing', this.editing);
     toggleClass(this.element, 'cell-changed', this.cell.isChanged);
     toggleClass(this.element, 'cell-error', this.cell.hasError);
@@ -47,5 +53,9 @@ export class BodyCell {
     this.cell.updateViewValue();
     this.cell.validate();
   }
+
+  abstract switchCellToEditMode(): void
+  abstract switchCellToViewMode(): void
+  abstract onCellKeydown(event: any): void
 
 }

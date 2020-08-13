@@ -184,15 +184,17 @@ export class InlineEditComponent extends HTMLElement {
     defaultOption.hidden = true;
     this.select.options.add(defaultOption);
 
-    for (const option of this.options) {
-      this.select.options.add(new Option(option.name, option.id));
+    if (this.options && this.options.length) {
+      for (const option of this.options) {
+        this.select.options.add(new Option(option.name, option.id));
+      }
     }
     this.setSelectedIndex();
   }
 
   private setSelectedIndex() {
     if (this.options && this.options.length) {
-      let index = this.options.findIndex(x => x.id === this.value.toString());
+      let index = this.options.findIndex(x => x.id === (this.value || '').toString());
       index = (index >= 0) ? index + 1 : index; // + 1 selectPlaceholder
       this.select.selectedIndex = index;
     }
@@ -206,7 +208,7 @@ export class InlineEditComponent extends HTMLElement {
   private setViewValue() {
     let viewValue = '';
     if (this.options && this.options.length) {
-      const selected = this.options.find(x => x.id === this.value.toString());
+      const selected = this.options.find(x => x.id === (this.value || '').toString());
       viewValue = selected ? selected.name : '';
     } else if (this.value instanceof Date) {
       if (this.type === 'date') {
@@ -216,7 +218,7 @@ export class InlineEditComponent extends HTMLElement {
         viewValue = this.value.toLocaleDateString() + ' ' + time;
       }
     } else {
-      viewValue = this.value.toString();
+      viewValue = (this.value || '').toString();
     }
     this.inlineDataView.innerText = viewValue;
   }

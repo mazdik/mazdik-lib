@@ -1,7 +1,10 @@
 import { Listener } from '@mazdik-lib/common';
+import '@mazdik-lib/inline-edit';
 import { DataTable, EventHelper, KeyboardAction, CellEventArgs, CellEventType, Row, EditMode } from './base';
-import { BodyCell } from './body-cell';
 import { BodyRow } from './body-row';
+import { BodyCell } from './body-cell';
+import { BodyCellView } from './body-cell-view';
+import { BodyCellEdit } from './body-cell-edit';
 
 export class Body {
 
@@ -75,7 +78,7 @@ export class Body {
       this.element.append(bodyRow.element);
 
       this.table.preparedColumns.forEach(column => {
-        const bodyCell = new BodyCell(this.table, row, column);
+        const bodyCell = column.editable ? new BodyCellEdit(this.table, row, column) : new BodyCellView(this.table, row, column);
         this.bodyCells.push(bodyCell);
         bodyRow.element.append(bodyCell.element);
       });
@@ -125,19 +128,19 @@ export class Body {
     }
     if (ev.type === CellEventType.DblClick) {
       if (this.table.settings.editMode !== EditMode.EditProgrammatically) {
-        //cell.switchCellToEditMode();
+        cell.switchCellToEditMode();
       }
     }
     if (ev.type === CellEventType.Keydown) {
       if (this.table.settings.editMode !== EditMode.EditProgrammatically) {
-        //cell.onCellKeydown(ev.event);
+        cell.onCellKeydown(ev.event);
       }
     }
     if (ev.type === CellEventType.EditMode) {
       if (ev.editMode) {
-        //cell.switchCellToEditMode();
+        cell.switchCellToEditMode();
       } else {
-        //cell.switchCellToViewMode();
+        cell.switchCellToViewMode();
       }
     }
   }
