@@ -115,11 +115,16 @@ export class Body {
     groupRow.style.height = this.table.dimensions.rowHeight + 'px';
     this.groupRows.push(groupRow);
     this.element.append(groupRow);
-    const cellEl = document.createElement('dvi');
-    cellEl.classList.add('datatable-body-cell', 'dt-sticky');
-    cellEl.style.left = '0';
-    cellEl.textContent = this.table.rowGroup.getRowGroupName(row) + ' (' + this.table.rowGroup.getRowGroupSize(row) + ')';
-    groupRow.append(cellEl);
+    if (this.table.rowGroupTemplateFunc) {
+      const cellEl = this.table.rowGroupTemplateFunc(row);
+      groupRow.append(cellEl);
+    } else {
+      const cellEl = document.createElement('div');
+      cellEl.classList.add('datatable-body-cell', 'dt-sticky');
+      cellEl.style.left = '0';
+      cellEl.textContent = this.table.rowGroup.getRowGroupName(row) + ' (' + this.table.rowGroup.getRowGroupSize(row) + ')';
+      groupRow.append(cellEl);
+    }
   }
 
   updateBodyStyles() {
