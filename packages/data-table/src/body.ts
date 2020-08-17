@@ -79,12 +79,25 @@ export class Body {
       if (this.table.rowGroup.isRowGroup(row)) {
         this.createGroupRow(row);
       } else {
-        const bodyRow = new BodyRow(this.table, row);
-        this.bodyRows.push(bodyRow);
-        this.element.append(bodyRow.element);
-        this.createCells(bodyRow);
+        this.createRow(row);
+      }
+      if (this.table.rowGroup.isRowGroupSummary(row)) {
+        this.createRow(this.table.rowGroup.getRowGroupSummary(row), true);
       }
     });
+    if (this.table.rowGroup.aggregationEnabled) {
+      this.createRow(this.table.rowGroup.getRowSummary(), true);
+    }
+  }
+
+  private createRow(row: Row, isGroup: boolean = false) {
+    const bodyRow = new BodyRow(this.table, row);
+    if (isGroup) {
+      bodyRow.element.classList.add('datatable-group-row');
+    }
+    this.bodyRows.push(bodyRow);
+    this.element.append(bodyRow.element);
+    this.createCells(bodyRow);
   }
 
   private createCells(bodyRow: BodyRow) {

@@ -1,4 +1,4 @@
-import { toggleClass, addClass } from '@mazdik-lib/common';
+import { toggleClass, addClass, isBlank } from '@mazdik-lib/common';
 import { DataTable, Row, Column, Cell } from './base';
 
 export abstract class BodyCell {
@@ -22,7 +22,9 @@ export abstract class BodyCell {
     }
     this.element.setAttribute('role', 'gridcell');
     this.element.dataset.columnIndex = this.cell.column.index.toString();
-    this.element.dataset.rowIndex = this.cell.rowIndex.toString();
+    if (!isBlank(this.cell.rowIndex)) {
+      this.element.dataset.rowIndex = this.cell.rowIndex.toString();
+    }
     this.element.tabIndex = -1;
 
     this.createViewElement();
