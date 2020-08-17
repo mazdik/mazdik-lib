@@ -14,7 +14,7 @@ export default class DataTableDemo implements Page {
 
     const columns = getColumnsPlayers();
     columns.forEach((x, i) => (i > 0) ? x.editable = true : x.editable = false);
-    const table = new DataTable(columns, new Settings({}));
+    const table = new DataTable(columns, new Settings());
     component.table = table;
 
     table.events.onLoading(true);

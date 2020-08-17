@@ -115,8 +115,8 @@ export class Body {
     groupRow.style.height = this.table.dimensions.rowHeight + 'px';
     this.groupRows.push(groupRow);
     this.element.append(groupRow);
-    if (this.table.rowGroupTemplateFunc) {
-      const cellEl = this.table.rowGroupTemplateFunc(row);
+    if (this.table.settings.rowGroupTemplateFunc) {
+      const cellEl = this.table.settings.rowGroupTemplateFunc(row);
       groupRow.append(cellEl);
     } else {
       const cellEl = document.createElement('div');

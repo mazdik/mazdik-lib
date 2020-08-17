@@ -20,10 +20,10 @@ export default class DtRowGroupDemo implements Page {
     const settings = new Settings({
       groupRowsBy: ['race'],
       rowHeightProp: '$$height',
+      rowGroupTemplateFunc: this.rowGroupTemplateRenderer.bind(this),
     });
     const table = new DataTable(columns, settings);
     table.pager.perPage = 50;
-    table.rowGroupTemplateFunc = this.rowGroupTemplateRenderer.bind(this);
     this.component.table = table;
 
     table.events.onLoading(true);

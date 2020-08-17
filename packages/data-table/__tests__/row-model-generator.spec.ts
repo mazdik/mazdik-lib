@@ -5,7 +5,7 @@ import { Row } from '../src/base/row';
 
 describe('RowModelGenerator', () => {
 
-  const settings = new Settings({});
+  const settings = new Settings();
   const columns = [
     new Column({ name: 'date' }),
     new Column({ name: 'gender' }),

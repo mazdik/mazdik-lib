@@ -1,6 +1,4 @@
 export interface DtMessages {
-  empty: string;
-  loading: string;
   clearFilters: string;
   create: string;
   delete: string;
@@ -44,8 +42,6 @@ export interface DtMessages {
 }
 
 export class DtMessagesEn implements DtMessages {
-  empty = 'No data to display';
-  loading = 'Loading...';
   clearFilters = 'Clear all filters';
   create = 'Create';
   delete = 'Delete';

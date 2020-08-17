@@ -32,7 +32,6 @@ export class DataTable {
   readonly columns: Column[] = [];
   preparedColumns: Column[] = [];
   clientSide: boolean = true;
-  rowGroupTemplateFunc: (row: Row) => HTMLElement;
 
   get rows(): any[] { return this._rows; }
   set rows(val: any[]) {

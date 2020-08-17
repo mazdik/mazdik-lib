@@ -22,11 +22,14 @@ export class Settings {
   paginator?: boolean = true;
   rowHeightProp?: string;
   isEditableCellProp?: string;
+  rowGroupTemplateFunc: (row) => HTMLElement;
 
-  constructor(init: Partial<Settings>) {
-    Object.assign(this, init);
-    if (!this.editMode) {
-      this.editMode = EditMode.EditCellOnDblClick;
+  constructor(init?: Partial<Settings>) {
+    if (init) {
+      Object.assign(this, init);
+      if (!this.editMode) {
+        this.editMode = EditMode.EditCellOnDblClick;
+      }
     }
   }
 

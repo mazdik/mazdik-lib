@@ -10,7 +10,7 @@ describe('LocalDataSource', () => {
   const dataFilter = new DataFilter();
   const pager = new DataPager();
   const sorter = new DataSort();
-  const settings = new Settings({});
+  const settings = new Settings();
   const dataSource = new LocalDataSource(dataFilter, pager, sorter, settings);
 
   const rows: Row[] = [

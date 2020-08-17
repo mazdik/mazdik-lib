@@ -94,7 +94,7 @@ class App {
         name: 'Data table',
         expanded: true,
         children: [
-          { id: 'data-table', name: 'Data table' },
+          { id: 'dt-basic', name: 'Data table' },
           { id: 'dt-master-detail', name: 'Master detail' },
           { id: 'dt-multiple-sort', name: 'Multiple sorting' },
           { id: 'dt-row-group', name: 'Row group' },

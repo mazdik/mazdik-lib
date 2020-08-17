@@ -29,7 +29,7 @@ export default class DtSummaryRowDemo implements Page {
 
     columns.splice(6, 8);
 
-    const table = new DataTable(columns, new Settings({}));
+    const table = new DataTable(columns, new Settings());
     table.pager.perPage = 50;
     component.table = table;
 

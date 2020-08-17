@@ -1,7 +1,7 @@
 import { ColumnBase, Settings, DataTable, Row, CellEventArgs } from '../src/base';
 
 describe('DataTable', () => {
-  const settings = new Settings({});
+  const settings = new Settings();
   const columns: ColumnBase[] = [
     {name: 'date', title: '', frozen: true, width: 100},
     {name: 'test1', title: '', frozen: false, width: 100},

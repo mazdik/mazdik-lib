@@ -154,10 +154,6 @@
   color: black;
 }
 
-.datatable-empty-row {
-  padding: 0 0 .3125rem .3125rem;
-}
-
 .datatable-group-header {
   border-right: 1px solid var(--dt-color-secondary-light);
   border-bottom: 1px solid var(--dt-color-secondary-light);

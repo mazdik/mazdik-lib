@@ -35,21 +35,21 @@ export default class DtMasterDetailDemo implements Page {
 
   private createTablePlayers() {
     const columns = getColumnsPlayers();
-    this.dtPlayers = new DataTable(columns, new Settings({}));
+    this.dtPlayers = new DataTable(columns, new Settings());
     const component = document.querySelector('#dtPlayers') as DataTableComponent;
     component.table = this.dtPlayers;
   }
 
   private createTableInventory() {
     const columns = getColumnsInventory();
-    this.dtInventory = new DataTable(columns, new Settings({}));
+    this.dtInventory = new DataTable(columns, new Settings());
     const component = document.querySelector('#dtInventory') as DataTableComponent;
     component.table = this.dtInventory;
   }
 
   private createTableRank() {
     const columns = getColumnsRank();
-    this.dtRank = new DataTable(columns, new Settings({}));
+    this.dtRank = new DataTable(columns, new Settings());
     const component = document.querySelector('#dtRank') as DataTableComponent;
     component.table = this.dtRank;
   }
