@@ -5,7 +5,9 @@ export class BodyRow {
 
   element: HTMLElement;
 
-  constructor(private table: DataTable, private row: Row) {
+  get row(): Row { return this._row; }
+
+  constructor(private table: DataTable, private _row: Row) {
     this.createRowElements();
     this.updateStyles();
   }

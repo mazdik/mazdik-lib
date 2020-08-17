@@ -95,8 +95,11 @@ class App {
         expanded: true,
         children: [
           { id: 'data-table', name: 'Data table' },
-          { id: 'data-table-master-detail', name: 'Master detail' },
-          { id: 'data-table-virtual-scroll', name: 'Virtual scroll' },
+          { id: 'dt-master-detail', name: 'Master detail' },
+          { id: 'dt-multiple-sort', name: 'Multiple sorting' },
+          { id: 'dt-row-group', name: 'Row group' },
+          { id: 'dt-row-group-multiple', name: 'Row group multiple' },
+          { id: 'dt-virtual-scroll', name: 'Virtual scroll' },
         ]
       },
     ];

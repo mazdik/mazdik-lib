@@ -13,6 +13,7 @@ export class Body {
   private bodyCells: BodyCell[] = [];
   private listeners: Listener[] = [];
   private keyboardAction: KeyboardAction;
+  private groupRows: HTMLElement[] = [];
 
   get viewRows(): Row[] {
     return (this.table.settings.virtualScroll) ? this._viewRows : this.table.rows;
@@ -72,17 +73,40 @@ export class Body {
     this.bodyRows.forEach(x => x.element.remove());
     this.bodyRows = [];
     this.bodyCells = [];
+    this.groupRows.forEach(x => x.remove());
+    this.groupRows = [];
     this.viewRows.forEach(row => {
-      const bodyRow = new BodyRow(this.table, row);
-      this.bodyRows.push(bodyRow);
-      this.element.append(bodyRow.element);
-
-      this.table.preparedColumns.forEach(column => {
-        const bodyCell = column.editable ? new BodyCellEdit(this.table, row, column) : new BodyCellView(this.table, row, column);
-        this.bodyCells.push(bodyCell);
-        bodyRow.element.append(bodyCell.element);
-      });
+      if (this.table.rowGroup.isRowGroup(row)) {
+        this.createGroupRow(row);
+      } else {
+        const bodyRow = new BodyRow(this.table, row);
+        this.bodyRows.push(bodyRow);
+        this.element.append(bodyRow.element);
+        this.createCells(bodyRow);
+      }
     });
+  }
+
+  private createCells(bodyRow: BodyRow) {
+    const row = bodyRow.row;
+    this.table.preparedColumns.forEach(column => {
+      const bodyCell = column.editable ? new BodyCellEdit(this.table, row, column) : new BodyCellView(this.table, row, column);
+      this.bodyCells.push(bodyCell);
+      bodyRow.element.append(bodyCell.element);
+    });
+  }
+
+  private createGroupRow(row: Row) {
+    const groupRow = document.createElement('div');
+    groupRow.classList.add('datatable-body-row', 'datatable-group-header');
+    groupRow.style.height = this.table.dimensions.rowHeight + 'px';
+    this.groupRows.push(groupRow);
+    this.element.append(groupRow);
+    const cellEl = document.createElement('dvi');
+    cellEl.classList.add('datatable-body-cell', 'dt-sticky');
+    cellEl.style.left = '0';
+    cellEl.textContent = this.table.rowGroup.getRowGroupName(row) + ' (' + this.table.rowGroup.getRowGroupSize(row) + ')';
+    groupRow.append(cellEl);
   }
 
   updateBodyStyles() {

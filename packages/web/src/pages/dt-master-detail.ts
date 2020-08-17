@@ -3,7 +3,7 @@ import '@mazdik-lib/data-table';
 import { DataTableComponent, Settings, DataTable } from '@mazdik-lib/data-table';
 import { getColumnsPlayers, getColumnsRank, getColumnsInventory } from '../shared/columns';
 
-export default class DataTableMasterDetailDemo implements Page {
+export default class DtMasterDetailDemo implements Page {
 
   get template(): string {
     return `<web-data-table id="dtPlayers" class="data-table-demo"></web-data-table>
