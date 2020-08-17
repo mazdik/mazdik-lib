@@ -26,6 +26,9 @@
       "path": "./dropdown-select/tsconfig.package.json"
     },
     {
+      "path": "./dt-toolbar/tsconfig.package.json"
+    },
+    {
       "path": "./dual-list-box/tsconfig.package.json"
     },
     {

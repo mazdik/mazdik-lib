@@ -23,6 +23,7 @@
     "@mazdik-lib/draggable": "0.1.0",
     "@mazdik-lib/dropdown": "0.1.0",
     "@mazdik-lib/dropdown-select": "0.1.0",
+    "@mazdik-lib/dt-toolbar": "0.1.0",
     "@mazdik-lib/dual-list-box": "0.1.0",
     "@mazdik-lib/dynamic-form": "0.1.0",
     "@mazdik-lib/file-upload": "0.1.0",
