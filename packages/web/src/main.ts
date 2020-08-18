@@ -103,6 +103,7 @@ class App {
           { id: 'dt-row-group-summary', name: 'Summary rows with grouping' },
           { id: 'dt-summary-row', name: 'Summary row' },
           { id: 'dt-virtual-scroll', name: 'Virtual scroll' },
+          { id: 'dt-pipe', name: 'Pipe on column' },
         ]
       },
     ];
