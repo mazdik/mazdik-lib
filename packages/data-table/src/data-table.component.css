@@ -121,7 +121,10 @@
 }
 
 .column-menu-icon {
-  margin: 0 .2rem 0 auto;
+  position: absolute;
+  top: 50%;
+  right: .625rem;
+  transform: translate(0, -50%);
   visibility: hidden;
   cursor: pointer;
 }

@@ -109,6 +109,9 @@ export class HeaderCell {
     }
     this.iconSort.className = 'dt-icon ' + this.getDirection();
     toggleClass(this.iconFilter, 'is-filter', this.isFiltered());
+    if (this.column.headerCellClass) {
+      this.element.classList.add(this.column.headerCellClass);
+    }
   }
 
   private getDirection() {
