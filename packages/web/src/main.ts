@@ -99,6 +99,7 @@ class App {
           { id: 'dt-multiple-sort', name: 'Multiple sorting' },
           { id: 'dt-row-group', name: 'Row group' },
           { id: 'dt-row-group-multiple', name: 'Row group multiple' },
+          { id: 'dt-global-filter', name: 'Global filtering' },
           { id: 'dt-row-group-summary', name: 'Summary rows with grouping' },
           { id: 'dt-summary-row', name: 'Summary row' },
           { id: 'dt-virtual-scroll', name: 'Virtual scroll' },
