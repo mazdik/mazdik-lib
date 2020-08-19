@@ -1,4 +1,5 @@
 import { SelectionMode, EditMode } from './types';
+import { TemplateRenderer } from './template-renderer';
 
 type RowClassFunc = (row) => any;
 
@@ -22,7 +23,7 @@ export class Settings {
   paginator?: boolean = true;
   rowHeightProp?: string;
   isEditableCellProp?: string;
-  rowGroupTemplateFunc: (row) => HTMLElement;
+  rowGroupRenderer: TemplateRenderer;
 
   constructor(init?: Partial<Settings>) {
     if (init) {

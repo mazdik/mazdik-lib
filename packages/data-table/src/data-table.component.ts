@@ -97,6 +97,11 @@ export class DataTableComponent extends HTMLElement {
         handler: this.onRowsChanged.bind(this)
       },
       {
+        eventName: 'updateStyles',
+        target: this.table.events.element,
+        handler: this.onUpdateStyles.bind(this)
+      },
+      {
         eventName: 'scroll',
         target: this.main,
         handler: this.onScroll.bind(this)
@@ -149,7 +154,7 @@ export class DataTableComponent extends HTMLElement {
     }
   }
 
-  updateStyles() {
+  private updateStyles() {
     this.header.element.style.width = this.table.dimensions.columnsTotalWidth + 'px';
     this.body.element.style.width = this.table.dimensions.columnsTotalWidth + 'px';
   }
@@ -239,6 +244,10 @@ export class DataTableComponent extends HTMLElement {
     }
     this.body.createRows();
     this.footer.updatePagination();
+  }
+
+  private onUpdateStyles() {
+    this.updateAllStyles();
   }
 
 }

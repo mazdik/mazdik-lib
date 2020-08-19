@@ -105,4 +105,8 @@ export class Events {
     this.onCell(data);
   }
 
+  onUpdateStyles() {
+    this.element.dispatchEvent(new CustomEvent('updateStyles'));
+  }
+
 }

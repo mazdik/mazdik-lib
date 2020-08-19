@@ -1,10 +1,11 @@
 import { Listener } from '@mazdik-lib/common';
 import '@mazdik-lib/inline-edit';
-import { DataTable, EventHelper, KeyboardAction, CellEventArgs, CellEventType, Row, EditMode } from './base';
+import { DataTable, EventHelper, KeyboardAction, CellEventArgs, CellEventType, Row, EditMode, TemplateRenderer } from './base';
 import { BodyRow } from './body-row';
 import { BodyCell } from './body-cell';
 import { BodyCellView } from './body-cell-view';
 import { BodyCellEdit } from './body-cell-edit';
+import { RowGroupRenderer } from './renderer/row-group-renderer';
 
 export class Body {
 
@@ -13,7 +14,7 @@ export class Body {
   private bodyCells: BodyCell[] = [];
   private listeners: Listener[] = [];
   private keyboardAction: KeyboardAction;
-  private groupRows: HTMLElement[] = [];
+  private rowGroupRenderer: TemplateRenderer;
 
   get viewRows(): Row[] {
     return (this.table.settings.virtualScroll) ? this._viewRows : this.table.rows;
@@ -29,6 +30,7 @@ export class Body {
 
     this.keyboardAction = new KeyboardAction(this.table.events, this.table.selection);
     this.addEventListeners();
+    this.rowGroupRenderer = this.table.settings.rowGroupRenderer || new RowGroupRenderer();
   }
 
   destroy() {
@@ -73,11 +75,11 @@ export class Body {
     this.bodyRows.forEach(x => x.element.remove());
     this.bodyRows = [];
     this.bodyCells = [];
-    this.groupRows.forEach(x => x.remove());
-    this.groupRows = [];
+    this.rowGroupRenderer.destroy();
     this.viewRows.forEach(row => {
       if (this.table.rowGroup.isRowGroup(row)) {
-        this.createGroupRow(row);
+        const groupRowElement = this.rowGroupRenderer.create(this.table, row);
+        this.element.append(groupRowElement);
       } else {
         this.createRow(row);
       }
@@ -107,24 +109,6 @@ export class Body {
       this.bodyCells.push(bodyCell);
       bodyRow.element.append(bodyCell.element);
     });
-  }
-
-  private createGroupRow(row: Row) {
-    const groupRow = document.createElement('div');
-    groupRow.classList.add('datatable-body-row', 'datatable-group-header');
-    groupRow.style.height = this.table.dimensions.rowHeight + 'px';
-    this.groupRows.push(groupRow);
-    this.element.append(groupRow);
-    if (this.table.settings.rowGroupTemplateFunc) {
-      const cellEl = this.table.settings.rowGroupTemplateFunc(row);
-      groupRow.append(cellEl);
-    } else {
-      const cellEl = document.createElement('div');
-      cellEl.classList.add('datatable-body-cell', 'dt-sticky');
-      cellEl.style.left = '0';
-      cellEl.textContent = this.table.rowGroup.getRowGroupName(row) + ' (' + this.table.rowGroup.getRowGroupSize(row) + ')';
-      groupRow.append(cellEl);
-    }
   }
 
   updateBodyStyles() {
