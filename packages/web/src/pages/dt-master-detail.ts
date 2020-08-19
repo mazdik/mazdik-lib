@@ -55,12 +55,12 @@ export default class DtMasterDetailDemo implements Page {
   }
 
   private loadRows() {
-    this.dtPlayers.events.onLoading(true);
+    this.dtPlayers.events.emitLoading(true);
     fetch('assets/players.json')
       .then(res => res.json())
       .then(data => {
         this.dtPlayers.rows = data;
-        this.dtPlayers.events.onLoading(false);
+        this.dtPlayers.events.emitLoading(false);
 
         const masterId = this.dtPlayers.rows[0]['id'];
         this.dtPlayers.selectRow(0);

@@ -88,7 +88,7 @@ export class ListFilter {
   private saveFilter(value) {
     const field = (this.column.keyColumn) ? this.column.keyColumn : this.column.name;
     this.table.dataFilter.setFilter([...value], field, FilterOperator.IN, null, this.column.dataType);
-    this.table.events.onFilter();
+    this.table.events.emitFilter();
   }
 
   private onSelectionChange(event: CustomEvent<string[]>) {

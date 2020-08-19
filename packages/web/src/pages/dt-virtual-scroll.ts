@@ -17,7 +17,7 @@ export default class DtVirtualScrollDemo implements Page {
     const table = new DataTable(columns, new Settings({virtualScroll: true, rowHeightProp: '$$height'}));
     component.table = table;
 
-    table.events.onLoading(true);
+    table.events.emitLoading(true);
     fetch('assets/players.json')
       .then(res => res.json())
       .then(data => {
@@ -25,7 +25,7 @@ export default class DtVirtualScrollDemo implements Page {
           row.$$height = (row.exp > 1000000) ? 40 : 25;
         }
         table.rows = data;
-        table.events.onLoading(false);
+        table.events.emitLoading(false);
       });
   }
 

@@ -63,7 +63,7 @@ export class BodyCellEdit extends BodyCell {
   switchCellToViewMode() {
     this.editing = false;
     if (this.cell.value !== this.tempValue) {
-      this.table.events.onCellValueChanged({ columnIndex: this.cell.column.index, rowIndex: this.cell.rowIndex } as CellEventArgs);
+      this.table.events.emitCellValueChanged({ columnIndex: this.cell.column.index, rowIndex: this.cell.rowIndex } as CellEventArgs);
     }
   }
 

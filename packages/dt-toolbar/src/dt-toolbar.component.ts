@@ -106,12 +106,12 @@ export class DtToolbarComponent extends HTMLElement {
 
   private onKeyPressGlobalSearch(event: KeyboardEvent) {
     if (event.which === Keys.ENTER) {
-      this.table.events.onFilter();
+      this.table.events.emitFilter();
     }
   }
 
   private onClickGlobalSearch() {
-    this.table.events.onFilter();
+    this.table.events.emitFilter();
   }
 
   private onFilter() {
@@ -143,7 +143,7 @@ export class DtToolbarComponent extends HTMLElement {
   private clearAllFilters() {
     if (this.table.dataFilter.hasFilters()) {
       this.table.dataFilter.clear();
-      this.table.events.onFilter();
+      this.table.events.emitFilter();
     }
   }
 

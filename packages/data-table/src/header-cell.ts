@@ -93,13 +93,13 @@ export class HeaderCell {
   private onSort() {
     if (this.column.sortable) {
       this.table.sorter.setOrder(this.column.name);
-      this.table.events.onSort();
+      this.table.events.emitSort();
     }
   }
 
   private onClickColumnMenu(event: MouseEvent) {
     const {left, top} = EventHelper.getColumnPosition(event, this.table.dimensions.columnMenuWidth);
-    this.table.events.onColumnMenuClick({left, top, column: this.column} as ColumnMenuEventArgs);
+    this.table.events.emitColumnMenuClick({left, top, column: this.column} as ColumnMenuEventArgs);
   }
 
   updateStyles() {
@@ -125,16 +125,16 @@ export class HeaderCell {
   }
 
   private onResizeBegin() {
-    this.table.events.onResizeBegin();
+    this.table.events.emitResizeBegin();
   }
 
   private onResize(event: CustomEvent<ResizableEvent>) {
-    this.table.events.onResize(event.detail.event);
+    this.table.events.emitResize(event.detail.event);
   }
 
   private onResizeEnd(event: CustomEvent<ResizableEvent>) {
     this.column.setWidth(event.detail.width);
-    this.table.events.onResizeEnd();
+    this.table.events.emitResizeEnd();
   }
 
 }

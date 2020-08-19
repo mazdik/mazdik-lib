@@ -62,7 +62,7 @@ export class CustomRowGroupRenderer implements TemplateRenderer {
       const descendants = table.rowGroup.getGroupRows(row, table.rows);
       descendants.forEach(x => x.$$height = null);
     }
-    table.events.onUpdateStyles();
+    table.events.emitUpdateStyles();
   }
 
 }
@@ -89,13 +89,13 @@ export default class DtRowGroupDemo implements Page {
     table.pager.perPage = 50;
     this.component.table = table;
 
-    table.events.onLoading(true);
+    table.events.emitLoading(true);
     fetch('assets/players.json')
       .then(res => res.json())
       .then(data => {
         data.forEach(x => x.expanded = true);
         table.rows = data;
-        table.events.onLoading(false);
+        table.events.emitLoading(false);
       });
   }
 

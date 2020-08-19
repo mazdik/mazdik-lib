@@ -188,6 +188,7 @@ export class DataTableComponent extends HTMLElement {
     this.table.selection.clearSelection();
     this.body.createRows();
     this.footer.updatePagination();
+    this.header.updateHeaderStyles();
   }
 
   private onSort() {

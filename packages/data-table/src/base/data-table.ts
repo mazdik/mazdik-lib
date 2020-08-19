@@ -45,7 +45,7 @@ export class DataTable {
     }
     this.rowGroup.updateRowGroupMetadata(this._rows);
     this.rowModelGenerator.setRowIndexes(this._rows);
-    this.events.onRowsChanged();
+    this.events.emitRowsChanged();
   }
   private _rows: Row[] = [];
 
@@ -93,9 +93,9 @@ export class DataTable {
     }
     this.rowGroup.updateRowGroupMetadata(this._rows);
     this.rowModelGenerator.setRowIndexes(this._rows);
-    this.events.onRowsChanged();
+    this.events.emitRowsChanged();
     setTimeout(() => {
-      this.events.onActivateCell({ columnIndex: 0, rowIndex: newRow.$$index } as CellEventArgs);
+      this.events.emitActivateCell({ columnIndex: 0, rowIndex: newRow.$$index } as CellEventArgs);
     }, 10);
   }
 
@@ -110,21 +110,21 @@ export class DataTable {
     }
     this.rowGroup.updateRowGroupMetadata(this._rows);
     this.rowModelGenerator.setRowIndexes(this._rows);
-    this.events.onRowsChanged();
+    this.events.emitRowsChanged();
   }
 
   mergeRow(oldRow: Row, newRow: any) {
     oldRow.merge(newRow);
-    this.events.onRowsChanged();
+    this.events.emitRowsChanged();
   }
 
   editCell(rowIndex: number, columnIndex: number, editMode: boolean) {
-    this.events.onCellEditMode({ columnIndex, rowIndex, editMode } as CellEventArgs);
+    this.events.emitCellEditMode({ columnIndex, rowIndex, editMode } as CellEventArgs);
   }
 
   revertRowChanges(row: Row) {
     row.revertChanges(this.columns);
-    this.events.onRowsChanged();
+    this.events.emitRowsChanged();
   }
 
   rowChanged(row: Row): boolean {

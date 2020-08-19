@@ -64,7 +64,7 @@ export class Footer {
   private onPageChanged(event: CustomEvent<PageEvent>): void {
     this.table.pager.current = event.detail.currentPage;
     this.table.pager.perPage = event.detail.perPage;
-    this.table.events.onPage();
+    this.table.events.emitPage();
   }
 
 }

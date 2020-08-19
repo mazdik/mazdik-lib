@@ -31,7 +31,7 @@ export class DataManager extends DataTable {
   get filters(): FilterMetadata { return this.dataFilter.filters; }
   set filters(val: FilterMetadata) {
     this.dataFilter.filters = val;
-    this.events.onFilter();
+    this.events.emitFilter();
   }
 
   loadItems() {
@@ -42,7 +42,7 @@ export class DataManager extends DataTable {
     if (concatRows === true && this.pagerCache[this.pager.current]) {
       return Promise.resolve();
     }
-    this.events.onLoading(true);
+    this.events.emitLoading(true);
     this.setSortMetaGroup();
     const requestMeta: RequestMetadata = {
       pageMeta: { currentPage: this.pager.current, perPage: this.pager.perPage },
@@ -63,11 +63,11 @@ export class DataManager extends DataTable {
         this.pager.perPage = data._meta.perPage;
         this.pagerCache[this.pager.current] = true;
       })
-      .finally(() => { this.events.onLoading(false); });
+      .finally(() => { this.events.emitLoading(false); });
   }
 
   create(row: Row) {
-    this.events.onLoading(true);
+    this.events.emitLoading(true);
     this.service
       .post(row)
       .then(res => {
@@ -77,26 +77,26 @@ export class DataManager extends DataTable {
           this.addRow(res || row);
         }
       })
-      .finally(() => { this.events.onLoading(false); });
+      .finally(() => { this.events.emitLoading(false); });
   }
 
   update(row: Row) {
-    this.events.onLoading(true);
+    this.events.emitLoading(true);
     this.service.put(row)
       .then(res => {
         this.afterUpdate(row, res);
       })
-      .finally(() => { this.events.onLoading(false); });
+      .finally(() => { this.events.emitLoading(false); });
   }
 
   delete(row: Row) {
-    this.events.onLoading(true);
+    this.events.emitLoading(true);
     this.service
       .delete(row)
       .then(res => {
         this.deleteRow(row);
       })
-      .finally(() => { this.events.onLoading(false); });
+      .finally(() => { this.events.emitLoading(false); });
   }
 
   afterUpdate(row: Row, result: any) {
@@ -108,12 +108,12 @@ export class DataManager extends DataTable {
   }
 
   refreshRow(row: Row) {
-    this.events.onLoading(true);
+    this.events.emitLoading(true);
     this.service.getItem(row)
       .then(data => {
         this.mergeRow(row, data);
       })
-      .finally(() => { this.events.onLoading(false); });
+      .finally(() => { this.events.emitLoading(false); });
   }
 
   clear() {

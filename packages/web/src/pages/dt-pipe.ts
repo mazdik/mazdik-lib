@@ -25,12 +25,12 @@ export default class DtPipeDemo implements Page {
     const table = new DataTable(columns, new Settings());
     component.table = table;
 
-    table.events.onLoading(true);
+    table.events.emitLoading(true);
     fetch('assets/players.json')
       .then(res => res.json())
       .then(data => {
         table.rows = data;
-        table.events.onLoading(false);
+        table.events.emitLoading(false);
       });
   }
 

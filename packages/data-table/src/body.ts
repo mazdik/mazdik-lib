@@ -119,7 +119,7 @@ export class Body {
   private onСlick(event: any): void {
     const cellEventArgs = EventHelper.findCellEvent(event, this.element);
     if (cellEventArgs) {
-      this.table.events.onClickCell(cellEventArgs);
+      this.table.events.emitClickCell(cellEventArgs);
       if (!this.table.settings.selectionMode) {
         this.table.selectRow(cellEventArgs.rowIndex);
       }
@@ -129,7 +129,7 @@ export class Body {
   private onDblClick(event: any): void {
     const cellEventArgs = EventHelper.findCellEvent(event, this.element);
     if (cellEventArgs) {
-      this.table.events.onDblClickCell(cellEventArgs);
+      this.table.events.emitDblClickCell(cellEventArgs);
     }
   }
 

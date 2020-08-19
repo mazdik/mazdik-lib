@@ -8,104 +8,104 @@ export class Events {
     this.element = document.createElement('div');
   }
 
-  onSort() {
+  emitSort() {
     this.element.dispatchEvent(new CustomEvent('sort'));
   }
 
-  onFilter() {
+  emitFilter() {
     this.element.dispatchEvent(new CustomEvent('filter'));
   }
 
-  onSelectionChange() {
+  emitSelectionChange() {
     this.element.dispatchEvent(new CustomEvent('selection'));
   }
 
-  onPage() {
+  emitPage() {
     this.element.dispatchEvent(new CustomEvent('page'));
   }
 
-  onColumnMenuClick(data: ColumnMenuEventArgs) {
+  emitColumnMenuClick(data: ColumnMenuEventArgs) {
     this.element.dispatchEvent(new CustomEvent('columnMenu', { detail: data }));
   }
 
-  onResizeBegin() {
+  emitResizeBegin() {
     this.element.dispatchEvent(new CustomEvent('resizeBegin'));
   }
 
-  onResize(data: any) {
+  emitResize(data: any) {
     this.element.dispatchEvent(new CustomEvent('resize', { detail: data }));
   }
 
-  onResizeEnd() {
+  emitResizeEnd() {
     this.element.dispatchEvent(new CustomEvent('resizeEnd'));
   }
 
-  onRowsChanged() {
+  emitRowsChanged() {
     this.element.dispatchEvent(new CustomEvent('rowsChanged'));
   }
 
-  onScroll(data: any) {
-    this.element.dispatchEvent(new CustomEvent('scroll', { detail: data }));
-  }
+  // emitScroll(data: any) {
+  //   this.element.dispatchEvent(new CustomEvent('scroll', { detail: data }));
+  // }
 
-  onLoading(data: boolean) {
+  emitLoading(data: boolean) {
     this.element.dispatchEvent(new CustomEvent('loading', { detail: data }));
   }
 
-  onCheckbox(data: any) {
+  emitCheckbox(data: any) {
     this.element.dispatchEvent(new CustomEvent('checkbox', { detail: data }));
   }
 
-  onCell(data: CellEventArgs) {
+  emitCell(data: CellEventArgs) {
     this.element.dispatchEvent(new CustomEvent('cell', { detail: data }));
   }
 
-  onMouseover(data: CellEventArgs) {
-    data.type = CellEventType.Mouseover;
-    this.onCell(data);
-  }
+  // emitMouseover(data: CellEventArgs) {
+  //   data.type = CellEventType.Mouseover;
+  //   this.emitCell(data);
+  // }
 
-  onMouseout(data: CellEventArgs) {
-    data.type = CellEventType.Mouseout;
-    this.onCell(data);
-  }
+  // emitMouseout(data: CellEventArgs) {
+  //   data.type = CellEventType.Mouseout;
+  //   this.emitCell(data);
+  // }
 
-  onActivateCell(data: CellEventArgs) {
+  emitActivateCell(data: CellEventArgs) {
     data.type = CellEventType.Activate;
-    this.onCell(data);
+    this.emitCell(data);
   }
 
-  onClickCell(data: CellEventArgs) {
+  emitClickCell(data: CellEventArgs) {
     data.type = CellEventType.Click;
-    this.onCell(data);
+    this.emitCell(data);
   }
 
-  onDblClickCell(data: CellEventArgs) {
+  emitDblClickCell(data: CellEventArgs) {
     data.type = CellEventType.DblClick;
-    this.onCell(data);
+    this.emitCell(data);
   }
 
-  onKeydownCell(data: CellEventArgs) {
+  emitKeydownCell(data: CellEventArgs) {
     data.type = CellEventType.Keydown;
-    this.onCell(data);
+    this.emitCell(data);
   }
 
-  onContextMenu(data: CellEventArgs) {
-    data.type = CellEventType.ContextMenu;
-    this.onCell(data);
-  }
+  // emitContextMenu(data: CellEventArgs) {
+  //   data.type = CellEventType.ContextMenu;
+  //   this.emitCell(data);
+  // }
 
-  onCellEditMode(data: CellEventArgs) {
+  emitCellEditMode(data: CellEventArgs) {
     data.type = CellEventType.EditMode;
-    this.onCell(data);
+    this.emitCell(data);
   }
 
-  onCellValueChanged(data: CellEventArgs) {
+  emitCellValueChanged(data: CellEventArgs) {
     data.type = CellEventType.ValueChanged;
-    this.onCell(data);
+    this.emitCell(data);
   }
 
-  onUpdateStyles() {
+  emitUpdateStyles() {
     this.element.dispatchEvent(new CustomEvent('updateStyles'));
   }
 
