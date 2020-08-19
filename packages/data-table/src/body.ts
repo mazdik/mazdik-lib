@@ -105,7 +105,7 @@ export class Body {
   private createCells(bodyRow: BodyRow) {
     const row = bodyRow.row;
     this.table.preparedColumns.forEach(column => {
-      const bodyCell = column.editable ? new BodyCellEdit(this.table, row, column) : new BodyCellView(this.table, row, column);
+      const bodyCell = row.isEditableCell(column) ? new BodyCellEdit(this.table, row, column) : new BodyCellView(this.table, row, column);
       this.bodyCells.push(bodyCell);
       bodyRow.element.append(bodyCell.element);
     });
