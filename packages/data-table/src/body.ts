@@ -5,7 +5,7 @@ import { BodyRow } from './body-row';
 import { BodyCell } from './body-cell';
 import { BodyCellView } from './body-cell-view';
 import { BodyCellEdit } from './body-cell-edit';
-import { RowGroupTemplateRenderer } from './renderer/row-group-template-renderer';
+import { RowGroupRenderer } from './renderer/row-group-renderer';
 
 export class Body {
 
@@ -30,7 +30,7 @@ export class Body {
 
     this.keyboardAction = new KeyboardAction(this.table.events, this.table.selection);
     this.addEventListeners();
-    this.rowGroupRenderer = this.table.settings.rowGroupTemplate || new RowGroupTemplateRenderer();
+    this.rowGroupRenderer = this.table.settings.rowGroupTemplate || new RowGroupRenderer();
   }
 
   destroy() {

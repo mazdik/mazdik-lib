@@ -1,15 +1,8 @@
 import { Page } from '../page';
 import '@mazdik-lib/data-table';
-import { DataTableComponent, Settings, DataTable, PipeTransform } from '@mazdik-lib/data-table';
+import { DataTableComponent, Settings, DataTable } from '@mazdik-lib/data-table';
 import { getColumnsPlayers } from '../shared/columns';
-
-export class DateFormatPipe implements PipeTransform {
-  transform(value: any): string {
-    if (!value) return value;
-    const options = { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' };
-    return new Date(value).toLocaleTimeString([], options);
-  }
-}
+import { DateFormatPipe } from '../shared/date-format-pipe';
 
 export default class DtPipeDemo implements Page {
 
