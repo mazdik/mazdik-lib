@@ -15,7 +15,6 @@ export class Body {
   private listeners: Listener[] = [];
   private keyboardAction: KeyboardAction;
   private rowGroupRenderer: TemplateRenderer;
-  private cellTemplateRenderer: TemplateRenderer;
 
   get viewRows(): Row[] {
     return (this.table.settings.virtualScroll) ? this._viewRows : this.table.rows;
