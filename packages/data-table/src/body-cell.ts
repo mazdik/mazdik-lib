@@ -10,11 +10,17 @@ export abstract class BodyCell {
   constructor(protected table: DataTable, row: Row, column: Column) {
     this.cell = new Cell(row, column);
     this.updateValue();
-    this.createCellElements();
+    this.createCellElement();
     this.updateStyles();
   }
 
-  private createCellElements() {
+  destroy() {
+    if (this.cell.column.cellTemplate) {
+      this.cell.column.cellTemplate.destroy();
+    }
+  }
+
+  private createCellElement() {
     this.element = document.createElement('div');
     this.element.classList.add('datatable-body-cell');
     if (this.cell.column.frozen) {
@@ -27,7 +33,13 @@ export abstract class BodyCell {
     }
     this.element.tabIndex = -1;
 
-    this.createViewElement();
+    if (this.cell.column.cellTemplate) {
+      const el = this.cell.column.cellTemplate.create({table: this.table, cell: this.cell});
+      this.element.innerHTML = '';
+      this.element.append(el);
+    } else {
+      this.createViewElement();
+    }
   }
 
   protected createViewElement() {

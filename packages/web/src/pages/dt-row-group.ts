@@ -1,6 +1,6 @@
 import { Page } from '../page';
 import '@mazdik-lib/data-table';
-import { DataTableComponent, Settings, DataTable, TemplateRenderer, Row } from '@mazdik-lib/data-table';
+import { DataTableComponent, Settings, DataTable, TemplateRenderer, TemplateContext } from '@mazdik-lib/data-table';
 import { Listener } from '@mazdik-lib/common';
 import { getColumnsPlayers } from '../shared/columns';
 
@@ -9,7 +9,8 @@ export class CustomRowGroupRenderer implements TemplateRenderer {
   private elements: HTMLElement[] = [];
   private listeners: Listener[] = [];
 
-  create(table: DataTable, row: Row): HTMLElement {
+  create(context: TemplateContext): HTMLElement {
+    const {table, row} = context;
     const element = document.createElement('div');
     element.classList.add('datatable-body-row', 'datatable-group-header');
     element.style.height = table.dimensions.rowHeight + 'px';
@@ -83,7 +84,7 @@ export default class DtRowGroupDemo implements Page {
     const settings = new Settings({
       groupRowsBy: ['race'],
       rowHeightProp: '$$height',
-      rowGroupRenderer: new CustomRowGroupRenderer(),
+      rowGroupTemplate: new CustomRowGroupRenderer(),
     });
     const table = new DataTable(columns, settings);
     table.pager.perPage = 50;

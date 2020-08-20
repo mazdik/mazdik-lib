@@ -1,10 +1,11 @@
-import { TemplateRenderer, DataTable, Row } from '../base';
+import { TemplateRenderer, TemplateContext } from '../base';
 
-export class RowGroupRenderer implements TemplateRenderer {
+export class RowGroupTemplateRenderer implements TemplateRenderer {
 
   private elements: HTMLElement[] = [];
 
-  create(table: DataTable, row: Row): HTMLElement {
+  create(context: TemplateContext): HTMLElement {
+    const {table, row} = context;
     const element = document.createElement('div');
     element.classList.add('datatable-body-row', 'datatable-group-header');
     element.style.height = table.dimensions.rowHeight + 'px';

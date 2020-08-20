@@ -104,6 +104,7 @@ class App {
           { id: 'dt-summary-row', name: 'Summary row' },
           { id: 'dt-virtual-scroll', name: 'Virtual scroll' },
           { id: 'dt-css', name: 'CSS' },
+          { id: 'dt-template', name: 'Templates' },
           { id: 'dt-editable-condition', name: 'Editable condition' },
           { id: 'dt-pipe', name: 'Pipe on column' },
         ]

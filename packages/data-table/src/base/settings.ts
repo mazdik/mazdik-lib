@@ -14,7 +14,6 @@ export class Settings {
   selectionMode?: SelectionMode;
   virtualScroll?: boolean;
   rowClass?: string | RowClassFunc;
-  headerRowHeight?: number;
   rowHeight?: number = 30;
   rowNumber?: boolean = true;
   hoverEvents?: boolean;
@@ -23,7 +22,7 @@ export class Settings {
   paginator?: boolean = true;
   rowHeightProp?: string;
   isEditableCellProp?: string;
-  rowGroupRenderer: TemplateRenderer;
+  rowGroupTemplate: TemplateRenderer;
 
   constructor(init?: Partial<Settings>) {
     if (init) {

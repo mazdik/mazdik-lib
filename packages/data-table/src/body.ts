@@ -5,7 +5,7 @@ import { BodyRow } from './body-row';
 import { BodyCell } from './body-cell';
 import { BodyCellView } from './body-cell-view';
 import { BodyCellEdit } from './body-cell-edit';
-import { RowGroupRenderer } from './renderer/row-group-renderer';
+import { RowGroupTemplateRenderer } from './renderer/row-group-template-renderer';
 
 export class Body {
 
@@ -15,6 +15,7 @@ export class Body {
   private listeners: Listener[] = [];
   private keyboardAction: KeyboardAction;
   private rowGroupRenderer: TemplateRenderer;
+  private cellTemplateRenderer: TemplateRenderer;
 
   get viewRows(): Row[] {
     return (this.table.settings.virtualScroll) ? this._viewRows : this.table.rows;
@@ -30,7 +31,7 @@ export class Body {
 
     this.keyboardAction = new KeyboardAction(this.table.events, this.table.selection);
     this.addEventListeners();
-    this.rowGroupRenderer = this.table.settings.rowGroupRenderer || new RowGroupRenderer();
+    this.rowGroupRenderer = this.table.settings.rowGroupTemplate || new RowGroupTemplateRenderer();
   }
 
   destroy() {
@@ -72,13 +73,14 @@ export class Body {
   }
 
   createRows() {
-    this.bodyRows.forEach(x => x.element.remove());
+    this.bodyRows.forEach(x => {x.element.remove()});
     this.bodyRows = [];
+    this.bodyCells.forEach(x => x.destroy());
     this.bodyCells = [];
     this.rowGroupRenderer.destroy();
     this.viewRows.forEach(row => {
       if (this.table.rowGroup.isRowGroup(row)) {
-        const groupRowElement = this.rowGroupRenderer.create(this.table, row);
+        const groupRowElement = this.rowGroupRenderer.create({table: this.table, row});
         this.element.append(groupRowElement);
       } else {
         this.createRow(row);

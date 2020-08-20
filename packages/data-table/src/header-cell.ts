@@ -87,7 +87,9 @@ export class HeaderCell {
 
     this.iconFilter = document.createElement('i');
     this.iconFilter.classList.add('dt-icon-filter','column-menu-icon');
-    this.element.append(this.iconFilter);
+    if (this.column.filter) {
+      this.element.append(this.iconFilter);
+    }
   }
 
   private onSort() {
