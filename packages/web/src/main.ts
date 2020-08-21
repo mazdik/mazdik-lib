@@ -96,6 +96,7 @@ class App {
         children: [
           { id: 'dt-basic', name: 'Data table' },
           { id: 'dt-master-detail', name: 'Master detail' },
+          { id: 'dt-modal', name: 'Modal data table' },
           { id: 'dt-multiple-sort', name: 'Multiple sorting' },
           { id: 'dt-row-group', name: 'Row group' },
           { id: 'dt-row-group-multiple', name: 'Row group multiple' },

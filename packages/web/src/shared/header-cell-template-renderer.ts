@@ -12,19 +12,19 @@ export class HeaderCellTemplateRenderer implements TemplateRenderer {
     const fragment = document.createDocumentFragment();
 
     const imgAsm = document.createElement('img');
-    imgAsm.classList.add('pointer', 'dt-template-demo-img');
+    imgAsm.classList.add('dt-pointer', 'dt-template-demo-img');
     imgAsm.src = 'assets/asmodian.png';
     imgAsm.title = 'ASMODIANS';
     fragment.append(imgAsm);
 
     const strong = document.createElement('strong');
-    strong.classList.add('pointer');
+    strong.classList.add('dt-pointer');
     strong.title = table.messages.clearFilters;
     strong.textContent = column.title;
     fragment.append(strong);
 
     const imgEly = document.createElement('img');
-    imgEly.classList.add('pointer', 'dt-template-demo-img');
+    imgEly.classList.add('dt-pointer', 'dt-template-demo-img');
     imgEly.src = 'assets/elyos.png';
     imgEly.title = 'ELYOS';
     fragment.append(imgEly);
@@ -32,17 +32,17 @@ export class HeaderCellTemplateRenderer implements TemplateRenderer {
     this.addListener({
       eventName: 'click',
       target: imgAsm,
-      handler: this.clickRaceFilter.bind(this, table, 'ASMODIANS')
+      handler: this.onClickRaceFilter.bind(this, table, 'ASMODIANS')
     });
     this.addListener({
       eventName: 'click',
       target: strong,
-      handler: this.clickRaceFilter.bind(this, table, null)
+      handler: this.onClickRaceFilter.bind(this, table, null)
     });
     this.addListener({
       eventName: 'click',
       target: imgEly,
-      handler: this.clickRaceFilter.bind(this, table, 'ELYOS')
+      handler: this.onClickRaceFilter.bind(this, table, 'ELYOS')
     });
 
     this.elements.set(column, fragment);
@@ -65,7 +65,7 @@ export class HeaderCellTemplateRenderer implements TemplateRenderer {
     });
   }
 
-  private clickRaceFilter(table: DataTable, value: string) {
+  private onClickRaceFilter(table: DataTable, value: string) {
     table.dataFilter.setFilter(value, 'race', FilterOperator.EQUALS);
     table.events.emitFilter();
   }

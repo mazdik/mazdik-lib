@@ -33,7 +33,7 @@ export class CustomRowGroupRenderer implements TemplateRenderer {
 
   private createCellElement(table: DataTable, row: any) {
     const cellEl = document.createElement('div');
-    cellEl.classList.add('datatable-body-cell', 'dt-sticky', 'pointer');
+    cellEl.classList.add('datatable-body-cell', 'dt-sticky', 'dt-pointer');
     cellEl.style.left = '0';
 
     const iconElement = document.createElement('i');
