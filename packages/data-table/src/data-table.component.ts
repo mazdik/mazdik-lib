@@ -1,10 +1,12 @@
 import { Listener } from '@mazdik-lib/common';
 import { VirtualScroller } from '@mazdik-lib/scroller';
-import { DataTable, Row } from './base';
+import { DataTable, Row, ColumnModelGenerator } from './base';
 import { Header } from './header';
 import { Body } from './body';
 import { Footer } from './footer';
 import { Filter } from './filter/filter';
+import { CellCheckboxRenderer } from './renderer/cell-checkbox-renderer';
+import { HeaderCheckboxRenderer } from './renderer/header-checkbox-renderer';
 
 export class DataTableComponent extends HTMLElement {
 
@@ -119,6 +121,12 @@ export class DataTableComponent extends HTMLElement {
   }
 
   private render() {
+    const checkboxColumn = this.table.columns.find(x => x.name === ColumnModelGenerator.checkboxColumn.name);
+    if (checkboxColumn) {
+      checkboxColumn.cellTemplate = new CellCheckboxRenderer();
+      checkboxColumn.headerCellTemplate = new HeaderCheckboxRenderer();
+    }
+
     this.header = new Header(this.table);
     this.main.append(this.header.element);
 
@@ -205,6 +213,7 @@ export class DataTableComponent extends HTMLElement {
   }
 
   private onSelection() {
+    this.header.updateHeaderStyles();
     this.body.updateBodyStyles();
   }
 

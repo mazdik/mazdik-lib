@@ -1,8 +1,8 @@
-import { TemplateRenderer, TemplateContext } from '../base';
+import { TemplateRenderer, TemplateContext, Row } from '../base';
 
 export class RowGroupRenderer implements TemplateRenderer {
 
-  private elements: HTMLElement[] = [];
+  private elements = new Map<Row, HTMLElement>();
 
   create(context: TemplateContext): HTMLElement {
     const { table, row } = context;
@@ -16,13 +16,13 @@ export class RowGroupRenderer implements TemplateRenderer {
     cellEl.textContent = table.rowGroup.getRowGroupName(row) + ' (' + table.rowGroup.getRowGroupSize(row) + ')';
     element.append(cellEl);
 
-    this.elements.push(element);
+    this.elements.set(row, element);
     return element;
   }
 
   destroy() {
     this.elements.forEach(x => x.remove());
-    this.elements = [];
+    this.elements.clear();
   }
 
 }

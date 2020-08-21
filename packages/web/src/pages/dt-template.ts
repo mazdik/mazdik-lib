@@ -1,11 +1,9 @@
 import { Page } from '../page';
 import '@mazdik-lib/data-table';
-import { DataTableComponent, Settings, DataTable, ColumnBase } from '@mazdik-lib/data-table';
+import { DataTableComponent, Settings, DataTable, ColumnBase, HeaderActionRenderer, CellRowNumberRenderer } from '@mazdik-lib/data-table';
 import { getColumnsPlayers } from '../shared/columns';
 import { HeaderCellTemplateRenderer } from '../shared/header-cell-template-renderer';
 import { CellTemplateRenderer } from '../shared/cell-template-renderer';
-import { HeaderRnCellTemplateRenderer } from '../shared/header-rn-cell-template-renderer';
-import { RnCellTemplateRenderer } from '../shared/rn-cell-template-renderer';
 
 export default class DtTemplateDemo implements Page {
 
@@ -38,8 +36,8 @@ export default class DtTemplateDemo implements Page {
     column.cellTemplate = new CellTemplateRenderer();
 
     column = columns.find(x => x.name === 'rn');
-    column.headerCellTemplate = new HeaderRnCellTemplateRenderer();
-    column.cellTemplate = new RnCellTemplateRenderer();
+    column.headerCellTemplate = new HeaderActionRenderer();
+    column.cellTemplate = new CellRowNumberRenderer();
 
     const settings = new Settings({
       rowHeight: 40,

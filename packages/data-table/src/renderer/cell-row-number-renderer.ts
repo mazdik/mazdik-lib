@@ -1,8 +1,8 @@
-import { TemplateRenderer, TemplateContext } from '@mazdik-lib/data-table';
+import { TemplateRenderer, TemplateContext, Cell } from '../base';
 
-export class RnCellTemplateRenderer implements TemplateRenderer {
+export class CellRowNumberRenderer implements TemplateRenderer {
 
-  private elements: HTMLElement[] = [];
+  private elements = new Map<Cell, HTMLElement>();
 
   create(context: TemplateContext): HTMLElement {
     const { cell } = context;
@@ -11,13 +11,13 @@ export class RnCellTemplateRenderer implements TemplateRenderer {
     element.classList.add('cell-data');
     element.textContent = (cell.row.$$index + 1).toString();
 
-    this.elements.push(element);
+    this.elements.set(cell, element);
     return element;
   }
 
   destroy() {
     this.elements.forEach(x => x.remove());
-    this.elements = [];
+    this.elements.clear();
   }
 
 }

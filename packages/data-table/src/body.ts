@@ -35,6 +35,8 @@ export class Body {
 
   destroy() {
     this.removeEventListeners();
+    this.bodyCells.forEach(x => x.destroy());
+    this.rowGroupRenderer.destroy()
   }
 
   private addEventListeners() {

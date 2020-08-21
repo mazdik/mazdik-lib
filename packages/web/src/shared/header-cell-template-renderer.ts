@@ -1,9 +1,9 @@
-import { DataTable, TemplateRenderer, TemplateContext, FilterOperator } from '@mazdik-lib/data-table';
+import { DataTable, TemplateRenderer, TemplateContext, FilterOperator, Column } from '@mazdik-lib/data-table';
 import { Listener } from '@mazdik-lib/common';
 
 export class HeaderCellTemplateRenderer implements TemplateRenderer {
 
-  private fragments: DocumentFragment[] = [];
+  private elements = new Map<Column, DocumentFragment>();
   private listeners: Listener[] = [];
 
   create(context: TemplateContext): DocumentFragment {
@@ -45,20 +45,24 @@ export class HeaderCellTemplateRenderer implements TemplateRenderer {
       handler: this.clickRaceFilter.bind(this, table, 'ELYOS')
     });
 
-    this.fragments.push(fragment);
+    this.elements.set(column, fragment);
     return fragment;
   }
 
   destroy() {
-    this.listeners.forEach(x => {
-      x.target.removeEventListener(x.eventName, x.handler);
-    });
-    this.fragments = [];
+    this.removeEventListeners();
+    this.elements.clear();
   }
 
   private addListener(listener: Listener) {
     this.listeners.push(listener);
     listener.target.addEventListener(listener.eventName, listener.handler);
+  }
+
+  private removeEventListeners() {
+    this.listeners.forEach(x => {
+      x.target.removeEventListener(x.eventName, x.handler);
+    });
   }
 
   private clickRaceFilter(table: DataTable, value: string) {

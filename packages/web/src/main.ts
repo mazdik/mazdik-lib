@@ -102,6 +102,7 @@ class App {
           { id: 'dt-global-filter', name: 'Global filtering' },
           { id: 'dt-row-group-summary', name: 'Summary rows with grouping' },
           { id: 'dt-summary-row', name: 'Summary row' },
+          { id: 'dt-multiple-selection', name: 'Multiple selection' },
           { id: 'dt-virtual-scroll', name: 'Virtual scroll' },
           { id: 'dt-css', name: 'CSS' },
           { id: 'dt-template', name: 'Templates' },

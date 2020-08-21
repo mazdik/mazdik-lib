@@ -1,18 +1,18 @@
-import { DataTable, TemplateRenderer, TemplateContext } from '@mazdik-lib/data-table';
 import { Listener } from '@mazdik-lib/common';
+import { TemplateRenderer, TemplateContext, DataTable, Column } from '../base';
 
-export class HeaderRnCellTemplateRenderer implements TemplateRenderer {
+export class HeaderActionRenderer implements TemplateRenderer {
 
-  private elements: HTMLElement[] = [];
+  private elements = new Map<Column, HTMLElement>();
   private listeners: Listener[] = [];
 
   create(context: TemplateContext): HTMLElement {
-    const { table } = context;
+    const { table, column } = context;
 
     const element = document.createElement('button');
     element.classList.add('filter-action');
     element.title = table.messages.clearFilters;
-    element.style.visibility = (!table.dataFilter.hasFilters()) ? 'hidden' : 'visible';
+    this.refresh(context);
 
     const icon = document.createElement('i');
     icon.classList.add('dt-icon-filter');
@@ -21,32 +21,36 @@ export class HeaderRnCellTemplateRenderer implements TemplateRenderer {
     this.addListener({
       eventName: 'click',
       target: element,
-      handler: this.clearAllFilters.bind(this, table, null)
+      handler: this.clearAllFilters.bind(this, table)
     });
 
-    this.elements.push(element);
+    this.elements.set(column, element);
     return element;
   }
 
   destroy() {
-    this.listeners.forEach(x => {
-      x.target.removeEventListener(x.eventName, x.handler);
-    });
+    this.removeEventListeners();
     this.elements.forEach(x => x.remove());
-    this.elements = [];
+    this.elements.clear();
   }
 
   refresh(context: TemplateContext) {
-    const { table } = context;
-
-    this.elements.forEach(element => {
+    const { table, column } = context;
+    const element = this.elements.get(column);
+    if (element) {
       element.style.visibility = (!table.dataFilter.hasFilters()) ? 'hidden' : 'visible';
-    });
+    }
   }
 
   private addListener(listener: Listener) {
     this.listeners.push(listener);
     listener.target.addEventListener(listener.eventName, listener.handler);
+  }
+
+  private removeEventListeners() {
+    this.listeners.forEach(x => {
+      x.target.removeEventListener(x.eventName, x.handler);
+    });
   }
 
   private clearAllFilters(table: DataTable) {

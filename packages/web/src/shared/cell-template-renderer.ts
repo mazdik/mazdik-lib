@@ -1,8 +1,8 @@
-import { TemplateRenderer, TemplateContext } from '@mazdik-lib/data-table';
+import { TemplateRenderer, TemplateContext, Cell } from '@mazdik-lib/data-table';
 
 export class CellTemplateRenderer implements TemplateRenderer {
 
-  private fragments: DocumentFragment[] = [];
+  private elements = new Map<Cell, DocumentFragment>();
 
   create(context: TemplateContext): DocumentFragment {
     const { cell } = context;
@@ -16,12 +16,12 @@ export class CellTemplateRenderer implements TemplateRenderer {
     const text = document.createTextNode(cell.viewValue);
     fragment.append(text);
 
-    this.fragments.push(fragment);
+    this.elements.set(cell, fragment);
     return fragment;
   }
 
   destroy() {
-    this.fragments = [];
+    this.elements.clear();
   }
 
 }

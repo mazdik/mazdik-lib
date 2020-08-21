@@ -61,6 +61,10 @@ export abstract class BodyCell {
     toggleClass(this.element, 'cell-error', this.cell.hasError);
     const cls = this.cell.row.getCellClass(this.cell.column);
     addClass(this.element, cls);
+
+    if (this.cell.column.cellTemplate && this.cell.column.cellTemplate.refresh) {
+      this.cell.column.cellTemplate.refresh({ table: this.table, cell: this.cell });
+    }
   }
 
   protected updateValue(): void {

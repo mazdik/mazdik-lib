@@ -1,9 +1,9 @@
-import { DataTable, TemplateRenderer, TemplateContext } from '@mazdik-lib/data-table';
+import { DataTable, TemplateRenderer, TemplateContext, Row } from '@mazdik-lib/data-table';
 import { Listener } from '@mazdik-lib/common';
 
 export class CustomRowGroupRenderer implements TemplateRenderer {
 
-  private elements: HTMLElement[] = [];
+  private elements = new Map<Row, HTMLElement>();
   private listeners: Listener[] = [];
 
   create(context: TemplateContext): HTMLElement {
@@ -15,16 +15,20 @@ export class CustomRowGroupRenderer implements TemplateRenderer {
     const cellEl = this.createCellElement(table, row);
     element.append(cellEl);
 
-    this.elements.push(element);
+    this.elements.set(row, element);
     return element;
   }
 
   destroy() {
+    this.removeEventListeners();
+    this.elements.forEach(x => x.remove());
+    this.elements.clear();
+  }
+
+  private removeEventListeners() {
     this.listeners.forEach(x => {
       x.target.removeEventListener(x.eventName, x.handler);
     });
-    this.elements.forEach(x => x.remove());
-    this.elements = [];
   }
 
   private createCellElement(table: DataTable, row: any) {
