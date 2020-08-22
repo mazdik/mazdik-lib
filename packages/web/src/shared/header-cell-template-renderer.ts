@@ -54,6 +54,11 @@ export class HeaderCellTemplateRenderer implements TemplateRenderer {
     this.elements.clear();
   }
 
+  refresh(context: TemplateContext) {
+    const { table, column } = context;
+    const element = this.elements.get(column);
+  }
+
   private addListener(listener: Listener) {
     this.listeners.push(listener);
     listener.target.addEventListener(listener.eventName, listener.handler);

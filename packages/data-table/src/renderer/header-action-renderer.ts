@@ -12,7 +12,6 @@ export class HeaderActionRenderer implements TemplateRenderer {
     const element = document.createElement('button');
     element.classList.add('filter-action');
     element.title = table.messages.clearFilters;
-    this.refresh(context);
 
     const icon = document.createElement('i');
     icon.classList.add('dt-icon-filter');
@@ -25,6 +24,7 @@ export class HeaderActionRenderer implements TemplateRenderer {
     });
 
     this.elements.set(column, element);
+    this.refresh(context);
     return element;
   }
 

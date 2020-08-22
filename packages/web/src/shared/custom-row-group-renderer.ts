@@ -1,5 +1,5 @@
 import { DataTable, TemplateRenderer, TemplateContext, Row } from '@mazdik-lib/data-table';
-import { Listener } from '@mazdik-lib/common';
+import { Listener, toggleClass } from '@mazdik-lib/common';
 
 export class CustomRowGroupRenderer implements TemplateRenderer {
 
@@ -16,6 +16,7 @@ export class CustomRowGroupRenderer implements TemplateRenderer {
     element.append(cellEl);
 
     this.elements.set(row, element);
+    this.refresh(context);
     return element;
   }
 
@@ -25,24 +26,37 @@ export class CustomRowGroupRenderer implements TemplateRenderer {
     this.elements.clear();
   }
 
+  refresh(context: TemplateContext) {
+    const { table, row } = context;
+    const element = this.elements.get(row);
+    if (element) {
+      const cellEl = element.children[0] as HTMLElement;
+
+      const iconElement = cellEl.children[0] as HTMLElement;
+      toggleClass(iconElement, 'dt-icon-collapsed', !row['expanded']);
+
+      const span = cellEl.children[1] as HTMLElement;
+      span.innerText = table.rowGroup.getRowGroupName(row) + ' (' + table.rowGroup.getRowGroupSize(row) + ')';
+    }
+  }
+
   private removeEventListeners() {
     this.listeners.forEach(x => {
       x.target.removeEventListener(x.eventName, x.handler);
     });
   }
 
-  private createCellElement(table: DataTable, row: any) {
+  private createCellElement(table: DataTable, row: Row) {
     const cellEl = document.createElement('div');
     cellEl.classList.add('datatable-body-cell', 'dt-sticky', 'dt-pointer');
     cellEl.style.left = '0';
 
     const iconElement = document.createElement('i');
-    iconElement.className = (!row.expanded) ? 'dt-icon-node dt-icon-collapsed' : 'dt-icon-node';
+    iconElement.classList.add('dt-icon-node');
     cellEl.append(iconElement);
 
-    const text = table.rowGroup.getRowGroupName(row) + ' (' + table.rowGroup.getRowGroupSize(row) + ')';
-    const textElement = document.createTextNode(text);
-    cellEl.append(textElement);
+    const span = document.createElement('span');
+    cellEl.append(span);
 
     const listener = {
       eventName: 'click',

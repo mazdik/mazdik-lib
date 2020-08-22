@@ -13,7 +13,6 @@ export class ModalCellRenderer implements TemplateRenderer {
 
     const element = document.createElement('a');
     element.href = '#';
-    element.textContent = cell.viewValue;
 
     this.addListener({
       eventName: 'click',
@@ -22,12 +21,22 @@ export class ModalCellRenderer implements TemplateRenderer {
     });
 
     this.elements.set(cell, element);
+    this.refresh(context);
     return element;
   }
 
   destroy() {
     this.removeEventListeners();
     this.elements.clear();
+  }
+
+  refresh(context: TemplateContext) {
+    const { cell } = context;
+
+    const element = this.elements.get(cell);
+    if (element) {
+      element.textContent = cell.viewValue;
+    }
   }
 
   private addListener(listener: Listener) {

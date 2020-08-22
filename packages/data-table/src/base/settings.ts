@@ -23,6 +23,7 @@ export class Settings {
   rowHeightProp?: string;
   isEditableCellProp?: string;
   rowGroupTemplate: TemplateRenderer;
+  columnGroupTemplate: TemplateRenderer;
 
   constructor(init?: Partial<Settings>) {
     if (init) {

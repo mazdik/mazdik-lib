@@ -13,16 +13,25 @@ export class RowGroupRenderer implements TemplateRenderer {
     const cellEl = document.createElement('div');
     cellEl.classList.add('datatable-body-cell', 'dt-sticky');
     cellEl.style.left = '0';
-    cellEl.textContent = table.rowGroup.getRowGroupName(row) + ' (' + table.rowGroup.getRowGroupSize(row) + ')';
     element.append(cellEl);
 
     this.elements.set(row, element);
+    this.refresh(context);
     return element;
   }
 
   destroy() {
     this.elements.forEach(x => x.remove());
     this.elements.clear();
+  }
+
+  refresh(context: TemplateContext) {
+    const { table, row } = context;
+    const element = this.elements.get(row);
+    if (element) {
+      const cellEl = element.children[0] as HTMLElement;
+      cellEl.textContent = table.rowGroup.getRowGroupName(row) + ' (' + table.rowGroup.getRowGroupSize(row) + ')';
+    }
   }
 
 }

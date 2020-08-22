@@ -14,7 +14,6 @@ export class HeaderCheckboxRenderer implements TemplateRenderer {
     const input = document.createElement('input');
     input.type = table.settings.selectionMode;
     element.append(input);
-    this.refresh(context);
 
     this.addListener({
       eventName: 'click',
@@ -23,6 +22,7 @@ export class HeaderCheckboxRenderer implements TemplateRenderer {
     });
 
     this.elements.set(column, element);
+    this.refresh(context);
     return element;
   }
 

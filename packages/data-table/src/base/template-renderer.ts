@@ -13,5 +13,5 @@ export interface TemplateContext {
 export interface TemplateRenderer {
   create(context: TemplateContext): HTMLElement | DocumentFragment;
   destroy(): void;
-  refresh?(context: TemplateContext): void;
+  refresh(context: TemplateContext): void;
 }

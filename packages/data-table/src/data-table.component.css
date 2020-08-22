@@ -29,17 +29,6 @@
   position: relative;
 }
 
-.fixed-header .datatable-header-row {
-  white-space: nowrap;
-}
-
-.fixed-header .datatable-header-cell,
-.fixed-header .dt-sort-header {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
 .datatable-body-row,
 .datatable-header-row {
   display: flex;
@@ -51,9 +40,14 @@
   outline: none;
 }
 
+.datatable-header,
+.datatable-body {
+  display: flex;
+  flex-direction: column;
+}
+
 .datatable-body {
   position: relative;
-  display: block;
 }
 
 .datatable-body-row {

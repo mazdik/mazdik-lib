@@ -123,7 +123,7 @@ export class HeaderCell {
     if (this.column.headerCellClass) {
       this.element.classList.add(this.column.headerCellClass);
     }
-    if (this.column.headerCellTemplate && this.column.headerCellTemplate.refresh) {
+    if (this.column.headerCellTemplate) {
       this.column.headerCellTemplate.refresh({ table: this.table, column: this.column });
     }
   }

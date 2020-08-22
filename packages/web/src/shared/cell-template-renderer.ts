@@ -24,4 +24,9 @@ export class CellTemplateRenderer implements TemplateRenderer {
     this.elements.clear();
   }
 
+  refresh(context: TemplateContext) {
+    const { cell } = context;
+    const element = this.elements.get(cell);
+  }
+
 }

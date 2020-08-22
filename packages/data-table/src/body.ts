@@ -117,6 +117,9 @@ export class Body {
   updateBodyStyles() {
     this.bodyRows.forEach(x => x.updateStyles());
     this.bodyCells.forEach(x => x.updateStyles());
+    this.viewRows.forEach(row => {
+      this.rowGroupRenderer.refresh({table: this.table, row})
+    });
   }
 
   private onСlick(event: any): void {
