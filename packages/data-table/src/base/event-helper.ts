@@ -40,7 +40,7 @@ export class EventHelper {
     if (datatable && datatable.previousSibling && datatable.previousSibling.classList.contains('dt-toolbar')) {
       top += datatable.previousSibling.offsetHeight;
     }
-    const header = datatable.querySelector('.datatable-header-row');
+    const header = datatable.querySelector('.datatable-header');
     if (header) {
       top += header.offsetHeight;
     }
@@ -58,7 +58,7 @@ export class EventHelper {
 
   static getColumnPosition(event: MouseEvent, menuWidth: number, isLast: boolean = false) {
     const colElement = findAncestor(event.target, '.datatable-header-cell');
-    const header = findAncestor(event.target, '.datatable-header-row');
+    const header = findAncestor(event.target, '.datatable-header');
     const top = header.offsetHeight;
     let left = colElement.offsetLeft;
 

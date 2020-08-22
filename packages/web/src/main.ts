@@ -106,6 +106,7 @@ class App {
           { id: 'dt-multiple-selection', name: 'Multiple selection' },
           { id: 'dt-virtual-scroll', name: 'Virtual scroll' },
           { id: 'dt-css', name: 'CSS' },
+          { id: 'dt-column-group', name: 'Column group' },
           { id: 'dt-template', name: 'Templates' },
           { id: 'dt-editable-condition', name: 'Editable condition' },
           { id: 'dt-pipe', name: 'Pipe on column' },
