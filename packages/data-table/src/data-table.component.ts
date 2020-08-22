@@ -26,6 +26,7 @@ export class DataTableComponent extends HTMLElement {
   private listeners: Listener[] = [];
   private isInitialized: boolean;
   private virtualScroller: VirtualScroller;
+  private spinner: HTMLElement;
 
   constructor() {
     super();
@@ -54,6 +55,11 @@ export class DataTableComponent extends HTMLElement {
     this.main = document.createElement('div');
     this.main.classList.add('datatable');
     this.append(this.main);
+
+    this.spinner = document.createElement('div');
+    this.spinner.classList.add('dt-spinner');
+    this.spinner.style.visibility = 'hidden';
+    this.append(this.spinner);
   }
 
   private addEventListeners() {
@@ -102,6 +108,11 @@ export class DataTableComponent extends HTMLElement {
         eventName: 'updateStyles',
         target: this.table.events.element,
         handler: this.onUpdateStyles.bind(this)
+      },
+      {
+        eventName: 'loading',
+        target: this.table.events.element,
+        handler: this.onLoading.bind(this)
       },
       {
         eventName: 'scroll',
@@ -258,6 +269,11 @@ export class DataTableComponent extends HTMLElement {
 
   private onUpdateStyles() {
     this.updateAllStyles();
+  }
+
+  private onLoading(event: CustomEvent<boolean>) {
+    const loading = event.detail;
+    this.spinner.style.visibility = loading ? 'visible': 'hidden';
   }
 
 }
