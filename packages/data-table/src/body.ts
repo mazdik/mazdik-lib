@@ -1,7 +1,11 @@
 import { Listener } from '@mazdik-lib/common';
-import { DataTable, EventHelper, KeyboardAction, CellEventArgs, CellEventType, Row } from './base';
-import { BodyCell } from './body-cell';
+import '@mazdik-lib/inline-edit';
+import { DataTable, EventHelper, KeyboardAction, CellEventArgs, CellEventType, Row, EditMode, TemplateRenderer } from './base';
 import { BodyRow } from './body-row';
+import { BodyCell } from './body-cell';
+import { BodyCellView } from './body-cell-view';
+import { BodyCellEdit } from './body-cell-edit';
+import { RowGroupRenderer } from './renderer/row-group-renderer';
 
 export class Body {
 
@@ -10,6 +14,7 @@ export class Body {
   private bodyCells: BodyCell[] = [];
   private listeners: Listener[] = [];
   private keyboardAction: KeyboardAction;
+  private rowGroupRenderer: TemplateRenderer;
 
   get viewRows(): Row[] {
     return (this.table.settings.virtualScroll) ? this._viewRows : this.table.rows;
@@ -25,10 +30,13 @@ export class Body {
 
     this.keyboardAction = new KeyboardAction(this.table.events, this.table.selection);
     this.addEventListeners();
+    this.rowGroupRenderer = this.table.settings.rowGroupTemplate || new RowGroupRenderer();
   }
 
   destroy() {
     this.removeEventListeners();
+    this.bodyCells.forEach(x => x.destroy());
+    this.rowGroupRenderer.destroy()
   }
 
   private addEventListeners() {
@@ -37,6 +45,11 @@ export class Body {
         eventName: 'click',
         target: this.element,
         handler: this.onСlick.bind(this)
+      },
+      {
+        eventName: 'dblclick',
+        target: this.element,
+        handler: this.onDblClick.bind(this)
       },
       {
         eventName: 'keydown',
@@ -61,34 +74,68 @@ export class Body {
   }
 
   createRows() {
-    this.bodyRows.forEach(x => x.element.remove());
+    this.bodyRows.forEach(x => {x.element.remove()});
     this.bodyRows = [];
+    this.bodyCells.forEach(x => x.destroy());
     this.bodyCells = [];
+    this.rowGroupRenderer.destroy();
     this.viewRows.forEach(row => {
-      const bodyRow = new BodyRow(this.table, row);
-      this.bodyRows.push(bodyRow);
-      this.element.append(bodyRow.element);
+      if (this.table.rowGroup.isRowGroup(row)) {
+        const groupRowElement = this.rowGroupRenderer.create({table: this.table, row});
+        this.element.append(groupRowElement);
+      } else {
+        this.createRow(row);
+      }
+      if (this.table.rowGroup.isRowGroupSummary(row)) {
+        this.createRow(this.table.rowGroup.getRowGroupSummary(row), true);
+      }
+    });
+    if (this.table.rowGroup.aggregationEnabled) {
+      this.createRow(this.table.rowGroup.getRowSummary(), true);
+    }
+  }
 
-      this.table.preparedColumns.forEach(column => {
-        const bodyCell = new BodyCell(row, column);
-        this.bodyCells.push(bodyCell);
-        bodyRow.element.append(bodyCell.element);
-      });
+  private createRow(row: Row, isGroup: boolean = false) {
+    const bodyRow = new BodyRow(this.table, row);
+    if (isGroup) {
+      bodyRow.element.classList.add('datatable-group-row');
+    }
+    this.bodyRows.push(bodyRow);
+    this.element.append(bodyRow.element);
+    this.createCells(bodyRow);
+  }
+
+  private createCells(bodyRow: BodyRow) {
+    const row = bodyRow.row;
+    this.table.preparedColumns.forEach(column => {
+      const bodyCell = row.isEditableCell(column) ? new BodyCellEdit(this.table, row, column) : new BodyCellView(this.table, row, column);
+      this.bodyCells.push(bodyCell);
+      bodyRow.element.append(bodyCell.element);
     });
   }
 
   updateBodyStyles() {
     this.bodyRows.forEach(x => x.updateStyles());
     this.bodyCells.forEach(x => x.updateStyles());
+    this.viewRows.forEach(row => {
+      this.rowGroupRenderer.refresh({table: this.table, row})
+    });
   }
 
-  private onСlick(event: any) {
+  private onСlick(event: any): void {
     const cellEventArgs = EventHelper.findCellEvent(event, this.element);
     if (cellEventArgs) {
-      this.table.events.onClickCell(cellEventArgs);
+      this.table.events.emitClickCell(cellEventArgs);
       if (!this.table.settings.selectionMode) {
         this.table.selectRow(cellEventArgs.rowIndex);
       }
+    }
+  }
+
+  private onDblClick(event: any): void {
+    const cellEventArgs = EventHelper.findCellEvent(event, this.element);
+    if (cellEventArgs) {
+      this.table.events.emitDblClickCell(cellEventArgs);
     }
   }
 
@@ -103,10 +150,30 @@ export class Body {
   }
 
   private onCell(event: CustomEvent<CellEventArgs>) {
-    const data = event.detail;
-    const cell = this.findBodyCell(data.columnIndex, data.rowIndex);
-    if (cell && data.type === CellEventType.Activate) {
+    const ev = event.detail;
+    const cell = this.findBodyCell(ev.columnIndex, ev.rowIndex);
+    if (!cell) {
+      return;
+    }
+    if (ev.type === CellEventType.Activate) {
       cell.element.focus();
+    }
+    if (ev.type === CellEventType.DblClick) {
+      if (this.table.settings.editMode !== EditMode.EditProgrammatically) {
+        cell.switchCellToEditMode();
+      }
+    }
+    if (ev.type === CellEventType.Keydown) {
+      if (this.table.settings.editMode !== EditMode.EditProgrammatically) {
+        cell.onCellKeydown(ev.event);
+      }
+    }
+    if (ev.type === CellEventType.EditMode) {
+      if (ev.editMode) {
+        cell.switchCellToEditMode();
+      } else {
+        cell.switchCellToViewMode();
+      }
     }
   }
 

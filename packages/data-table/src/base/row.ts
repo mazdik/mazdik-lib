@@ -26,7 +26,7 @@ export class Row {
   }
 
   isEditableCell(column: Column): boolean {
-    if (column.editable && this.$$settings && this.hasOwnProperty(this.$$settings.isEditableCellProp)) {
+    if (column.editable && this.$$settings && this.$$settings.isEditableCellProp) {
       return this[this.$$settings.isEditableCellProp];
     }
     return column.editable;

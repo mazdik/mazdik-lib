@@ -1,9 +1,9 @@
 import { AggregateType, DataType, PipeTransform } from './types';
 import { SelectItem, InputType } from '@mazdik-lib/common';
+import { TemplateRenderer } from './template-renderer';
 
 type FilterValuesFunc = (columnName: string) => Promise<SelectItem[]>;
 type CellClassFunc = (obj: any) => any;
-type TemplateRef<T> = any;
 
 export class ColumnBase {
 
@@ -20,9 +20,9 @@ export class ColumnBase {
   editable?: boolean;
   resizeable?: boolean = true;
   dependsColumn?: string;
-  cellTemplate?: TemplateRef<any>;
-  formTemplate?: TemplateRef<any>;
-  headerCellTemplate?: TemplateRef<any>;
+  cellTemplate?: TemplateRenderer;
+  formTemplate?: TemplateRenderer;
+  headerCellTemplate?: TemplateRenderer;
   formHidden?: boolean;
   tableHidden?: boolean;
   cellClass?: string | CellClassFunc;

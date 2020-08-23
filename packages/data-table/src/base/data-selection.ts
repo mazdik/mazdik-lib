@@ -14,7 +14,7 @@ export class DataSelection<T> {
   selectValue(value: T) {
     if (!this.isSelected(value)) {
       this._markSelected(value);
-      this.events.onSelectionChange();
+      this.events.emitSelectionChange();
     }
   }
 
@@ -27,7 +27,7 @@ export class DataSelection<T> {
 
   clearSelection(): void {
     this._unmarkAll();
-    this.events.onSelectionChange();
+    this.events.emitSelectionChange();
   }
 
   isSelected(value: T): boolean {
@@ -47,17 +47,17 @@ export class DataSelection<T> {
 
   select(...values: T[]): void {
     values.forEach(value => this._markSelected(value));
-    this.events.onSelectionChange();
+    this.events.emitSelectionChange();
   }
 
   deselect(...values: T[]): void {
     values.forEach(value => this._unmarkSelected(value));
-    this.events.onSelectionChange();
+    this.events.emitSelectionChange();
   }
 
   toggle(value: T): void {
     this.isSelected(value) ? this._unmarkSelected(value) : this._markSelected(value);
-    this.events.onSelectionChange();
+    this.events.emitSelectionChange();
   }
 
   isEmpty(): boolean {

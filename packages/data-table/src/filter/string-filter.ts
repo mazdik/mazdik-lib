@@ -129,7 +129,7 @@ export class StringFilter {
 
   private saveFilter() {
     this.table.dataFilter.setFilter(this.value, this.column.name, this.matchMode, null, this.column.dataType);
-    this.table.events.onFilter();
+    this.table.events.emitFilter();
   }
 
   private setFocus() {

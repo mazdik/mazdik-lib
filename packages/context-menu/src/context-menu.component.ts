@@ -32,10 +32,7 @@ export class ContextMenuComponent extends HTMLElement {
 
   disconnectedCallback() {
     this.dropdown.removeEventListeners();
-
-    this.listeners.forEach(x => {
-      x.target.removeEventListener(x.eventName, x.handler);
-    });
+    this.removeEventListeners();
   }
 
   private onInit() {
@@ -68,6 +65,12 @@ export class ContextMenuComponent extends HTMLElement {
     this.listeners.forEach(x => {
       x.target.addEventListener(x.eventName, x.handler);
     })
+  }
+
+  private removeEventListeners() {
+    this.listeners.forEach(x => {
+      x.target.removeEventListener(x.eventName, x.handler);
+    });
   }
 
   private onWindowResize(): void {

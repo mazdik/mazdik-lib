@@ -46,7 +46,7 @@ export class TreeTable extends DataTable {
 
   flatten() {
     this.rows = this.treeFlattener.flattenNodes(this.nodes);
-    this.events.onRowsChanged();
+    this.events.emitRowsChanged();
   }
 
   getDescendants(row: Row) {

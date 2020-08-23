@@ -23,6 +23,9 @@ export class HeaderCell {
   destroy() {
     this.removeEventListeners();
     this.resizable.destroy();
+    if (this.column.headerCellTemplate) {
+      this.column.headerCellTemplate.destroy();
+    }
   }
 
   private addEventListeners() {
@@ -78,7 +81,6 @@ export class HeaderCell {
     this.header = document.createElement('span');
     this.header.classList.add('dt-sort-header');
     this.header.textContent = this.column.title;
-    this.element.append(this.header);
 
     this.iconSort = document.createElement('i');
     if (this.column.sortable) {
@@ -86,20 +88,29 @@ export class HeaderCell {
     }
 
     this.iconFilter = document.createElement('i');
-    this.iconFilter.classList.add('dt-icon-filter','column-menu-icon');
-    this.element.append(this.iconFilter);
+    this.iconFilter.classList.add('dt-icon-filter', 'column-menu-icon');
+
+    if (this.column.headerCellTemplate) {
+      const el = this.column.headerCellTemplate.create({ table: this.table, column: this.column });
+      this.element.append(el);
+    } else {
+      this.element.append(this.header);
+      if (this.column.filter) {
+        this.element.append(this.iconFilter);
+      }
+    }
   }
 
   private onSort() {
     if (this.column.sortable) {
       this.table.sorter.setOrder(this.column.name);
-      this.table.events.onSort();
+      this.table.events.emitSort();
     }
   }
 
   private onClickColumnMenu(event: MouseEvent) {
-    const {left, top} = EventHelper.getColumnPosition(event, this.table.dimensions.columnMenuWidth);
-    this.table.events.onColumnMenuClick({left, top, column: this.column} as ColumnMenuEventArgs);
+    const { left, top } = EventHelper.getColumnPosition(event, this.table.dimensions.columnMenuWidth);
+    this.table.events.emitColumnMenuClick({ left, top, column: this.column } as ColumnMenuEventArgs);
   }
 
   updateStyles() {
@@ -109,6 +120,12 @@ export class HeaderCell {
     }
     this.iconSort.className = 'dt-icon ' + this.getDirection();
     toggleClass(this.iconFilter, 'is-filter', this.isFiltered());
+    if (this.column.headerCellClass) {
+      this.element.classList.add(this.column.headerCellClass);
+    }
+    if (this.column.headerCellTemplate) {
+      this.column.headerCellTemplate.refresh({ table: this.table, column: this.column });
+    }
   }
 
   private getDirection() {
@@ -122,16 +139,16 @@ export class HeaderCell {
   }
 
   private onResizeBegin() {
-    this.table.events.onResizeBegin();
+    this.table.events.emitResizeBegin();
   }
 
   private onResize(event: CustomEvent<ResizableEvent>) {
-    this.table.events.onResize(event.detail.event);
+    this.table.events.emitResize(event.detail.event);
   }
 
   private onResizeEnd(event: CustomEvent<ResizableEvent>) {
     this.column.setWidth(event.detail.width);
-    this.table.events.onResizeEnd();
+    this.table.events.emitResizeEnd();
   }
 
 }

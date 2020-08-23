@@ -12,7 +12,7 @@ describe('ColumnModelGenerator', () => {
   let columnModelGenerator: ColumnModelGenerator;
 
   beforeEach(() => {
-    const settings = new Settings({});
+    const settings = new Settings();
     columnModelGenerator = new ColumnModelGenerator(settings);
   });
 

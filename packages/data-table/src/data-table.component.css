@@ -29,17 +29,6 @@
   position: relative;
 }
 
-.fixed-header .datatable-header-row {
-  white-space: nowrap;
-}
-
-.fixed-header .datatable-header-cell,
-.fixed-header .dt-sort-header {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
 .datatable-body-row,
 .datatable-header-row {
   display: flex;
@@ -51,9 +40,14 @@
   outline: none;
 }
 
+.datatable-header,
+.datatable-body {
+  display: flex;
+  flex-direction: column;
+}
+
 .datatable-body {
   position: relative;
-  display: block;
 }
 
 .datatable-body-row {
@@ -103,7 +97,7 @@
 
 .datatable-body-cell,
 .datatable-header-cell {
-  padding: .25rem .1875rem;
+  padding: 0 .1875rem;
   border-right: 1px solid var(--dt-color-secondary-light);
   border-bottom: 1px solid var(--dt-color-secondary-light);
 }
@@ -121,7 +115,10 @@
 }
 
 .column-menu-icon {
-  margin: 0 .2rem 0 auto;
+  position: absolute;
+  top: 50%;
+  right: .625rem;
+  transform: translate(0, -50%);
   visibility: hidden;
   cursor: pointer;
 }
@@ -152,10 +149,6 @@
 .row-selected .dt-sticky {
   background-color: var(--dt-color-primary-lightest);
   color: black;
-}
-
-.datatable-empty-row {
-  padding: 0 0 .3125rem .3125rem;
 }
 
 .datatable-group-header {

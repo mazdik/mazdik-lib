@@ -48,11 +48,6 @@ export class Resizable {
     if (this.southEast) {
       this.createHandle('resize-handle-se');
     }
-    const computedStyle = window.getComputedStyle(this.element);
-    this.minWidth = parseFloat(computedStyle.minWidth);
-    this.maxWidth = parseFloat(computedStyle.maxWidth);
-    this.minHeight = parseFloat(computedStyle.minHeight);
-    this.maxHeight = parseFloat(computedStyle.maxHeight);
   }
 
   destroy(): void {
@@ -85,6 +80,7 @@ export class Resizable {
     if (!isLeftButton(event)) {
       return;
     }
+    this.initMinMax();
     const classList = ((event.target) as HTMLElement).classList;
     const isSouth = classList.contains('resize-handle-s');
     const isEast = classList.contains('resize-handle-e');
@@ -197,6 +193,14 @@ export class Resizable {
         this.element.dispatchEvent(new CustomEvent('resizing', { detail: resizableEvent }));
       }
     }
+  }
+
+  private initMinMax() {
+    const computedStyle = window.getComputedStyle(this.element);
+    this.minWidth = parseFloat(computedStyle.minWidth);
+    this.maxWidth = parseFloat(computedStyle.maxWidth);
+    this.minHeight = parseFloat(computedStyle.minHeight);
+    this.maxHeight = parseFloat(computedStyle.maxHeight);
   }
 
 }

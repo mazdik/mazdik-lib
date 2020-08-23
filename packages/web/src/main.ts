@@ -88,7 +88,28 @@ class App {
           { id: 'states-line-interval', name: 'States line interval' },
           { id: 'simple-bar-chart', name: 'Simple bar chart' },
           { id: 'file-upload', name: 'File upload' },
-          { id: 'data-table', name: 'Data table' },
+        ]
+      },
+      {
+        name: 'Data table',
+        expanded: true,
+        children: [
+          { id: 'dt-basic', name: 'Data table' },
+          { id: 'dt-master-detail', name: 'Master detail' },
+          { id: 'dt-modal', name: 'Modal data table' },
+          { id: 'dt-multiple-sort', name: 'Multiple sorting' },
+          { id: 'dt-row-group', name: 'Row group' },
+          { id: 'dt-row-group-multiple', name: 'Row group multiple' },
+          { id: 'dt-global-filter', name: 'Global filtering' },
+          { id: 'dt-row-group-summary', name: 'Summary rows with grouping' },
+          { id: 'dt-summary-row', name: 'Summary row' },
+          { id: 'dt-multiple-selection', name: 'Multiple selection' },
+          { id: 'dt-virtual-scroll', name: 'Virtual scroll' },
+          { id: 'dt-css', name: 'CSS' },
+          { id: 'dt-column-group', name: 'Column group' },
+          { id: 'dt-template', name: 'Templates' },
+          { id: 'dt-editable-condition', name: 'Editable condition' },
+          { id: 'dt-pipe', name: 'Pipe on column' },
         ]
       },
     ];

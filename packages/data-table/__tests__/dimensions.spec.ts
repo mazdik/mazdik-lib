@@ -3,7 +3,7 @@ import { Column } from '../src/base/column';
 import { Settings } from '../src/base/settings';
 
 describe('Dimensions', () => {
-  const settings = new Settings({});
+  const settings = new Settings();
   const columns = [
     new Column({ name: 'test1', frozen: true, width: 100 }),
     new Column({ name: 'test2', frozen: true, width: 100 }),

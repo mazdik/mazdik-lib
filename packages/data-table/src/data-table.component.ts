@@ -1,10 +1,12 @@
 import { Listener } from '@mazdik-lib/common';
 import { VirtualScroller } from '@mazdik-lib/scroller';
-import { DataTable, Row } from './base';
+import { DataTable, Row, ColumnModelGenerator } from './base';
 import { Header } from './header';
 import { Body } from './body';
 import { Footer } from './footer';
 import { Filter } from './filter/filter';
+import { CellCheckboxRenderer } from './renderer/cell-checkbox-renderer';
+import { HeaderCheckboxRenderer } from './renderer/header-checkbox-renderer';
 
 export class DataTableComponent extends HTMLElement {
 
@@ -24,6 +26,7 @@ export class DataTableComponent extends HTMLElement {
   private listeners: Listener[] = [];
   private isInitialized: boolean;
   private virtualScroller: VirtualScroller;
+  private spinner: HTMLElement;
 
   constructor() {
     super();
@@ -52,6 +55,11 @@ export class DataTableComponent extends HTMLElement {
     this.main = document.createElement('div');
     this.main.classList.add('datatable');
     this.append(this.main);
+
+    this.spinner = document.createElement('div');
+    this.spinner.classList.add('dt-spinner');
+    this.spinner.style.visibility = 'hidden';
+    this.append(this.spinner);
   }
 
   private addEventListeners() {
@@ -97,6 +105,16 @@ export class DataTableComponent extends HTMLElement {
         handler: this.onRowsChanged.bind(this)
       },
       {
+        eventName: 'updateStyles',
+        target: this.table.events.element,
+        handler: this.onUpdateStyles.bind(this)
+      },
+      {
+        eventName: 'loading',
+        target: this.table.events.element,
+        handler: this.onLoading.bind(this)
+      },
+      {
         eventName: 'scroll',
         target: this.main,
         handler: this.onScroll.bind(this)
@@ -114,6 +132,12 @@ export class DataTableComponent extends HTMLElement {
   }
 
   private render() {
+    const checkboxColumn = this.table.columns.find(x => x.name === ColumnModelGenerator.checkboxColumn.name);
+    if (checkboxColumn) {
+      checkboxColumn.cellTemplate = new CellCheckboxRenderer();
+      checkboxColumn.headerCellTemplate = new HeaderCheckboxRenderer();
+    }
+
     this.header = new Header(this.table);
     this.main.append(this.header.element);
 
@@ -132,7 +156,13 @@ export class DataTableComponent extends HTMLElement {
     this.append(this.filter.element);
 
     if (this.table.settings.virtualScroll) {
-      this.virtualScroller = new VirtualScroller(this.main, this.body.element, this.table.dimensions.rowHeight, this.table.pager.perPage);
+      this.virtualScroller = new VirtualScroller(
+        this.main,
+        this.body.element,
+        this.table.dimensions.rowHeight,
+        this.table.pager.perPage,
+        this.table.settings.rowHeightProp);
+      this.virtualScroller.appendHeight = this.header.element.offsetHeight;
       const listener = {
         eventName: 'viewRowsChange',
         target: this.main,
@@ -143,7 +173,7 @@ export class DataTableComponent extends HTMLElement {
     }
   }
 
-  updateStyles() {
+  private updateStyles() {
     this.header.element.style.width = this.table.dimensions.columnsTotalWidth + 'px';
     this.body.element.style.width = this.table.dimensions.columnsTotalWidth + 'px';
   }
@@ -177,6 +207,7 @@ export class DataTableComponent extends HTMLElement {
     this.table.selection.clearSelection();
     this.body.createRows();
     this.footer.updatePagination();
+    this.header.updateHeaderStyles();
   }
 
   private onSort() {
@@ -193,6 +224,7 @@ export class DataTableComponent extends HTMLElement {
   }
 
   private onSelection() {
+    this.header.updateHeaderStyles();
     this.body.updateBodyStyles();
   }
 
@@ -233,6 +265,15 @@ export class DataTableComponent extends HTMLElement {
     }
     this.body.createRows();
     this.footer.updatePagination();
+  }
+
+  private onUpdateStyles() {
+    this.updateAllStyles();
+  }
+
+  private onLoading(event: CustomEvent<boolean>) {
+    const loading = event.detail;
+    this.spinner.style.visibility = loading ? 'visible': 'hidden';
   }
 
 }

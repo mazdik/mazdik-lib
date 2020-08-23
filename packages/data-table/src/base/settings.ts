@@ -1,4 +1,5 @@
 import { SelectionMode, EditMode } from './types';
+import { TemplateRenderer } from './template-renderer';
 
 type RowClassFunc = (row) => any;
 
@@ -13,7 +14,6 @@ export class Settings {
   selectionMode?: SelectionMode;
   virtualScroll?: boolean;
   rowClass?: string | RowClassFunc;
-  headerRowHeight?: number;
   rowHeight?: number = 30;
   rowNumber?: boolean = true;
   hoverEvents?: boolean;
@@ -22,11 +22,15 @@ export class Settings {
   paginator?: boolean = true;
   rowHeightProp?: string;
   isEditableCellProp?: string;
+  rowGroupTemplate: TemplateRenderer;
+  columnGroupTemplate: TemplateRenderer;
 
-  constructor(init: Partial<Settings>) {
-    Object.assign(this, init);
-    if (!this.editMode) {
-      this.editMode = EditMode.EditCellOnDblClick;
+  constructor(init?: Partial<Settings>) {
+    if (init) {
+      Object.assign(this, init);
+      if (!this.editMode) {
+        this.editMode = EditMode.EditCellOnDblClick;
+      }
     }
   }
 
