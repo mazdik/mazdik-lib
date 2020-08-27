@@ -108,6 +108,7 @@ class App {
           { id: 'dt-css', name: 'CSS' },
           { id: 'dt-column-group', name: 'Column group' },
           { id: 'dt-template', name: 'Templates' },
+          { id: 'dt-events', name: 'Events' },
           { id: 'dt-editable-condition', name: 'Editable condition' },
           { id: 'dt-pipe', name: 'Pipe on column' },
         ]
