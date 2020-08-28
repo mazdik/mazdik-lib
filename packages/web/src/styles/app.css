@@ -121,11 +121,6 @@
 .multi-select-demo-block {position: relative;}
 .multi-select-demo-block .dt-dropdown-select-list {width: 15.625rem;}
 
-/* FrozenTableDemo */
-.frozen-table-demo {display: flex;}
-.frozen-table-demo .tab2 {overflow-x: auto;}
-.frozen-table-demo .frozen .dt-scroller {overflow-y: hidden; overflow-x: scroll}
-
 /* VerticalGroupDemoComponent */
 .vertical-group-demo {display: flex;}
 .vertical-group-demo .tab2 {overflow-x: auto;}
@@ -139,6 +134,8 @@
 }
 .vertical-group-demo .vertical .datatable-body {overflow-y: hidden; overflow-x: scroll}
 .vertical-group-demo .vertical .datatable-header-cell {min-height: 2.5rem;}
+.vertical-group-demo .vertical {flex-shrink: 0; height: 26.5rem;}
+.vertical-group-demo .tab2 .datatable {height: 26.5rem;}
 
 /* DynamicFormDemo */
 .dynamic-form-demo {display: block; width: 25rem;}
