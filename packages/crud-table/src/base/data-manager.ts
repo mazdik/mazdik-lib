@@ -54,14 +54,15 @@ export class DataManager extends DataTable {
     return this.service
       .getItems(requestMeta)
       .then(data => {
-        this.rows = (concatRows) ? this.rows.concat(data.items) : data.items;
+        const rows = (concatRows) ? this.rows.concat(data.items) : data.items;
         if (concatRows) {
-          this.pager.total = (data._meta.totalCount > this.rows.length) ? this.rows.length + 1 : this.rows.length;
+          this.pager.total = (data._meta.totalCount > rows.length) ? rows.length + 1 : rows.length;
         } else {
           this.pager.total = data._meta.totalCount;
         }
         this.pager.perPage = data._meta.perPage;
         this.pagerCache[this.pager.current] = true;
+        this.rows = rows;
       })
       .finally(() => { this.events.emitLoading(false); });
   }
