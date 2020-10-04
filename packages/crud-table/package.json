@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "@mazdik-lib/common": "0.1.0",
-    "@mazdik-lib/data-table": "0.1.0"
+    "@mazdik-lib/data-table": "0.1.0",
+    "@mazdik-lib/dt-toolbar": "0.1.0"
   }
 }

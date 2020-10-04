@@ -1,7 +1,9 @@
 import { Listener } from '@mazdik-lib/common';
 import { DataManager } from './base/data-manager';
 import '@mazdik-lib/data-table';
-import { DataTableComponent } from '@mazdik-lib/data-table';
+import '@mazdik-lib/dt-toolbar';
+import { DataTableComponent, HeaderActionRenderer, ColumnModelGenerator } from '@mazdik-lib/data-table';
+import { DtToolbarComponent } from '@mazdik-lib/dt-toolbar';
 
 export class CrudTableComponent extends HTMLElement {
 
@@ -16,6 +18,7 @@ export class CrudTableComponent extends HTMLElement {
   private listeners: Listener[] = [];
   private isInitialized: boolean;
   private dtComponent: DataTableComponent;
+  private toolbarComponent: DtToolbarComponent;
 
   constructor() {
     super();
@@ -34,6 +37,8 @@ export class CrudTableComponent extends HTMLElement {
 
   private onInit() {
     this.classList.add('datatable-wrapper');
+    this.toolbarComponent = document.createElement('web-dt-toolbar') as DtToolbarComponent;
+    this.append(this.toolbarComponent);
     this.dtComponent = document.createElement('web-data-table') as DataTableComponent;
     this.append(this.dtComponent);
   }
@@ -73,10 +78,18 @@ export class CrudTableComponent extends HTMLElement {
   }
 
   private initLoad() {
+    const actionColumn = this.dataManager.columns.find(x => x.name === ColumnModelGenerator.actionColumn.name);
+    if (actionColumn) {
+      //actionColumn.cellTemplate = this.rowActionTemplate;
+      actionColumn.headerCellTemplate = new HeaderActionRenderer();
+    }
     this.dtComponent.table = this.dataManager;
+    //this.initRowMenu();
     if (this.dataManager.settings.initLoad) {
       this.dataManager.loadItems();
     }
+    this.toolbarComponent.table = this.dataManager;
+    this.toolbarComponent.globalFilter = this.dataManager.settings.globalFilter;
   }
 
   private onFilter() {
