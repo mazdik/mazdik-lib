@@ -9,7 +9,6 @@ export class CrudTableComponent extends HTMLElement {
   set dataManager(val: DataManager) {
     this._dataManager = val;
     this.initLoad();
-    this.render();
     this.addEventListeners();
   }
   private _dataManager: DataManager;
@@ -41,6 +40,26 @@ export class CrudTableComponent extends HTMLElement {
 
   private addEventListeners() {
     this.listeners = [
+      {
+        eventName: 'filter',
+        target: this.dataManager.events.element,
+        handler: this.onFilter.bind(this)
+      },
+      {
+        eventName: 'sort',
+        target: this.dataManager.events.element,
+        handler: this.onSort.bind(this)
+      },
+      {
+        eventName: 'page',
+        target: this.dataManager.events.element,
+        handler: this.onPage.bind(this)
+      },
+      {
+        eventName: 'scroll',
+        target: this.dataManager.events.element,
+        handler: this.onScroll.bind(this)
+      },
     ];
     this.listeners.forEach(x => {
       x.target.addEventListener(x.eventName, x.handler);
@@ -60,8 +79,32 @@ export class CrudTableComponent extends HTMLElement {
     }
   }
 
-  private render() {
+  private onFilter() {
+    this.dataManager.pager.current = 1;
+    if (this.dataManager.settings.virtualScroll) {
+      this.dtComponent.setOffsetY(0);
+      this.dataManager.pagerCache = {};
+      this.dataManager.clear();
+    }
+    this.dataManager.loadItems();
+  }
 
+  private onSort() {
+    if (this.dataManager.settings.virtualScroll) {
+      this.dtComponent.setOffsetY(0);
+      this.dataManager.pager.current = 1;
+      this.dataManager.pagerCache = {};
+      this.dataManager.clear();
+    }
+    this.dataManager.loadItems();
+  }
+
+  private onPage() {
+    this.dataManager.loadItems();
+  }
+
+  private onScroll() {
+    //this.rowMenu.hide();
   }
 
 }

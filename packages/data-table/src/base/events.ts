@@ -44,9 +44,9 @@ export class Events {
     this.element.dispatchEvent(new CustomEvent('rowsChanged'));
   }
 
-  // emitScroll(data: any) {
-  //   this.element.dispatchEvent(new CustomEvent('scroll', { detail: data }));
-  // }
+  emitScroll(data: any) {
+    this.element.dispatchEvent(new CustomEvent('scroll', { detail: data }));
+  }
 
   emitLoading(data: boolean) {
     this.element.dispatchEvent(new CustomEvent('loading', { detail: data }));
