@@ -4,6 +4,7 @@ import '@mazdik-lib/data-table';
 import '@mazdik-lib/dt-toolbar';
 import { DataTableComponent, HeaderActionRenderer, ColumnModelGenerator } from '@mazdik-lib/data-table';
 import { DtToolbarComponent } from '@mazdik-lib/dt-toolbar';
+import { CellActionRenderer } from './cell-action-renderer';
 
 export class CrudTableComponent extends HTMLElement {
 
@@ -80,7 +81,7 @@ export class CrudTableComponent extends HTMLElement {
   private initLoad() {
     const actionColumn = this.dataManager.columns.find(x => x.name === ColumnModelGenerator.actionColumn.name);
     if (actionColumn) {
-      //actionColumn.cellTemplate = this.rowActionTemplate;
+      actionColumn.cellTemplate = new CellActionRenderer();
       actionColumn.headerCellTemplate = new HeaderActionRenderer();
     }
     this.dtComponent.table = this.dataManager;
