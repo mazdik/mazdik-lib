@@ -1,13 +1,15 @@
 import { Listener, toggleClass } from '@mazdik-lib/common';
-import { TemplateRenderer, TemplateContext, Cell } from '@mazdik-lib/data-table';
+import { TemplateRenderer, TemplateContext, Cell, Row } from '@mazdik-lib/data-table';
 
 export class CellActionRenderer implements TemplateRenderer {
 
   private elements = new Map<Cell, HTMLElement>();
   private listeners: Listener[] = [];
 
+  constructor(private onClickFunc: (event: Event, row: Row) => void) {}
+
   create(context: TemplateContext): HTMLElement {
-    const { table, cell } = context;
+    const { cell } = context;
     const element = document.createElement('button');
     element.classList.add('dt-button-actions');
 
@@ -18,7 +20,7 @@ export class CellActionRenderer implements TemplateRenderer {
     this.addListener({
       eventName: 'click',
       target: element,
-      handler: this.onRowMenuClick.bind(this, context)
+      handler: this.onClickFunc.bind(this, context)
     });
 
     this.elements.set(cell, element);
@@ -50,12 +52,6 @@ export class CellActionRenderer implements TemplateRenderer {
     this.listeners.forEach(x => {
       x.target.removeEventListener(x.eventName, x.handler);
     });
-  }
-
-  private onRowMenuClick(context: TemplateContext) {
-    const { table, cell } = context;
-    console.log(cell);
-    // table.events.emitCheckbox(cell.row);
   }
 
 }

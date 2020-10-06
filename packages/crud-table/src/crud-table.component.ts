@@ -1,10 +1,16 @@
-import { Listener } from '@mazdik-lib/common';
+import { Listener, MenuItem } from '@mazdik-lib/common';
 import { DataManager } from './base/data-manager';
 import '@mazdik-lib/data-table';
 import '@mazdik-lib/dt-toolbar';
-import { DataTableComponent, HeaderActionRenderer, ColumnModelGenerator } from '@mazdik-lib/data-table';
+import '@mazdik-lib/context-menu';
+import '@mazdik-lib/modal-edit-form';
+import {
+  DataTableComponent, HeaderActionRenderer, ColumnModelGenerator, Row, EventHelper, TemplateContext
+} from '@mazdik-lib/data-table';
 import { DtToolbarComponent } from '@mazdik-lib/dt-toolbar';
 import { CellActionRenderer } from './cell-action-renderer';
+import { ContextMenuComponent, MenuEventArgs } from '@mazdik-lib/context-menu';
+import { ModalEditFormComponent } from '@mazdik-lib/modal-edit-form';
 
 export class CrudTableComponent extends HTMLElement {
 
@@ -18,8 +24,11 @@ export class CrudTableComponent extends HTMLElement {
 
   private listeners: Listener[] = [];
   private isInitialized: boolean;
-  private dtComponent: DataTableComponent;
-  private toolbarComponent: DtToolbarComponent;
+  private dt: DataTableComponent;
+  private toolbar: DtToolbarComponent;
+  private rowMenu: ContextMenuComponent;
+  private modalEditForm: ModalEditFormComponent;
+  private actionMenu: MenuItem[] = [];
 
   constructor() {
     super();
@@ -38,10 +47,14 @@ export class CrudTableComponent extends HTMLElement {
 
   private onInit() {
     this.classList.add('datatable-wrapper');
-    this.toolbarComponent = document.createElement('web-dt-toolbar') as DtToolbarComponent;
-    this.append(this.toolbarComponent);
-    this.dtComponent = document.createElement('web-data-table') as DataTableComponent;
-    this.append(this.dtComponent);
+    this.toolbar = document.createElement('web-dt-toolbar') as DtToolbarComponent;
+    this.append(this.toolbar);
+    this.dt = document.createElement('web-data-table') as DataTableComponent;
+    this.append(this.dt);
+    this.rowMenu = document.createElement('web-context-menu') as ContextMenuComponent;
+    this.append(this.rowMenu);
+    this.modalEditForm = document.createElement('web-modal-edit-form') as ModalEditFormComponent;
+    this.append(this.modalEditForm);
   }
 
   private addEventListeners() {
@@ -81,22 +94,25 @@ export class CrudTableComponent extends HTMLElement {
   private initLoad() {
     const actionColumn = this.dataManager.columns.find(x => x.name === ColumnModelGenerator.actionColumn.name);
     if (actionColumn) {
-      actionColumn.cellTemplate = new CellActionRenderer();
+      actionColumn.cellTemplate = new CellActionRenderer(this.onRowMenuClick.bind(this));
       actionColumn.headerCellTemplate = new HeaderActionRenderer();
     }
-    this.dtComponent.table = this.dataManager;
-    //this.initRowMenu();
+    this.dt.table = this.dataManager;
+
+    this.initRowMenu();
+    this.rowMenu.menu = this.actionMenu;
+
     if (this.dataManager.settings.initLoad) {
       this.dataManager.loadItems();
     }
-    this.toolbarComponent.table = this.dataManager;
-    this.toolbarComponent.globalFilter = this.dataManager.settings.globalFilter;
+    this.toolbar.table = this.dataManager;
+    this.toolbar.globalFilter = this.dataManager.settings.globalFilter;
   }
 
   private onFilter() {
     this.dataManager.pager.current = 1;
     if (this.dataManager.settings.virtualScroll) {
-      this.dtComponent.setOffsetY(0);
+      this.dt.setOffsetY(0);
       this.dataManager.pagerCache = {};
       this.dataManager.clear();
     }
@@ -105,7 +121,7 @@ export class CrudTableComponent extends HTMLElement {
 
   private onSort() {
     if (this.dataManager.settings.virtualScroll) {
-      this.dtComponent.setOffsetY(0);
+      this.dt.setOffsetY(0);
       this.dataManager.pager.current = 1;
       this.dataManager.pagerCache = {};
       this.dataManager.clear();
@@ -118,7 +134,103 @@ export class CrudTableComponent extends HTMLElement {
   }
 
   private onScroll() {
-    //this.rowMenu.hide();
+    this.rowMenu.hide();
+  }
+
+  private onRowMenuClick(context: TemplateContext, event: MouseEvent) {
+    const { cell } = context;
+    const row = cell.row;
+    const { left, top } = EventHelper.getRowPosition(event, this.dataManager.settings.virtualScroll);
+    this.rowMenuBeforeOpen(row);
+    this.rowMenu.show({originalEvent: event, data: row, left, top} as MenuEventArgs);
+  }
+
+  private rowMenuBeforeOpen(row: Row) {
+    const rowChanged = this.dataManager.rowChanged(row);
+    let menuIndex = this.actionMenu.findIndex(x => x.id === this.dataManager.messages.revertChanges);
+    if (menuIndex > -1) {
+      this.actionMenu[menuIndex].disabled = !rowChanged;
+    }
+    menuIndex = this.actionMenu.findIndex(x => x.id === this.dataManager.messages.save);
+    if (menuIndex > -1) {
+      const rowIsValid = this.dataManager.rowIsValid(row);
+      this.actionMenu[menuIndex].disabled = !rowChanged || !rowIsValid;
+    }
+  }
+
+  private initRowMenu() {
+    if (this.dataManager.settings.singleRowView) {
+      this.actionMenu.push(
+        {
+          id: this.dataManager.messages.titleDetailView,
+          label: this.dataManager.messages.titleDetailView,
+          icon: ['dt-icon', 'dt-icon-rightwards'],
+          command: (row) => this.viewAction(row),
+        }
+      );
+    }
+    if (this.dataManager.settings.crud) {
+      this.actionMenu.push(
+        {
+          id: this.dataManager.messages.titleUpdate,
+          label: this.dataManager.messages.titleUpdate,
+          icon: ['dt-icon', 'dt-icon-pencil'],
+          command: (row) => this.updateAction(row),
+        },
+        {
+          id: this.dataManager.messages.refresh,
+          label: this.dataManager.messages.refresh,
+          icon: ['dt-icon', 'dt-icon-refresh'],
+          command: (row) => this.dataManager.refreshRow(row),
+        },
+        {
+          id: this.dataManager.messages.revertChanges,
+          label: this.dataManager.messages.revertChanges,
+          icon: ['dt-icon', 'dt-icon-return'],
+          command: (row) => this.dataManager.revertRowChanges(row),
+          disabled: true,
+        },
+        {
+          id: this.dataManager.messages.save,
+          label: this.dataManager.messages.save,
+          icon: ['dt-icon', 'dt-icon-ok'],
+          command: (row) => this.dataManager.update(row),
+          disabled: true,
+        },
+        {
+          id: this.dataManager.messages.delete,
+          label: this.dataManager.messages.delete,
+          icon: ['dt-icon', 'dt-icon-remove'],
+          command: (row) => confirm('Delete ?') ? this.dataManager.delete(row) : null,
+        },
+        {
+          id: this.dataManager.messages.duplicate,
+          label: this.dataManager.messages.duplicate,
+          icon: ['dt-icon', 'dt-icon-plus'],
+          command: (row) => this.duplicateAction(row),
+        },
+      );
+    }
+  }
+
+  createAction() {
+    this.dataManager.item = new Row({});
+    this.modalEditForm.create();
+  }
+
+  viewAction(row: Row) {
+    this.dataManager.item = row;
+    this.modalEditForm.view();
+  }
+
+  updateAction(row: Row) {
+    this.dataManager.item = row;
+    this.modalEditForm.update();
+  }
+
+  duplicateAction(row: Row) {
+    this.dataManager.item = row.clone();
+    this.modalEditForm.update();
   }
 
 }
