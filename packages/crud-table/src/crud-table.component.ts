@@ -170,6 +170,7 @@ export class CrudTableComponent extends HTMLElement {
       const rowIsValid = this.dataManager.rowIsValid(row);
       this.actionMenu[menuIndex].disabled = !rowChanged || !rowIsValid;
     }
+    this.rowMenu.menu = this.actionMenu;
   }
 
   private initRowMenu() {
@@ -256,18 +257,18 @@ export class CrudTableComponent extends HTMLElement {
   }
 
   private onCreate(event: CustomEvent) {
-    console.log(event.detail);
+    this.dataManager.events.emitRowsChanged();
   }
 
   private onUpdate(event: CustomEvent) {
-    console.log(event.detail);
+    this.dataManager.events.emitRowsChanged();
   }
 
   private createDynamicFormElements(): DynamicFormElement[] {
     return this.dataManager.columns.map(column => {
       return new DynamicFormElement({
-        name: column.name,
         title: column.title,
+        name: column.name,
         options: column.options,
         optionsUrl: column.optionsUrl,
         type: column.type,
@@ -277,6 +278,9 @@ export class CrudTableComponent extends HTMLElement {
         hidden: column.formHidden,
         keyElement: column.keyColumn,
         disableOnEdit: column.formDisableOnEdit,
+        getOptionsFunc: this.dataManager.service.getOptions.bind(this.dataManager.service),
+        selectPlaceholder: this.dataManager.messages.selectPlaceholder,
+        searchInputPlaceholder: this.dataManager.messages.search,
       });
     });
   }

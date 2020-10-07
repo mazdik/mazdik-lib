@@ -35,11 +35,14 @@ export class EventHelper {
     let top = rowElement.offsetTop + rowElement.offsetHeight;
     const cell = findAncestor(event.target, '.datatable-body-cell');
     let left = cell ? cell.offsetLeft : 0;
-    const datatable = findAncestor(event.target, '.datatable-wrapper');
+    const wrapper = findAncestor(event.target, '.datatable-wrapper');
 
-    if (datatable && datatable.previousSibling && datatable.previousSibling.classList.contains('dt-toolbar')) {
-      top += datatable.previousSibling.offsetHeight;
+    const prevElement = wrapper ? wrapper.previousElementSibling : null;
+    if (prevElement && prevElement.classList.contains('dt-toolbar')) {
+      top += prevElement.offsetHeight;
     }
+    const datatable = findAncestor(event.target, '.datatable');
+
     const header = datatable.querySelector('.datatable-header');
     if (header) {
       top += header.offsetHeight;
