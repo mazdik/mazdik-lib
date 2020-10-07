@@ -10,7 +10,7 @@ import {
 import { DtToolbarComponent } from '@mazdik-lib/dt-toolbar';
 import { CellActionRenderer } from './cell-action-renderer';
 import { ContextMenuComponent, MenuEventArgs } from '@mazdik-lib/context-menu';
-import { ModalEditFormComponent } from '@mazdik-lib/modal-edit-form';
+import { ModalEditFormComponent, DynamicFormElement, KeyValuePair } from '@mazdik-lib/modal-edit-form';
 
 export class CrudTableComponent extends HTMLElement {
 
@@ -79,6 +79,16 @@ export class CrudTableComponent extends HTMLElement {
         target: this.dataManager.events.element,
         handler: this.onScroll.bind(this)
       },
+      {
+        eventName: 'create',
+        target: this.modalEditForm,
+        handler: this.onCreate.bind(this)
+      },
+      {
+        eventName: 'update',
+        target: this.modalEditForm,
+        handler: this.onUpdate.bind(this)
+      },
     ];
     this.listeners.forEach(x => {
       x.target.addEventListener(x.eventName, x.handler);
@@ -107,6 +117,10 @@ export class CrudTableComponent extends HTMLElement {
     }
     this.toolbar.table = this.dataManager;
     this.toolbar.globalFilter = this.dataManager.settings.globalFilter;
+
+    this.modalEditForm.dynElements = this.createDynamicFormElements();
+    this.modalEditForm.saveMessage = this.dataManager.messages.save;
+    this.modalEditForm.closeMessage = this.dataManager.messages.close;
   }
 
   private onFilter() {
@@ -142,7 +156,7 @@ export class CrudTableComponent extends HTMLElement {
     const row = cell.row;
     const { left, top } = EventHelper.getRowPosition(event, this.dataManager.settings.virtualScroll);
     this.rowMenuBeforeOpen(row);
-    this.rowMenu.show({originalEvent: event, data: row, left, top} as MenuEventArgs);
+    this.rowMenu.show({ originalEvent: event, data: row, left, top } as MenuEventArgs);
   }
 
   private rowMenuBeforeOpen(row: Row) {
@@ -215,22 +229,56 @@ export class CrudTableComponent extends HTMLElement {
 
   createAction() {
     this.dataManager.item = new Row({});
+    this.modalEditForm.item = this.dataManager.item;
+    this.modalEditForm.modalTitle = this.dataManager.messages.titleCreate;
     this.modalEditForm.create();
   }
 
   viewAction(row: Row) {
     this.dataManager.item = row;
+    this.modalEditForm.item = this.dataManager.item;
+    this.modalEditForm.modalTitle = this.dataManager.messages.titleDetailView;
     this.modalEditForm.view();
   }
 
   updateAction(row: Row) {
     this.dataManager.item = row;
+    this.modalEditForm.item = this.dataManager.item;
+    this.modalEditForm.modalTitle = this.dataManager.messages.titleUpdate;
     this.modalEditForm.update();
   }
 
   duplicateAction(row: Row) {
     this.dataManager.item = row.clone();
+    this.modalEditForm.item = this.dataManager.item;
+    this.modalEditForm.modalTitle = this.dataManager.messages.titleCreate;
     this.modalEditForm.update();
+  }
+
+  private onCreate(event: CustomEvent) {
+    console.log(event.detail);
+  }
+
+  private onUpdate(event: CustomEvent) {
+    console.log(event.detail);
+  }
+
+  private createDynamicFormElements(): DynamicFormElement[] {
+    return this.dataManager.columns.map(column => {
+      return new DynamicFormElement({
+        name: column.name,
+        title: column.title,
+        options: column.options,
+        optionsUrl: column.optionsUrl,
+        type: column.type,
+        validatorFunc: column.validatorFunc,
+        dependsElement: column.dependsColumn,
+        cellTemplate: column.formTemplate ? column.formTemplate : column.cellTemplate,
+        hidden: column.formHidden,
+        keyElement: column.keyColumn,
+        disableOnEdit: column.formDisableOnEdit,
+      });
+    });
   }
 
 }

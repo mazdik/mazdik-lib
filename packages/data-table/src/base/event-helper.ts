@@ -35,7 +35,7 @@ export class EventHelper {
     let top = rowElement.offsetTop + rowElement.offsetHeight;
     const cell = findAncestor(event.target, '.datatable-body-cell');
     let left = cell ? cell.offsetLeft : 0;
-    const datatable = findAncestor(event.target, '.datatable');
+    const datatable = findAncestor(event.target, '.datatable-wrapper');
 
     if (datatable && datatable.previousSibling && datatable.previousSibling.classList.contains('dt-toolbar')) {
       top += datatable.previousSibling.offsetHeight;
