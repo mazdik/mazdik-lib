@@ -116,11 +116,16 @@ export class CrudTableComponent extends HTMLElement {
       this.dataManager.loadItems();
     }
     this.toolbar.table = this.dataManager;
+    this.toolbar.createAction = this.dataManager.settings.crud;
     this.toolbar.globalFilter = this.dataManager.settings.globalFilter;
+    this.toolbar.exportAction = this.dataManager.settings.exportAction;
+    this.toolbar.clearAllFiltersAction = this.dataManager.settings.clearAllFiltersAction;
+    this.toolbar.columnToggleAction = this.dataManager.settings.columnToggleAction;
 
-    this.modalEditForm.dynElements = this.createDynamicFormElements();
+    this.modalEditForm.dynElements = this.createDynamicFormElements(this.dataManager);
     this.modalEditForm.saveMessage = this.dataManager.messages.save;
     this.modalEditForm.closeMessage = this.dataManager.messages.close;
+    this.modalEditForm.getViewDataFunc = () => this.getRowViewData(this.dataManager);
   }
 
   private onFilter() {
@@ -264,8 +269,8 @@ export class CrudTableComponent extends HTMLElement {
     this.dataManager.events.emitRowsChanged();
   }
 
-  private createDynamicFormElements(): DynamicFormElement[] {
-    return this.dataManager.columns.map(column => {
+  private createDynamicFormElements(dataManager: DataManager): DynamicFormElement[] {
+    return dataManager.columns.map(column => {
       return new DynamicFormElement({
         title: column.title,
         name: column.name,
@@ -278,10 +283,16 @@ export class CrudTableComponent extends HTMLElement {
         hidden: column.formHidden,
         keyElement: column.keyColumn,
         disableOnEdit: column.formDisableOnEdit,
-        getOptionsFunc: this.dataManager.service.getOptions.bind(this.dataManager.service),
-        selectPlaceholder: this.dataManager.messages.selectPlaceholder,
-        searchInputPlaceholder: this.dataManager.messages.search,
+        getOptionsFunc: dataManager.service.getOptions.bind(dataManager.service),
+        selectPlaceholder: dataManager.messages.selectPlaceholder,
+        searchInputPlaceholder: dataManager.messages.search,
       });
+    });
+  }
+
+  private getRowViewData(dataManager: DataManager): KeyValuePair[] {
+    return dataManager.columns.map(column => {
+      return { key: column.title, value: column.getValueView(dataManager.item) };
     });
   }
 
