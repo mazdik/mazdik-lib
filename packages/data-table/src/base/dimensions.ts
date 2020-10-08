@@ -3,7 +3,6 @@ import { Settings } from './settings';
 
 export class Dimensions {
 
-  bodyHeight: number;
   columnMenuWidth: number = 220;
   columnsTotalWidth: number;
   rowHeight: number = 30;
@@ -11,7 +10,6 @@ export class Dimensions {
   offsetY: number = 0;
 
   constructor(settings: Settings, private readonly columns: Column[]) {
-    this.bodyHeight = settings.bodyHeight;
     this.rowHeight = settings.rowHeight;
     this.recalcColumns();
   }

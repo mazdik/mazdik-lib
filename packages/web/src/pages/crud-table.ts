@@ -21,7 +21,6 @@ export default class CrudTableDemo implements Page {
 
     const settings = new CdtSettings({
       crud: true,
-      bodyHeight: 380,
       exportAction: true,
       globalFilter: true,
       columnToggleAction: true,
@@ -35,7 +34,6 @@ export default class CrudTableDemo implements Page {
 
     const service = new DemoService();
     const dataManager = new DataManager(columns, settings, service, messages);
-    dataManager.pager.perPage = 20;
     component.dataManager = dataManager;
   }
 

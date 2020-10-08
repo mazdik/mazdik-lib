@@ -258,15 +258,16 @@ export class CrudTableComponent extends HTMLElement {
     this.dataManager.item = row.clone();
     this.modalEditForm.item = this.dataManager.item;
     this.modalEditForm.modalTitle = this.dataManager.messages.titleCreate;
-    this.modalEditForm.update();
+    this.modalEditForm.update(true);
   }
 
-  private onCreate(event: CustomEvent) {
-    this.dataManager.events.emitRowsChanged();
+  private onCreate(event: CustomEvent<any>) {
+    this.dataManager.create(event.detail);
   }
 
-  private onUpdate(event: CustomEvent) {
-    this.dataManager.events.emitRowsChanged();
+  private onUpdate(event: CustomEvent<any>) {
+    this.dataManager.update(event.detail);
+    console.log(this.dataManager.item);
   }
 
   private createDynamicFormElements(dataManager: DataManager): DynamicFormElement[] {
