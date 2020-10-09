@@ -1,5 +1,4 @@
 import { Listener, MenuItem } from '@mazdik-lib/common';
-import { DataManager } from './base/data-manager';
 import '@mazdik-lib/data-table';
 import '@mazdik-lib/dt-toolbar';
 import '@mazdik-lib/context-menu';
@@ -8,9 +7,11 @@ import {
   DataTableComponent, HeaderActionRenderer, ColumnModelGenerator, Row, EventHelper, TemplateContext
 } from '@mazdik-lib/data-table';
 import { DtToolbarComponent } from '@mazdik-lib/dt-toolbar';
-import { CellActionRenderer } from './cell-action-renderer';
 import { ContextMenuComponent, MenuEventArgs } from '@mazdik-lib/context-menu';
-import { ModalEditFormComponent, DynamicFormElement, KeyValuePair } from '@mazdik-lib/modal-edit-form';
+import { ModalEditFormComponent } from '@mazdik-lib/modal-edit-form';
+import { DataManager } from './base/data-manager';
+import { CellActionRenderer } from './cell-action-renderer';
+import { CrudTableHelper } from './crud-table-helper';
 
 export class CrudTableComponent extends HTMLElement {
 
@@ -122,10 +123,10 @@ export class CrudTableComponent extends HTMLElement {
     this.toolbar.clearAllFiltersAction = this.dataManager.settings.clearAllFiltersAction;
     this.toolbar.columnToggleAction = this.dataManager.settings.columnToggleAction;
 
-    this.modalEditForm.dynElements = this.createDynamicFormElements(this.dataManager);
+    this.modalEditForm.dynElements = CrudTableHelper.createDynamicFormElements(this.dataManager);
     this.modalEditForm.saveMessage = this.dataManager.messages.save;
     this.modalEditForm.closeMessage = this.dataManager.messages.close;
-    this.modalEditForm.getViewDataFunc = () => this.getRowViewData(this.dataManager);
+    this.modalEditForm.getViewDataFunc = () => CrudTableHelper.getRowViewData(this.dataManager);
   }
 
   private onFilter() {
@@ -268,33 +269,6 @@ export class CrudTableComponent extends HTMLElement {
   private onUpdate(event: CustomEvent<any>) {
     this.dataManager.update(event.detail);
     console.log(this.dataManager.item);
-  }
-
-  private createDynamicFormElements(dataManager: DataManager): DynamicFormElement[] {
-    return dataManager.columns.map(column => {
-      return new DynamicFormElement({
-        title: column.title,
-        name: column.name,
-        options: column.options,
-        optionsUrl: column.optionsUrl,
-        type: column.type,
-        validatorFunc: column.validatorFunc,
-        dependsElement: column.dependsColumn,
-        cellTemplate: column.formTemplate ? column.formTemplate : column.cellTemplate,
-        hidden: column.formHidden,
-        keyElement: column.keyColumn,
-        disableOnEdit: column.formDisableOnEdit,
-        getOptionsFunc: dataManager.service.getOptions.bind(dataManager.service),
-        selectPlaceholder: dataManager.messages.selectPlaceholder,
-        searchInputPlaceholder: dataManager.messages.search,
-      });
-    });
-  }
-
-  private getRowViewData(dataManager: DataManager): KeyValuePair[] {
-    return dataManager.columns.map(column => {
-      return { key: column.title, value: column.getValueView(dataManager.item) };
-    });
   }
 
 }

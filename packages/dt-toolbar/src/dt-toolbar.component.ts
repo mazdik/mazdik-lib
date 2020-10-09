@@ -26,7 +26,9 @@ export class DtToolbarComponent extends HTMLElement {
 
   private listeners: Listener[] = [];
   private isInitialized: boolean;
-  private input: HTMLInputElement;
+  private filterWrapper: HTMLElement;
+  private filterInput: HTMLInputElement;
+  private createButton: HTMLButtonElement;
 
   constructor() {
     super();
@@ -60,27 +62,27 @@ export class DtToolbarComponent extends HTMLElement {
   }
 
   private createGlobalFilter() {
-    const wrapper = document.createElement('div');
-    wrapper.classList.add('dt-toolbar-col', 'dt-global-filter');
-    this.append(wrapper);
+    this.filterWrapper = document.createElement('div');
+    this.filterWrapper.classList.add('dt-toolbar-col', 'dt-global-filter');
+    this.append(this.filterWrapper);
 
     const inputGroup = document.createElement('div');
     inputGroup.classList.add('dt-input-group');
-    wrapper.append(inputGroup);
+    this.filterWrapper.append(inputGroup);
 
-    this.input = document.createElement('input');
-    this.input.classList.add('dt-input');
-    this.input.placeholder = this.table.messages.search;
-    this.input.value = this.table.dataFilter.globalFilterValue;
-    inputGroup.append(this.input);
+    this.filterInput = document.createElement('input');
+    this.filterInput.classList.add('dt-input');
+    this.filterInput.placeholder = this.table.messages.search;
+    this.filterInput.value = this.table.dataFilter.globalFilterValue;
+    inputGroup.append(this.filterInput);
     this.addListener({
       eventName: 'input',
-      target: this.input,
+      target: this.filterInput,
       handler: this.onInputGlobalSearch.bind(this)
     });
     this.addListener({
       eventName: 'keypress',
-      target: this.input,
+      target: this.filterInput,
       handler: this.onKeyPressGlobalSearch.bind(this)
     });
     this.addListener({
@@ -115,8 +117,8 @@ export class DtToolbarComponent extends HTMLElement {
   }
 
   private onFilter() {
-    if (this.input) {
-      this.input.value = this.table.dataFilter.globalFilterValue;
+    if (this.filterInput) {
+      this.filterInput.value = this.table.dataFilter.globalFilterValue;
     }
   }
 
