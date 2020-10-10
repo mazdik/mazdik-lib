@@ -90,6 +90,11 @@ export class CrudTableComponent extends HTMLElement {
         target: this.modalEditForm,
         handler: this.onUpdate.bind(this)
       },
+      {
+        eventName: 'createAction',
+        target: this.toolbar,
+        handler: this.createAction.bind(this)
+      },
     ];
     this.listeners.forEach(x => {
       x.target.addEventListener(x.eventName, x.handler);
