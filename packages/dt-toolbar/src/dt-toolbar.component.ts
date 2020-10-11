@@ -130,7 +130,7 @@ export class DtToolbarComponent extends HTMLElement {
     this.clearAllFiltersMenu.classList.add('dt-list-menu-item');
     dropdownMenu.append(this.clearAllFiltersMenu);
 
-    this.dropdown = new Dropdown([dropdownMenu]);
+    this.dropdown = new Dropdown([this.dropdownWrapper]);
 
     this.updateStyles();
 
@@ -158,6 +158,21 @@ export class DtToolbarComponent extends HTMLElement {
         eventName: 'click',
         target: this.createButton,
         handler: this.onClickCreateAction.bind(this)
+      },
+      {
+        eventName: 'click',
+        target: this.columnToggleMenu,
+        handler: this.onClickColumnToggleMenu.bind(this)
+      },
+      {
+        eventName: 'click',
+        target: this.exportMenu,
+        handler: this.downloadCsv.bind(this)
+      },
+      {
+        eventName: 'click',
+        target: this.clearAllFiltersMenu,
+        handler: this.clearAllFilters.bind(this)
       },
     ];
     this.listeners.forEach(x => {
@@ -254,6 +269,10 @@ export class DtToolbarComponent extends HTMLElement {
       this.table.dataFilter.clear();
       this.table.events.emitFilter();
     }
+  }
+
+  private onClickColumnToggleMenu() {
+
   }
 
 }
