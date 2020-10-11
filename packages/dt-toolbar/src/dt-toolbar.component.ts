@@ -1,4 +1,4 @@
-import { downloadCSV, Keys, Listener } from '@mazdik-lib/common';
+import { downloadCSV, Keys, Listener, toggleClass } from '@mazdik-lib/common';
 import { DataTable, Row } from '@mazdik-lib/data-table';
 import { Dropdown } from '@mazdik-lib/dropdown';
 
@@ -160,6 +160,11 @@ export class DtToolbarComponent extends HTMLElement {
         handler: this.onClickCreateAction.bind(this)
       },
       {
+        eventName: 'clickElement',
+        target: this.dropdownWrapper,
+        handler: this.onClickDropdown.bind(this)
+      },
+      {
         eventName: 'click',
         target: this.columnToggleMenu,
         handler: this.onClickColumnToggleMenu.bind(this)
@@ -262,6 +267,10 @@ export class DtToolbarComponent extends HTMLElement {
 
   private onClickCreateAction() {
     this.dispatchEvent(new CustomEvent('createAction'));
+  }
+
+  private onClickDropdown() {
+    toggleClass(this.clearAllFiltersMenu, 'disabled', !this.table.dataFilter.hasFilters())
   }
 
   private clearAllFilters() {
