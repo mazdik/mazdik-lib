@@ -9,7 +9,7 @@ export default class DropdownDemo implements Page {
   private dropdown: Dropdown;
 
   load() {
-    const list = document.querySelectorAll('.dropdown-directive-demo .dropdown');
+    const list: HTMLElement[] = Array.from(document.querySelectorAll('.dropdown-directive-demo .dropdown'));
     this.dropdown = new Dropdown(list);
   }
 

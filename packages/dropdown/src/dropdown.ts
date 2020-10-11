@@ -6,7 +6,7 @@ export class Dropdown {
   private dropdowns: DropdownElement[] = [];
   private listeners: Listener[] = [];
 
-  constructor(elements: NodeListOf<Element>) {
+  constructor(elements: HTMLElement[]) {
     elements.forEach((element: HTMLElement) => {
       this.dropdowns.push(new DropdownElement(element));
     });
@@ -20,7 +20,7 @@ export class Dropdown {
     });
   }
 
-  private addEventListeners(elements: NodeListOf<Element>) {
+  private addEventListeners(elements: HTMLElement[]) {
     this.listeners = [
       {
         eventName: 'click',

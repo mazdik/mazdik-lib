@@ -1,5 +1,6 @@
 import { downloadCSV, Keys, Listener } from '@mazdik-lib/common';
 import { DataTable, Row } from '@mazdik-lib/data-table';
+import { Dropdown } from '@mazdik-lib/dropdown';
 
 export class DtToolbarComponent extends HTMLElement {
 
@@ -52,6 +53,12 @@ export class DtToolbarComponent extends HTMLElement {
   private filterWrapper: HTMLElement;
   private filterInput: HTMLInputElement;
   private filterButton: HTMLButtonElement;
+  private dropdownWrapper: HTMLElement;
+  private dropdownButton: HTMLButtonElement;
+  private columnToggleMenu: HTMLElement;
+  private exportMenu: HTMLElement;
+  private clearAllFiltersMenu: HTMLElement;
+  private dropdown: Dropdown;
 
   constructor() {
     super();
@@ -65,6 +72,7 @@ export class DtToolbarComponent extends HTMLElement {
   }
 
   disconnectedCallback() {
+    this.dropdown.destroy();
     this.removeEventListeners();
   }
 
@@ -96,6 +104,33 @@ export class DtToolbarComponent extends HTMLElement {
     this.filterButton = document.createElement('button');
     this.filterButton.classList.add('dt-button');
     inputGroup.append(this.filterButton);
+
+    // menu
+    this.dropdownWrapper = document.createElement('div');
+    this.dropdownWrapper.classList.add('dt-toolbar-col');
+    this.append(this.dropdownWrapper);
+
+    this.dropdownButton = document.createElement('button');
+    this.dropdownButton.classList.add('dt-button');
+    this.dropdownWrapper.append(this.dropdownButton);
+
+    const dropdownMenu = document.createElement('div');
+    dropdownMenu.classList.add('dt-context-menu');
+    this.dropdownWrapper.append(dropdownMenu);
+
+    this.columnToggleMenu = document.createElement('div');
+    this.columnToggleMenu.classList.add('dt-list-menu-item');
+    dropdownMenu.append(this.columnToggleMenu);
+
+    this.exportMenu = document.createElement('div');
+    this.exportMenu.classList.add('dt-list-menu-item');
+    dropdownMenu.append(this.exportMenu);
+
+    this.clearAllFiltersMenu = document.createElement('div');
+    this.clearAllFiltersMenu.classList.add('dt-list-menu-item');
+    dropdownMenu.append(this.clearAllFiltersMenu);
+
+    this.dropdown = new Dropdown([dropdownMenu]);
 
     this.updateStyles();
 
@@ -146,6 +181,17 @@ export class DtToolbarComponent extends HTMLElement {
     this.filterInput.value = this.table.dataFilter.globalFilterValue;
     this.filterButton.textContent = this.table.messages.go;
     this.createButton.textContent = this.table.messages.create;
+
+    const text = document.createTextNode(this.table.messages.actions);
+    this.dropdownButton.append(text);
+    const icon = document.createElement('i');
+    icon.classList.add('dt-icon-node');
+    this.dropdownButton.append(icon);
+
+    this.columnToggleMenu.textContent = this.table.messages.columns;
+    this.exportMenu.textContent = this.table.messages.export;
+    this.clearAllFiltersMenu.textContent = this.table.messages.clearFilters;
+
     this.addListener({
       eventName: 'filter',
       target: this.table.events.element,
@@ -156,6 +202,11 @@ export class DtToolbarComponent extends HTMLElement {
   private updateStyles() {
     this.filterWrapper.style.display = this.globalFilter ? 'block' : 'none';
     this.createWrapper.style.display = this.createAction ? 'block' : 'none';
+    const enableDropdow = this.exportAction || this.columnToggleAction || this.clearAllFiltersAction;
+    this.dropdownWrapper.style.display = enableDropdow ? 'block' : 'none';
+    this.columnToggleMenu.style.display = this.columnToggleAction ? 'block' : 'none';
+    this.exportMenu.style.display = this.exportAction ? 'block' : 'none';
+    this.clearAllFiltersMenu.style.display = this.clearAllFiltersAction ? 'block' : 'none';
   }
 
   private onInputGlobalSearch(event) {
