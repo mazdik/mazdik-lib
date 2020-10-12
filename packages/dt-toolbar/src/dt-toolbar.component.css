@@ -1,6 +1,6 @@
 .dt-toolbar {
   display: flex;
-  padding: .5rem 0;
+  padding-bottom: .5rem;
 }
 
 .dt-toolbar-col {
@@ -8,7 +8,7 @@
 }
 
 .dt-toolbar-col+.dt-toolbar-col {
-  margin-left: .3125rem;
+  margin-left: .5rem;
 }
 
 .dt-global-filter {
@@ -30,4 +30,8 @@
   border: 0;
   box-shadow: 0 0 0;
   cursor: default;
+}
+
+.dt-toolbar-col .dt-icon-node {
+  margin-left: .3rem;
 }

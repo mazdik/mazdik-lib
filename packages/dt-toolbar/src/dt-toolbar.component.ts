@@ -1,6 +1,8 @@
 import { downloadCSV, Keys, Listener, toggleClass } from '@mazdik-lib/common';
 import { DataTable, Row } from '@mazdik-lib/data-table';
 import { Dropdown } from '@mazdik-lib/dropdown';
+import './dt-column-toggler.component';
+import { DtColumnTogglerComponent } from './dt-column-toggler.component';
 
 export class DtToolbarComponent extends HTMLElement {
 
@@ -59,6 +61,7 @@ export class DtToolbarComponent extends HTMLElement {
   private exportMenu: HTMLElement;
   private clearAllFiltersMenu: HTMLElement;
   private dropdown: Dropdown;
+  private dtColumnToggler: DtColumnTogglerComponent;
 
   constructor() {
     super();
@@ -131,6 +134,10 @@ export class DtToolbarComponent extends HTMLElement {
     dropdownMenu.append(this.clearAllFiltersMenu);
 
     this.dropdown = new Dropdown([this.dropdownWrapper]);
+
+    // dtColumnToggler
+    this.dtColumnToggler = document.createElement('web-dt-column-toggler') as DtColumnTogglerComponent;
+    this.append(this.dtColumnToggler);
 
     this.updateStyles();
 
@@ -212,6 +219,8 @@ export class DtToolbarComponent extends HTMLElement {
     this.exportMenu.textContent = this.table.messages.export;
     this.clearAllFiltersMenu.textContent = this.table.messages.clearFilters;
 
+    this.dtColumnToggler.table = this.table;
+
     this.addListener({
       eventName: 'filter',
       target: this.table.events.element,
@@ -281,7 +290,7 @@ export class DtToolbarComponent extends HTMLElement {
   }
 
   private onClickColumnToggleMenu() {
-
+    this.dtColumnToggler.open();
   }
 
 }

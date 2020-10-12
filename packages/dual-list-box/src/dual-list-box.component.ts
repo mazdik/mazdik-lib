@@ -54,20 +54,15 @@ export class DualListBoxComponent extends HTMLElement {
   get source(): SelectItem[] { return this._source; }
   set source(value: SelectItem[]) {
     this._source = value;
-    this.filterSource();
-    this.sourceElements = this.createListContent(value);
-    this.renderSourceList();
-    this.dragDrop.registerDraggableElements(this.sourceElements);
   }
   private _source: SelectItem[];
 
   get target(): SelectItem[] { return this._target; }
   set target(value: SelectItem[]) {
     this._target = value;
-    this.filterSource();
-    this.targetElements = this.createListContent(value);
-    this.renderTargetList();
-    this.dragDrop.registerDraggableElements(this.targetElements);
+    this.createSourceElements();
+    this.createTargetElements();
+    this.renderLists();
   }
   private _target: SelectItem[];
 
@@ -208,6 +203,19 @@ export class DualListBoxComponent extends HTMLElement {
     });
   }
 
+  private createSourceElements() {
+    if (this.source && this.source.length && this.target && this.target.length) {
+      this._source = this.source.filter(x => this.target.every(t => t.id !== x.id));
+    }
+    this.sourceElements = this.createListContent(this._source);
+    this.dragDrop.registerDraggableElements(this.sourceElements);
+  }
+
+  private createTargetElements() {
+    this.targetElements = this.createListContent(this._target);
+    this.dragDrop.registerDraggableElements(this.targetElements);
+  }
+
   private moveRight() {
     if (!isBlank(this.sourceModel) && !isBlank(this.sourceElements)) {
       const selectedItemIndex = this.sourceElements.findIndex(x => x.dataset.id === this.sourceModel);
@@ -297,12 +305,6 @@ export class DualListBoxComponent extends HTMLElement {
 
         this.emitEvent();
       }
-    }
-  }
-
-  private filterSource() {
-    if (this.source && this.source.length && this.target && this.target.length) {
-      this._source = this.source.filter(x => this.target.every(t => t.id !== x.id));
     }
   }
 
