@@ -186,6 +186,11 @@ export class DtToolbarComponent extends HTMLElement {
         target: this.clearAllFiltersMenu,
         handler: this.clearAllFilters.bind(this)
       },
+      {
+        eventName: 'columnsChanged',
+        target: this.dtColumnToggler,
+        handler: this.onColumnsChanged.bind(this)
+      },
     ];
     this.listeners.forEach(x => {
       x.target.addEventListener(x.eventName, x.handler);
@@ -291,6 +296,10 @@ export class DtToolbarComponent extends HTMLElement {
 
   private onClickColumnToggleMenu() {
     this.dtColumnToggler.open();
+  }
+
+  private onColumnsChanged() {
+    this.dispatchEvent(new CustomEvent('columnsChanged'));
   }
 
 }

@@ -281,6 +281,14 @@ export class DataTableComponent extends HTMLElement {
     this.virtualScroller.setOffsetY(offsetY);
   }
 
+  columnsChanged() {
+    this.table.initColumns();
+    this.table.dimensions.recalcColumns();
+    this.header.createHeaderCells();
+    this.updateStyles();
+    this.table.events.emitRowsChanged();
+  }
+
 }
 
 customElements.define('web-data-table', DataTableComponent);

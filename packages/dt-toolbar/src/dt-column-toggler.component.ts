@@ -115,10 +115,8 @@ export class DtColumnTogglerComponent extends HTMLElement {
       this.table.columns[index].index = i;
     });
     this.table.columns.sort((a, b) => (a.index > b.index) ? 1 : (a.index < b.index) ? -1 : 0);
-    this.table.initColumns();
-    this.table.events.emitRowsChanged();
-    this.table.events.emitResizeEnd();
 
+    this.dispatchEvent(new CustomEvent('columnsChanged'));
     this.modal.hide();
   }
 

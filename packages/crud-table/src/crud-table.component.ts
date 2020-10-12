@@ -95,6 +95,11 @@ export class CrudTableComponent extends HTMLElement {
         target: this.toolbar,
         handler: this.createAction.bind(this)
       },
+      {
+        eventName: 'columnsChanged',
+        target: this.toolbar,
+        handler: this.onColumnsChanged.bind(this)
+      },
     ];
     this.listeners.forEach(x => {
       x.target.addEventListener(x.eventName, x.handler);
@@ -274,6 +279,10 @@ export class CrudTableComponent extends HTMLElement {
   private onUpdate(event: CustomEvent<any>) {
     this.dataManager.update(event.detail);
     console.log(this.dataManager.item);
+  }
+
+  private onColumnsChanged() {
+    this.dt.columnsChanged();
   }
 
 }
