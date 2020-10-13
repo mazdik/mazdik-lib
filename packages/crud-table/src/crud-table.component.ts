@@ -278,7 +278,6 @@ export class CrudTableComponent extends HTMLElement {
 
   private onUpdate(event: CustomEvent<any>) {
     this.dataManager.update(event.detail);
-    console.log(this.dataManager.item);
   }
 
   private onColumnsChanged() {

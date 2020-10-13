@@ -140,7 +140,8 @@ export class ModalEditFormComponent extends HTMLElement {
     this.rowView.style.display = 'none';
     this.dynamicForm.style.display = 'block';
     this.modalEditFormSave.style.visibility = 'visible';
-    this.dynamicForm.item = {};
+    this.item = {};
+    this.dynamicForm.item = this.item;
     this.isNewItem = true;
     this.modal.show();
   }

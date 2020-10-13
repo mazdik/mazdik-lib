@@ -48,6 +48,11 @@ export class SelectModalComponent extends InputOptionComponent {
         target: this.modalSelect,
         handler: this.onInput.bind(this)
       },
+      {
+        eventName: 'nameChanged',
+        target: this.modalSelect,
+        handler: this.onNameChanged.bind(this)
+      },
     ];
     this.listeners.forEach(x => {
       x.target.addEventListener(x.eventName, x.handler);
@@ -56,6 +61,12 @@ export class SelectModalComponent extends InputOptionComponent {
 
   private onInput(event: CustomEvent) {
     this.value = event.detail;
+  }
+
+  private onNameChanged(event: CustomEvent) {
+    if (this.dynElement.keyElement) {
+      this.dynElement.item[this.dynElement.name] = event.detail;
+    }
   }
 
 }
