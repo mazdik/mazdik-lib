@@ -188,7 +188,7 @@ export class ContextMenuComponent extends HTMLElement {
 
       const i = document.createElement('i');
       if (item.icon) {
-        i.classList.add(item.icon);
+        i.classList.add(...item.icon);
       }
       a.prepend(i)
 

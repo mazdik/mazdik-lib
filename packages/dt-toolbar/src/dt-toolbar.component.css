@@ -1,18 +1,18 @@
 .dt-toolbar {
-    display: flex;
-    margin-right: -.3125rem;
-    margin-left: -.3125rem;
-    margin-bottom: 1rem;
-  }
+  display: flex;
+  padding-bottom: .5rem;
+}
 
 .dt-toolbar-col {
-    padding-right: .3125rem;
-    padding-left: .3125rem;
-    position: relative;
+  position: relative;
+}
+
+.dt-toolbar-col {
+  margin-right: .5rem;
 }
 
 .dt-global-filter {
-    width: 18.75rem;
+  width: 18.75rem;
 }
 
 .dt-toolbar-col .dt-context-menu {
@@ -24,11 +24,14 @@
   display: block;
 }
 
-.dt-toolbar-col .dt-list-menu-item.disabled,
-.dt-toolbar-col .dt-list-menu-item.disabled:hover {
+.dt-toolbar-col .dt-list-menu-item.disabled, .dt-toolbar-col .dt-list-menu-item.disabled:hover {
   color: silver;
   background-color: transparent;
   border: 0;
   box-shadow: 0 0 0;
   cursor: default;
+}
+
+.dt-toolbar-col .dt-icon-node {
+  margin-left: .3rem;
 }

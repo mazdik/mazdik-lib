@@ -4,7 +4,6 @@ import { TemplateRenderer } from './template-renderer';
 type RowClassFunc = (row) => any;
 
 export class Settings {
-  bodyHeight?: number;
   sortable?: boolean = true;
   filter?: boolean = true;
   multipleSort?: boolean;

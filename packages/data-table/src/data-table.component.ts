@@ -75,14 +75,14 @@ export class DataTableComponent extends HTMLElement {
         handler: this.onSort.bind(this)
       },
       {
-        eventName: 'selection',
-        target: this.table.events.element,
-        handler: this.onSelection.bind(this)
-      },
-      {
         eventName: 'page',
         target: this.table.events.element,
         handler: this.onPage.bind(this)
+      },
+      {
+        eventName: 'selection',
+        target: this.table.events.element,
+        handler: this.onSelection.bind(this)
       },
       {
         eventName: 'resizeBegin',
@@ -228,8 +228,9 @@ export class DataTableComponent extends HTMLElement {
     this.body.updateBodyStyles();
   }
 
-  private onScroll() {
+  private onScroll(event: Event) {
     this.filter.hide();
+    this.table.events.emitScroll(event);
   }
 
   private onColumnResizeBegin() {
@@ -274,6 +275,18 @@ export class DataTableComponent extends HTMLElement {
   private onLoading(event: CustomEvent<boolean>) {
     const loading = event.detail;
     this.spinner.style.visibility = loading ? 'visible': 'hidden';
+  }
+
+  setOffsetY(offsetY: number) {
+    this.virtualScroller.setOffsetY(offsetY);
+  }
+
+  columnsChanged() {
+    this.table.initColumns();
+    this.table.dimensions.recalcColumns();
+    this.header.createHeaderCells();
+    this.updateStyles();
+    this.table.events.emitRowsChanged();
   }
 
 }

@@ -28,6 +28,7 @@ function getTemplate(id: string) {
 export class ModalEditFormComponent extends HTMLElement {
 
   item: Dict = {};
+  getViewDataFunc: () => KeyValuePair[];
 
   set dynElements(val: DynamicFormElement[]) {
     this.dynamicForm.dynElements = val;
@@ -139,17 +140,18 @@ export class ModalEditFormComponent extends HTMLElement {
     this.rowView.style.display = 'none';
     this.dynamicForm.style.display = 'block';
     this.modalEditFormSave.style.visibility = 'visible';
-    this.dynamicForm.item = {};
+    this.item = {};
+    this.dynamicForm.item = this.item;
     this.isNewItem = true;
     this.modal.show();
   }
 
-  update() {
+  update(isNewItem: boolean = false) {
     this.rowView.style.display = 'none';
     this.dynamicForm.style.display = 'block';
     this.modalEditFormSave.style.visibility = 'visible';
     this.dynamicForm.item = this.item;
-    this.isNewItem = false;
+    this.isNewItem = isNewItem;
     this.modal.show();
   }
 
@@ -157,16 +159,14 @@ export class ModalEditFormComponent extends HTMLElement {
     this.rowView.style.display = 'block';
     this.dynamicForm.style.display = 'none';
     this.modalEditFormSave.style.visibility = 'hidden';
-    this.rowView.data = this.getData();
+    this.rowView.data = (this.getViewDataFunc) ? this.getViewDataFunc() : this.getData();
     this.modal.show();
   }
 
-  private getData() {
-    const result: KeyValuePair[] = [];
-    Object.keys(this.item).forEach(key => {
-      result.push({ key, value: this.item[key] });
+  private getData(): KeyValuePair[] {
+    return Object.keys(this.item).map(key => {
+      return { key, value: this.item[key] };
     });
-    return result;
   }
 
 }

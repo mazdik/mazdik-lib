@@ -16,6 +16,9 @@
   },
   "dependencies": {
     "@mazdik-lib/common": "0.1.0",
-    "@mazdik-lib/data-table": "0.1.0"
+    "@mazdik-lib/context-menu": "0.1.0",
+    "@mazdik-lib/data-table": "0.1.0",
+    "@mazdik-lib/dt-toolbar": "0.1.0",
+    "@mazdik-lib/modal-edit-form": "0.1.0"
   }
 }

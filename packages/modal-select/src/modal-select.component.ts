@@ -213,6 +213,7 @@ export class ModalSelectComponent extends HTMLElement {
     const option = (this.optionsCopy || []).find(x => x.id.toString() === value);
     const selectedName = option ? option.name : '';
     this.selectInput.value = selectedName;
+    this.dispatchEvent(new CustomEvent('nameChanged', { detail: selectedName }));
   }
 
   private updateStyles() {
