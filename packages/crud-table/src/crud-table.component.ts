@@ -23,13 +23,13 @@ export class CrudTableComponent extends HTMLElement {
   }
   private _dataManager: DataManager;
 
+  actionMenu: MenuItem[] = [];
   private listeners: Listener[] = [];
   private isInitialized: boolean;
   private dt: DataTableComponent;
   private toolbar: DtToolbarComponent;
   private rowMenu: ContextMenuComponent;
   private modalEditForm: ModalEditFormComponent;
-  private actionMenu: MenuItem[] = [];
 
   constructor() {
     super();
@@ -175,7 +175,7 @@ export class CrudTableComponent extends HTMLElement {
     this.rowMenu.show({ originalEvent: event, data: row, left, top } as MenuEventArgs);
   }
 
-  private rowMenuBeforeOpen(row: Row) {
+  rowMenuBeforeOpen(row: Row) {
     const rowChanged = this.dataManager.rowChanged(row);
     let menuIndex = this.actionMenu.findIndex(x => x.id === this.dataManager.messages.revertChanges);
     if (menuIndex > -1) {

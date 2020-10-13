@@ -61,6 +61,7 @@ export function getNavMenuNodes(): any[] {
         { id: 'dt-editable-condition', name: 'Editable condition' },
         { id: 'dt-pipe', name: 'Pipe on column' },
         { id: 'crud-table', name: 'CRUD table' },
+        { id: 'ct-custom-row-action', name: 'Custom row action' },
       ]
     },
   ];
