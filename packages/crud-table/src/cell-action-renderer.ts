@@ -1,12 +1,12 @@
 import { Listener, toggleClass } from '@mazdik-lib/common';
-import { TemplateRenderer, TemplateContext, Cell, Row } from '@mazdik-lib/data-table';
+import { TemplateRenderer, TemplateContext, Cell } from '@mazdik-lib/data-table';
 
 export class CellActionRenderer implements TemplateRenderer {
 
   private elements = new Map<Cell, HTMLElement>();
   private listeners: Listener[] = [];
 
-  constructor(private onClickFunc: (event: Event, row: Row) => void) {}
+  constructor(private onClickFunc: (event: Event, context: TemplateContext) => void) {}
 
   create(context: TemplateContext): HTMLElement {
     const { cell } = context;

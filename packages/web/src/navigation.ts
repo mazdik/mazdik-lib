@@ -62,6 +62,7 @@ export function getNavMenuNodes(): any[] {
         { id: 'dt-pipe', name: 'Pipe on column' },
         { id: 'crud-table', name: 'CRUD table' },
         { id: 'ct-custom-row-action', name: 'Custom row action' },
+        { id: 'ct-multi-select', name: 'Multi select' },
       ]
     },
   ];
