@@ -2,19 +2,28 @@ import { Page } from '../page';
 import '@mazdik-lib/crud-table';
 import { CrudTableComponent, CdtSettings, DataManager } from '@mazdik-lib/crud-table';
 import { ColumnBase, TemplateContext } from '@mazdik-lib/data-table';
+import { SelectItem } from '@mazdik-lib/common';
 import { DemoService } from '../shared/demo.service';
 import { CellMultiSelectRenderer } from '../shared/cell-multi-select-renderer';
 
 export default class CtMultiSelect implements Page {
 
   get template(): string {
-    return `<div class="multi-select-demo-block">
+    return `<div class="multi-select-demo">
       <web-crud-table></web-crud-table>
     </div>`;
   }
 
   load() {
     const component = document.querySelector('web-crud-table') as CrudTableComponent;
+
+    const options: SelectItem[] = [
+      {id: '1', name: 'Select 1'},
+      {id: '2', name: 'Select 2'},
+      {id: '3', name: 'Select 3'},
+      {id: '4', name: 'Select 4'},
+    ];
+
     const columns: ColumnBase[] = [
       { title: 'Id', name: 'id' },
       { title: 'Name', name: 'name' },
@@ -22,7 +31,7 @@ export default class CtMultiSelect implements Page {
         title: 'Test',
         name: 'test',
         width: 250,
-        cellTemplate: new CellMultiSelectRenderer(this.onClickFunc.bind(this)),
+        cellTemplate: new CellMultiSelectRenderer(this.onClickFunc.bind(this), options),
       }
     ];
     const settings = new CdtSettings({

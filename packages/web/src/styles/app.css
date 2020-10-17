@@ -96,6 +96,10 @@
   cursor: pointer;
 }
 
+.display-none {
+  display: none !important;
+}
+
 /* PanelDemo */
 .panel-demo1 .ui-modal-header { background-color: red !important; }
 .panel-demo2 .ui-modal-header { background-color: #4CAF50 !important; }
@@ -117,7 +121,9 @@
 .multi-select-demo {width: 37.5rem;}
 .multi-select-demo .datatable-body-cell {padding: 0; margin: 0;}
 .multi-select-demo .datatable-body-cell > .cell-data,
-.multi-select-demo .datatable-body-cell > span:first-child {padding: .25rem .1875rem;}
+.multi-select-demo .datatable-body-cell .view-data {padding: .25rem .1875rem;}
+.multi-select-demo .datatable-body-cell .multi-select-cell {width: 100%;}
+.multi-select-demo .datatable-body-cell .multi-select-cell .dt-select-input {cursor: pointer;;}
 .multi-select-demo-block {position: relative;}
 .multi-select-demo-block .dt-dropdown-select-list {width: 15.625rem;}
 
