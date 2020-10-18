@@ -1,4 +1,4 @@
-import { Listener, toggleClass, SelectItem } from '@mazdik-lib/common';
+import { Listener, toggleClass, SelectItem, findAncestor } from '@mazdik-lib/common';
 import { TemplateRenderer, TemplateContext, Cell, CellEventType, CellEventArgs, EventHelper } from '@mazdik-lib/data-table';
 import { SelectListComponent } from '@mazdik-lib/select-list';
 
@@ -8,7 +8,6 @@ export class CellMultiSelectRenderer implements TemplateRenderer {
   private inputs = new Map<Cell, HTMLInputElement>();
   private icons = new Map<Cell, HTMLElement>();
   private listeners: Listener[] = [];
-  private editing = {};
   private selectedCell: Cell;
 
   private get isOpen(): boolean { return this._isOpen; }
@@ -30,6 +29,11 @@ export class CellMultiSelectRenderer implements TemplateRenderer {
       eventName: 'selectionCancel',
       target: this.selectList,
       handler: this.onSelectionCancel.bind(this)
+    });
+    this.addListener({
+      eventName: 'click',
+      target: window,
+      handler: this.onClickWindow.bind(this)
     });
   }
 
@@ -87,16 +91,6 @@ export class CellMultiSelectRenderer implements TemplateRenderer {
   }
 
   refresh(context: TemplateContext) {
-    const { cell } = context;
-    const element = this.elements.get(cell);
-    if (element) {
-      const view = element.firstElementChild as HTMLElement;
-      const inputGroup = element.lastElementChild as HTMLElement;
-      toggleClass(view, 'display-none', this.editing[cell.rowIndex]);
-      toggleClass(inputGroup, 'display-none', !this.editing[cell.rowIndex]);
-
-      this.updateSelectedName(cell);
-    }
     this.updateStyleSelectList();
   }
 
@@ -111,20 +105,33 @@ export class CellMultiSelectRenderer implements TemplateRenderer {
     });
   }
 
-  private onCell(context: TemplateContext, event: CustomEvent<CellEventArgs>) {
-    const data = event.detail;
-    Object.keys(this.editing).forEach(x => this.editing[x] = false);
-    if (data.type === CellEventType.Click && data.columnIndex === 3) {
-      this.editing[data.rowIndex] = true;
+  private updateEditing(cell: Cell, editing: boolean) {
+    const element = this.elements.get(cell);
+    if (element) {
+      const view = element.firstElementChild as HTMLElement;
+      const inputGroup = element.lastElementChild as HTMLElement;
+      toggleClass(view, 'display-none', editing);
+      toggleClass(inputGroup, 'display-none', !editing);
     }
+  }
+
+  private onCell(context: TemplateContext, event: CustomEvent<CellEventArgs>) {
+    const { cell } = context;
+    const data = event.detail;
+    const editing = data.type === CellEventType.Click && data.columnIndex === 3 && data.rowIndex === cell.rowIndex;
     this.isOpen = false;
+    this.updateEditing(cell, editing);
+    if (editing) {
+      this.selectedCell = cell;
+    }
   }
 
   private onClick(context: TemplateContext, event: MouseEvent) {
     const { cell, table } = context;
-    const icon = this.icons.get(cell);
     event.stopPropagation();
     this.isOpen = !this.isOpen;
+
+    const icon = this.icons.get(cell);
     if (icon) {
       toggleClass(icon, 'asc', this.isOpen);
       toggleClass(icon, 'desc', !this.isOpen);
@@ -133,14 +140,16 @@ export class CellMultiSelectRenderer implements TemplateRenderer {
     this.selectList.model = cell.value || [];
     this.selectList.style.left = pos.left + 'px';
     this.selectList.style.top = pos.top + 'px';
-
-    this.selectedCell = cell;
   }
 
   private updateSelectedName(cell: Cell) {
     const selectedName = this.getName(cell.value);
     const input = this.inputs.get(cell);
     input.value = selectedName;
+
+    const element = this.elements.get(cell);
+    const view = element.firstElementChild as HTMLElement;
+    view.textContent = selectedName;
   }
 
   private getName(items: any): string {
@@ -167,6 +176,17 @@ export class CellMultiSelectRenderer implements TemplateRenderer {
 
   private onSelectionCancel() {
     this.isOpen = false;
+  }
+
+  private onClickWindow(event: MouseEvent) {
+    const cellElement = findAncestor(event.target, '.datatable-body-cell');
+    if (!cellElement) {
+      const listElement = findAncestor(event.target, '.dt-dropdown-select-list');
+      if (!listElement) {
+        this.isOpen = false;
+        this.updateEditing(this.selectedCell, false);
+      }
+    }
   }
 
 }
