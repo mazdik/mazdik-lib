@@ -16,11 +16,7 @@ export class SelectDropdownComponent extends InputOptionComponent {
     this.label.after(this.dropdownSelect);
 
     window.customElements.whenDefined('web-dropdown-select').then(() => {
-      this.dropdownSelect.settings = {
-        placeholder: this.dynElement.selectPlaceholder,
-        searchMessage: this.dynElement.searchInputPlaceholder,
-        multiple: this.dynElement.multiple,
-      };
+      this.setDropdownSelectSettings();
       this.dropdownSelect.options = this.getOptions();
       this.dropdownSelect.value = this.value;
     });
@@ -32,15 +28,14 @@ export class SelectDropdownComponent extends InputOptionComponent {
     super.onDisabled(val);
     // TODO
     window.customElements.whenDefined('web-dropdown-select').then(() => {
-      this.dropdownSelect.settings = {
-        disabled: val
-      };
+      this.setDropdownSelectSettings(val);
     });
   }
 
   onLoadOptions() {
     super.onLoadOptions();
     window.customElements.whenDefined('web-dropdown-select').then(() => {
+      this.setDropdownSelectSettings();
       this.dropdownSelect.options = this.getOptions();
     })
   }
@@ -60,6 +55,19 @@ export class SelectDropdownComponent extends InputOptionComponent {
 
   private onInput(event: CustomEvent) {
     this.value = event.detail;
+  }
+
+  private setDropdownSelectSettings(disabled: boolean = false) {
+    this.dropdownSelect.settings = {
+      multiple: this.dynElement.multiple,
+      placeholder: this.dynElement.selectPlaceholder,
+      searchMessage: this.dynElement.searchInputPlaceholder,
+      selectAllMessage: this.dynElement.selectAllMessage,
+      cancelMessage: this.dynElement.cancelMessage,
+      clearMessage: this.dynElement.clearMessage,
+      selectedMessage: this.dynElement.selectedMessage,
+      disabled,
+    };
   }
 
 }

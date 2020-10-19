@@ -18,8 +18,12 @@ export class CrudTableHelper {
         keyElement: column.keyColumn,
         disableOnEdit: column.formDisableOnEdit,
         getOptionsFunc: dataManager.service.getOptions.bind(dataManager.service),
+        multiple: column.multiple,
         selectPlaceholder: dataManager.messages.selectPlaceholder,
         searchInputPlaceholder: dataManager.messages.search,
+        selectAllMessage: dataManager.messages.selectAll,
+        cancelMessage: dataManager.messages.cancel,
+        clearMessage: dataManager.messages.clear,
       });
     });
   }

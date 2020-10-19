@@ -1,12 +1,20 @@
 import { Page } from '../page';
 import '@mazdik-lib/crud-table';
 import { CrudTableComponent, CdtSettings, DataManager } from '@mazdik-lib/crud-table';
-import { ColumnBase } from '@mazdik-lib/data-table';
+import { ColumnBase, PipeTransform } from '@mazdik-lib/data-table';
 import { SelectItem } from '@mazdik-lib/common';
 import '@mazdik-lib/select-list';
 import { SelectListComponent } from '@mazdik-lib/select-list';
 import { DemoService } from '../shared/demo.service';
 import { CellMultiSelectRenderer } from '../shared/cell-multi-select-renderer';
+
+export class ArrayToStringPipe implements PipeTransform {
+  transform(value: any): string {
+    if (!value) return value;
+    console.log(value)
+    return value.join();
+  }
+}
 
 export default class CtMultiSelect implements Page {
 
@@ -32,14 +40,19 @@ export default class CtMultiSelect implements Page {
     const component = document.querySelector('web-crud-table') as CrudTableComponent;
 
     const columns: ColumnBase[] = [
-      { title: 'Id', name: 'id' },
-      { title: 'Name', name: 'name' },
       {
         title: 'Test',
         name: 'test',
         width: 250,
+        type: 'select-dropdown',
+        multiple: true,
+        options,
         cellTemplate: new CellMultiSelectRenderer(selectList, options),
-      }
+        pipe: new ArrayToStringPipe()
+      },
+      { title: 'Id', name: 'id' },
+      { title: 'Name', name: 'name' },
+      { title: 'Race', name: 'race' },
     ];
     const settings = new CdtSettings({
       crud: true,

@@ -118,7 +118,7 @@
 .inventory-modal .ui-modal { width: 56.25rem; }
 
 /* MultiSelectDemo */
-.multi-select-demo {width: 37.5rem;}
+.multi-select-demo {width: 48rem;}
 .multi-select-demo .datatable-body-cell {padding: 0; margin: 0;}
 .multi-select-demo .datatable-body-cell > .cell-data,
 .multi-select-demo .datatable-body-cell .view-data {padding: .25rem .1875rem;}

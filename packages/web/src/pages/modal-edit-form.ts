@@ -16,9 +16,21 @@ export default class ModalEditFormDemo implements Page {
 
   private dynElements: DynamicFormElement[] = [
     new DynamicFormElement({
-      title: 'Id',
-      name: 'id',
-      type: 'number',
+      title: 'Multiple Select',
+      name: 'multiple_select',
+      type: 'select-dropdown',
+      options: [
+        { id: '1', name: 'CLERIC' },
+        { id: '2', name: 'RANGER' },
+        { id: '3', name: 'WARRIOR' },
+        { id: '4', name: 'GLADIATOR' },
+        { id: '5', name: 'SCOUT' },
+        { id: '6', name: 'MAGE' },
+        { id: '7', name: 'TEMPLAR' },
+        { id: '8', name: 'SORCERER' },
+        { id: '9', name: 'ASSASSIN' },
+      ],
+      multiple: true
     }),
     new DynamicFormElement({
       title: 'Name',
@@ -96,7 +108,7 @@ export default class ModalEditFormDemo implements Page {
   ];
 
   private item: any = {
-    'id': 96491,
+    'multiple_select': ['4'],
     'name': 'Defunct',
     'race': 'ASMODIANS',
     'note': 'ASM2',
@@ -130,7 +142,7 @@ export default class ModalEditFormDemo implements Page {
     });
     const updateButton = document.querySelector('#updateButton');
     updateButton.addEventListener('click', () => {
-      component.modalTitle = 'Edite item';
+      component.modalTitle = 'Edit item';
       component.update();
     });
     const viewButton = document.querySelector('#viewButton');

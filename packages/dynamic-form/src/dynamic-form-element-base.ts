@@ -16,8 +16,12 @@ export class DynamicFormElementBase {
   keyElement?: string;
   disableOnEdit?: boolean;
   getOptionsFunc: GetOptionsFunc;
+  multiple: boolean;
   selectPlaceholder: string = 'Select...';
   searchInputPlaceholder: string = 'Search...';
-  multiple: boolean;
+  selectAllMessage?: string = 'Select all';
+  cancelMessage?: string = 'Cancel';
+  clearMessage?: string = 'Clear';
+  selectedMessage?: string = 'Selected';
 
 }

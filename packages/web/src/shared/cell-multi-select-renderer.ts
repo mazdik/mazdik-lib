@@ -119,7 +119,7 @@ export class CellMultiSelectRenderer implements TemplateRenderer {
     const { cell } = context;
     const data = event.detail;
     if (data.type === CellEventType.Click) {
-      const editing = data.columnIndex === 3 && data.rowIndex === cell.rowIndex;
+      const editing = data.columnIndex === 1 && data.rowIndex === cell.rowIndex;
       this.isOpen = false;
       this.updateEditing(cell, editing);
       if (editing) {
