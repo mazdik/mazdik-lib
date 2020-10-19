@@ -97,7 +97,7 @@ export class Column extends ColumnBase {
   getValueView(row: any) {
     let value = this.getValue(row);
     const dependsValue = row[this.dependsColumn] ? row[this.dependsColumn] : null;
-    if (value) {
+    if (value && !Array.isArray(value)) {
       value = this.getOptionName(value, dependsValue);
     }
     if (this.pipe) {

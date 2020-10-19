@@ -8,11 +8,25 @@ import { SelectListComponent } from '@mazdik-lib/select-list';
 import { DemoService } from '../shared/demo.service';
 import { CellMultiSelectRenderer } from '../shared/cell-multi-select-renderer';
 
+export function getNames(items: any[], options: SelectItem[]): string {
+  if (items && items.length && options && options.length) {
+    if (items.length > 1) {
+      return items.length + ' items selected';
+    } else {
+      const option = options.find((x) => x.id === items[0]);
+      return (option) ? option.name : '';
+    }
+  }
+  return '';
+}
+
 export class ArrayToStringPipe implements PipeTransform {
+
+  constructor(private options: SelectItem[]) {}
+
   transform(value: any): string {
     if (!value) return value;
-    console.log(value)
-    return value.join();
+    return getNames(value, this.options);
   }
 }
 
@@ -40,7 +54,7 @@ export default class CtMultiSelect implements Page {
     selectList.options = options;
 
     const component = document.querySelector('web-crud-table') as CrudTableComponent;
-    this.cellMultiSelectRenderer = new CellMultiSelectRenderer(selectList, options, 1);
+    this.cellMultiSelectRenderer = new CellMultiSelectRenderer(selectList, options, 1, getNames);
     const columns: ColumnBase[] = [
       {
         title: 'Test',
@@ -50,11 +64,12 @@ export default class CtMultiSelect implements Page {
         multiple: true,
         options,
         cellTemplate: this.cellMultiSelectRenderer,
-        pipe: new ArrayToStringPipe()
+        pipe: new ArrayToStringPipe(options)
       },
       { title: 'Id', name: 'id' },
       { title: 'Name', name: 'name' },
       { title: 'Race', name: 'race' },
+      { title: 'Gender', name: 'gender' },
     ];
     const settings = new CdtSettings({
       crud: true,

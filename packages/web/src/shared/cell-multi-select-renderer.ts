@@ -19,7 +19,12 @@ export class CellMultiSelectRenderer implements TemplateRenderer {
   }
   private _isOpen = false;
 
-  constructor(private selectList: SelectListComponent, private options: SelectItem[], private columnIndex: number) {
+  constructor(
+    private selectList: SelectListComponent,
+    private options: SelectItem[],
+    private columnIndex: number,
+    private getNames: (items: any[], options: SelectItem[]) => string
+  ) {
     this.updateStyleSelectList();
     this.addGlobalListener({
       eventName: 'selectionChange',
@@ -157,25 +162,13 @@ export class CellMultiSelectRenderer implements TemplateRenderer {
   }
 
   private updateSelectedName(cell: Cell) {
-    const selectedName = this.getName(cell.value);
+    const selectedName = this.getNames(cell.value, this.options);
     const input = this.inputs.get(cell);
     input.value = selectedName;
 
     const element = this.elements.get(cell);
     const view = element.firstElementChild as HTMLElement;
     view.textContent = selectedName;
-  }
-
-  private getName(items: any): string {
-    if (items && items.length && this.options && this.options.length) {
-      if (items.length > 1) {
-        return items.length + ' items selected';
-      } else {
-        const option = this.options.find((x) => x.id === items[0]);
-        return (option) ? option.name : '';
-      }
-    }
-    return '';
   }
 
   private updateStyleSelectList() {
