@@ -118,11 +118,13 @@ export class CellMultiSelectRenderer implements TemplateRenderer {
   private onCell(context: TemplateContext, event: CustomEvent<CellEventArgs>) {
     const { cell } = context;
     const data = event.detail;
-    const editing = data.type === CellEventType.Click && data.columnIndex === 3 && data.rowIndex === cell.rowIndex;
-    this.isOpen = false;
-    this.updateEditing(cell, editing);
-    if (editing) {
-      this.selectedCell = cell;
+    if (data.type === CellEventType.Click) {
+      const editing = data.columnIndex === 3 && data.rowIndex === cell.rowIndex;
+      this.isOpen = false;
+      this.updateEditing(cell, editing);
+      if (editing) {
+        this.selectedCell = cell;
+      }
     }
   }
 

@@ -19,6 +19,7 @@ export class SelectDropdownComponent extends InputOptionComponent {
       this.dropdownSelect.settings = {
         placeholder: this.dynElement.selectPlaceholder,
         searchMessage: this.dynElement.searchInputPlaceholder,
+        multiple: this.dynElement.multiple,
       };
       this.dropdownSelect.options = this.getOptions();
       this.dropdownSelect.value = this.value;

@@ -18,5 +18,6 @@ export class DynamicFormElementBase {
   getOptionsFunc: GetOptionsFunc;
   selectPlaceholder: string = 'Select...';
   searchInputPlaceholder: string = 'Search...';
+  multiple: boolean;
 
 }
