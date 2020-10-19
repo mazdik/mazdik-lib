@@ -25,6 +25,8 @@ export default class CtMultiSelect implements Page {
     </div>`;
   }
 
+  private cellMultiSelectRenderer: CellMultiSelectRenderer;
+
   load() {
     const options: SelectItem[] = [
       {id: '1', name: 'Select 1'},
@@ -38,7 +40,7 @@ export default class CtMultiSelect implements Page {
     selectList.options = options;
 
     const component = document.querySelector('web-crud-table') as CrudTableComponent;
-
+    this.cellMultiSelectRenderer = new CellMultiSelectRenderer(selectList, options, 1);
     const columns: ColumnBase[] = [
       {
         title: 'Test',
@@ -47,7 +49,7 @@ export default class CtMultiSelect implements Page {
         type: 'select-dropdown',
         multiple: true,
         options,
-        cellTemplate: new CellMultiSelectRenderer(selectList, options),
+        cellTemplate: this.cellMultiSelectRenderer,
         pipe: new ArrayToStringPipe()
       },
       { title: 'Id', name: 'id' },
@@ -60,6 +62,10 @@ export default class CtMultiSelect implements Page {
     const service = new DemoService();
     const dataManager = new DataManager(columns, settings, service);
     component.dataManager = dataManager;
+  }
+
+  onDestroy() {
+    this.cellMultiSelectRenderer.removeGlobalEventListeners();
   }
 
 }

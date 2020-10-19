@@ -8,6 +8,7 @@ export class CellMultiSelectRenderer implements TemplateRenderer {
   private inputs = new Map<Cell, HTMLInputElement>();
   private icons = new Map<Cell, HTMLElement>();
   private listeners: Listener[] = [];
+  private globalListeners: Listener[] = [];
   private selectedCell: Cell;
 
   private get isOpen(): boolean { return this._isOpen; }
@@ -18,19 +19,19 @@ export class CellMultiSelectRenderer implements TemplateRenderer {
   }
   private _isOpen = false;
 
-  constructor(private selectList: SelectListComponent, private options: SelectItem[]) {
+  constructor(private selectList: SelectListComponent, private options: SelectItem[], private columnIndex: number) {
     this.updateStyleSelectList();
-    this.addListener({
+    this.addGlobalListener({
       eventName: 'selectionChange',
       target: this.selectList,
       handler: this.onSelectionChange.bind(this)
     });
-    this.addListener({
+    this.addGlobalListener({
       eventName: 'selectionCancel',
       target: this.selectList,
       handler: this.onSelectionCancel.bind(this)
     });
-    this.addListener({
+    this.addGlobalListener({
       eventName: 'click',
       target: window,
       handler: this.onClickWindow.bind(this)
@@ -99,8 +100,19 @@ export class CellMultiSelectRenderer implements TemplateRenderer {
     listener.target.addEventListener(listener.eventName, listener.handler);
   }
 
+  private addGlobalListener(listener: Listener) {
+    this.globalListeners.push(listener);
+    listener.target.addEventListener(listener.eventName, listener.handler);
+  }
+
   private removeEventListeners() {
     this.listeners.forEach(x => {
+      x.target.removeEventListener(x.eventName, x.handler);
+    });
+  }
+
+  removeGlobalEventListeners() {
+    this.globalListeners.forEach(x => {
       x.target.removeEventListener(x.eventName, x.handler);
     });
   }
@@ -119,7 +131,7 @@ export class CellMultiSelectRenderer implements TemplateRenderer {
     const { cell } = context;
     const data = event.detail;
     if (data.type === CellEventType.Click) {
-      const editing = data.columnIndex === 1 && data.rowIndex === cell.rowIndex;
+      const editing = data.columnIndex === this.columnIndex && data.rowIndex === cell.rowIndex;
       this.isOpen = false;
       this.updateEditing(cell, editing);
       if (editing) {
