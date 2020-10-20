@@ -165,6 +165,8 @@ export class CrudTableComponent extends HTMLElement {
 
   private onScroll() {
     this.rowMenu.hide();
+    // TODO direction
+    //this.dataManager.loadNextPage();
   }
 
   private onRowMenuClick(context: TemplateContext, event: MouseEvent) {

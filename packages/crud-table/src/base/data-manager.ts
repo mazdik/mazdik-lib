@@ -18,6 +18,7 @@ export class DataManager extends DataTable {
   constructor(columns: ColumnBase[], settings: CdtSettings, dataSource: DataSource, messages?: DtMessages) {
     super(((x) => { columns.unshift(x); return columns; })(ColumnModelGenerator.actionColumn), settings, messages);
     this.settings = new CdtSettings(settings);
+    //this.settings.paginator = !this.settings.virtualScroll;
     this.clientSide = false;
     this.service = dataSource;
 
@@ -35,17 +36,24 @@ export class DataManager extends DataTable {
   }
 
   loadItems() {
-    return this.getItems(this.settings.virtualScroll);
+    return this.getItems(this.settings.virtualScroll, this.pager.current);
   }
 
-  getItems(concatRows: boolean = false): Promise<any> {
-    if (concatRows === true && this.pagerCache[this.pager.current]) {
+  loadNextPage() {
+    let totalPages = this.pager.perPage < 1 ? 1 : Math.ceil(this.pager.total / this.pager.perPage);
+    totalPages = Math.max(totalPages || 0, 1);
+    const page = Math.min(this.pager.current + 1, totalPages);
+    return this.getItems(this.settings.virtualScroll, page);
+  }
+
+  getItems(concatRows: boolean = false, page: number): Promise<any> {
+    if (concatRows === true && this.pagerCache[page]) {
       return Promise.resolve();
     }
     this.events.emitLoading(true);
     this.setSortMetaGroup();
     const requestMeta: RequestMetadata = {
-      pageMeta: { currentPage: this.pager.current, perPage: this.pager.perPage },
+      pageMeta: { currentPage: page, perPage: this.pager.perPage },
       filters: this.dataFilter.filters,
       sortMeta: this.sorter.sortMeta,
       globalFilterValue: this.dataFilter.globalFilterValue,
@@ -61,7 +69,7 @@ export class DataManager extends DataTable {
           this.pager.total = data._meta.totalCount;
         }
         this.pager.perPage = data._meta.perPage;
-        this.pagerCache[this.pager.current] = true;
+        this.pagerCache[page] = true;
         this.rows = rows;
       })
       .finally(() => { this.events.emitLoading(false); });

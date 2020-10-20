@@ -52,7 +52,7 @@ export function getNavMenuNodes(): any[] {
         { id: 'dt-row-group-summary', name: 'Summary rows with grouping' },
         { id: 'dt-summary-row', name: 'Summary row' },
         { id: 'dt-multiple-selection', name: 'Multiple selection' },
-        { id: 'dt-virtual-scroll', name: 'Virtual scroll' },
+        { id: 'dt-virtual-scroll', name: 'Virtual scroll (client-side)' },
         { id: 'dt-css', name: 'CSS' },
         { id: 'dt-column-group', name: 'Column group' },
         { id: 'dt-template', name: 'Templates' },
@@ -63,6 +63,7 @@ export function getNavMenuNodes(): any[] {
         { id: 'crud-table', name: 'CRUD table' },
         { id: 'ct-custom-row-action', name: 'Custom row action' },
         { id: 'ct-multi-select', name: 'Multi select' },
+        { id: 'ct-virtual-scroll', name: 'Virtual scroll (server-side)' },
       ]
     },
   ];
