@@ -87,14 +87,6 @@ export class ContextMenuComponent extends HTMLElement {
     if (top + height - window.pageYOffset > window.innerHeight) {
       top -= height;
     }
-    // fit
-    if (left < document.body.scrollLeft) {
-      left = document.body.scrollLeft;
-    }
-    // fit
-    if (top < document.body.scrollTop) {
-      top = document.body.scrollTop;
-    }
     return { left, top };
   }
 

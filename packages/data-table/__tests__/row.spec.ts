@@ -5,7 +5,7 @@ import { Settings } from '../src/base/settings';
 
 describe('Row', () => {
 
-  const data = { id: 10, name: 'Anastasia', $$uid: 9999, $$height: 40 };
+  const data = { id: 10, name: 'Anastasia', $$uid: 9999, $$height: 40, $$editable: true };
   let column: Column;
   let row: Row;
 

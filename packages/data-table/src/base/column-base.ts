@@ -36,4 +36,5 @@ export class ColumnBase {
   dataType?: DataType;
   formDisableOnEdit?: boolean;
   pipe?: PipeTransform;
+  multiple?: boolean;
 }

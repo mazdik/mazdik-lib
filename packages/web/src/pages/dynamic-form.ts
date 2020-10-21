@@ -11,9 +11,21 @@ export default class DynamicFormDemo implements Page {
 
   private dynElements: DynamicFormElement[] = [
     new DynamicFormElement({
-      title: 'Id',
-      name: 'id',
-      type: 'number',
+      title: 'Multiple Select',
+      name: 'multiple_select',
+      type: 'select-dropdown',
+      options: [
+        { id: '1', name: 'CLERIC' },
+        { id: '2', name: 'RANGER' },
+        { id: '3', name: 'WARRIOR' },
+        { id: '4', name: 'GLADIATOR' },
+        { id: '5', name: 'SCOUT' },
+        { id: '6', name: 'MAGE' },
+        { id: '7', name: 'TEMPLAR' },
+        { id: '8', name: 'SORCERER' },
+        { id: '9', name: 'ASSASSIN' },
+      ],
+      multiple: true
     }),
     new DynamicFormElement({
       title: 'Name',

@@ -11,6 +11,10 @@ export default class DtVirtualScrollDemo implements Page {
   }
 
   load() {
+    this.clientSide();
+  }
+
+  private clientSide() {
     const component = document.querySelector('web-data-table') as DataTableComponent;
 
     const columns = getColumnsPlayers();

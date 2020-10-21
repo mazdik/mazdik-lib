@@ -1,7 +1,7 @@
 import { Page } from '../page';
 import '@mazdik-lib/dropdown-select';
 import { DropdownSelectComponent } from '@mazdik-lib/dropdown-select';
-import { SelectItem } from '@mazdik-lib/common';;
+import { SelectItem } from '@mazdik-lib/common';
 
 export default class DropdownSelectDemo implements Page {
 
