@@ -18,7 +18,6 @@ export class DataManager extends DataTable {
   constructor(columns: ColumnBase[], settings: CdtSettings, dataSource: DataSource, messages?: DtMessages) {
     super(((x) => { columns.unshift(x); return columns; })(ColumnModelGenerator.actionColumn), settings, messages);
     this.settings = new CdtSettings(settings);
-    //this.settings.paginator = !this.settings.virtualScroll;
     this.clientSide = false;
     this.service = dataSource;
 
@@ -37,13 +36,6 @@ export class DataManager extends DataTable {
 
   loadItems() {
     return this.getItems(this.settings.virtualScroll, this.pager.current);
-  }
-
-  loadNextPage() {
-    let totalPages = this.pager.perPage < 1 ? 1 : Math.ceil(this.pager.total / this.pager.perPage);
-    totalPages = Math.max(totalPages || 0, 1);
-    const page = Math.min(this.pager.current + 1, totalPages);
-    return this.getItems(this.settings.virtualScroll, page);
   }
 
   getItems(concatRows: boolean = false, page: number): Promise<any> {

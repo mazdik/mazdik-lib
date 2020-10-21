@@ -42,13 +42,13 @@ export function getNavMenuNodes(): any[] {
       name: 'Data table',
       expanded: true,
       children: [
-        { id: 'dt-basic', name: 'Data table' },
+        { id: 'dt-basic', name: 'Basic data table' },
         { id: 'dt-master-detail', name: 'Master detail' },
         { id: 'dt-modal', name: 'Modal data table' },
         { id: 'dt-multiple-sort', name: 'Multiple sorting' },
         { id: 'dt-row-group', name: 'Row group' },
         { id: 'dt-row-group-multiple', name: 'Row group multiple' },
-        { id: 'dt-global-filter', name: 'Global filtering' },
+        { id: 'dt-global-filter', name: 'Global filtering (client-side)' },
         { id: 'dt-row-group-summary', name: 'Summary rows with grouping' },
         { id: 'dt-summary-row', name: 'Summary row' },
         { id: 'dt-multiple-selection', name: 'Multiple selection' },
@@ -60,9 +60,16 @@ export function getNavMenuNodes(): any[] {
         { id: 'dt-vertical-group', name: 'Vertical group' },
         { id: 'dt-editable-condition', name: 'Editable condition' },
         { id: 'dt-pipe', name: 'Pipe on column' },
-        { id: 'crud-table', name: 'CRUD table' },
+      ]
+    },
+    {
+      name: 'CRUD table',
+      expanded: true,
+      children: [
+        { id: 'ct-basic', name: 'Basic CRUD table' },
         { id: 'ct-custom-row-action', name: 'Custom row action' },
         { id: 'ct-multi-select', name: 'Multi select' },
+        { id: 'ct-global-filter', name: 'Global filtering (server-side)' },
         { id: 'ct-virtual-scroll', name: 'Virtual scroll (server-side)' },
       ]
     },
