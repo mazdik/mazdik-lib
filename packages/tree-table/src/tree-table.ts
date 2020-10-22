@@ -23,7 +23,6 @@ export class TreeTable extends DataTable {
   }
 
   getIconFunc: (node?: TreeNode) => string;
-  indent: number = 10;
   readonly tree: Tree;
   private readonly treeFlattener: TreeFlattener;
 

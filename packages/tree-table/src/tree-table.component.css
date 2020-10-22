@@ -1,0 +1,7 @@
+.datatable-tree-node {
+  cursor: pointer;
+}
+
+.datatable-tree-node-content > i {
+  margin-right: .2rem;
+}

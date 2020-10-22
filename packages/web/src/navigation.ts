@@ -60,6 +60,7 @@ export function getNavMenuNodes(): any[] {
         { id: 'dt-vertical-group', name: 'Vertical group' },
         { id: 'dt-editable-condition', name: 'Editable condition' },
         { id: 'dt-pipe', name: 'Pipe on column' },
+        { id: 'tree-table-lazy-load', name: 'Tree table lazy load' },
       ]
     },
     {

@@ -17,6 +17,7 @@
 @import '../modal-select/src/modal-select.component.css';
 @import '../crud-table/src/crud-table.component.css';
 @import '../data-table/src/data-table.component.css';
+@import '../tree-table/src/tree-table.component.css';
 @import '../notify/src/notify.component.css';
 @import '../pagination/src/pagination.component.css';
 @import '../row-view/src/row-view.component.css';
