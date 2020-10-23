@@ -61,6 +61,7 @@ export function getNavMenuNodes(): any[] {
         { id: 'dt-editable-condition', name: 'Editable condition' },
         { id: 'dt-pipe', name: 'Pipe on column' },
         { id: 'tree-table-lazy-load', name: 'Tree table lazy load' },
+        { id: 'tree-table-flat', name: 'Tree table from flat array' },
       ]
     },
     {

@@ -3,12 +3,12 @@ import '@mazdik-lib/tree-table';
 import { Settings } from '@mazdik-lib/data-table';
 import { TreeTableComponent, TreeTable } from '@mazdik-lib/tree-table';
 import { getTreeColumns } from '../shared/columns';
-import { TreeDemoService } from '../shared/tree-demo-service';
+import { TreeBuilder } from '@mazdik-lib/tree-lib';
 
-export default class TreeTableLazyLoadDemo implements Page {
+export default class TreeTableFlatDemo implements Page {
 
   get template(): string {
-    return `<p>Tree with lazy load child nodes</p>
+    return `<p>Build tree array from flat array (id, parentId)</p>
     <web-tree-table></web-tree-table>`;
   }
 
@@ -23,13 +23,17 @@ export default class TreeTableLazyLoadDemo implements Page {
       filter: false,
       sortable: false,
     });
-
-    const treeService = new TreeDemoService();
-    const treeTable = new TreeTable(columns, settings, treeService);
-    treeTable.pager.perPage = 1000;
-    treeTable.getIconFunc = (node) => (!node.isLeaf()) ? 'dt-icon-folder' : 'dt-icon-file';
-
+    const treeTable = new TreeTable(columns, settings, null);
     component.treeTable = treeTable;
+
+    treeTable.events.emitLoading(true);
+    fetch('assets/flatten-tree.json')
+      .then(res => res.json())
+      .then(data => {
+        const nodes = TreeBuilder.rowsToTree(data, 'parentId', 'id');
+        treeTable.nodes = nodes;
+        treeTable.events.emitLoading(false);
+      });
   }
 
 }
