@@ -32,9 +32,9 @@ export default class DtGlobalFilterDemo implements Page {
         table.events.emitLoading(false);
       });
 
-      const toolbarComponent = document.querySelector('web-dt-toolbar') as DtToolbarComponent;
-      toolbarComponent.table = table;
-      toolbarComponent.globalFilter = true;
+    const toolbarComponent = document.querySelector('web-dt-toolbar') as DtToolbarComponent;
+    toolbarComponent.table = table;
+    toolbarComponent.globalFilter = true;
   }
 
 }

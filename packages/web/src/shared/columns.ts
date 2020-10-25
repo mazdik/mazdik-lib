@@ -181,7 +181,7 @@ export function getTreeColumns(): ColumnBase[] {
       width: 250,
     },
     {
-      title: 'Cube_size',
+      title: 'Cube size',
       name: 'cube_size',
       editable: true,
       width: 250,
