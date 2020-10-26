@@ -264,3 +264,20 @@
 
 /* DtColumnGroupDemo */
 .dt-column-group-demo .datatable-header-cell {justify-content: center;}
+
+/* DragToScrollDemo */
+.drag-to-scroll-demo {
+  width: 30rem;
+  height: 30rem;
+  overflow: auto;
+  display: grid;
+  grid-template-columns: repeat(4, 10rem);
+  grid-template-rows: repeat(4, 10rem);
+  grid-gap: 2rem;
+}
+.drag-to-scroll-demo div {
+  display: flex;
+  background-color: LightSlateGray;
+  align-items: center;
+  justify-content: center;
+}

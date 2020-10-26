@@ -20,6 +20,7 @@
     "@mazdik-lib/crud-table": "0.1.0",
     "@mazdik-lib/data-table": "0.1.0",
     "@mazdik-lib/drag-drop": "0.1.0",
+    "@mazdik-lib/drag-to-scroll": "0.1.0",
     "@mazdik-lib/draggable": "0.1.0",
     "@mazdik-lib/dropdown": "0.1.0",
     "@mazdik-lib/dropdown-select": "0.1.0",
