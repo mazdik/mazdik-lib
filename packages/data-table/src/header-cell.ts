@@ -16,7 +16,7 @@ export class HeaderCell {
     this.addEventListeners();
     this.updateStyles();
 
-    this.resizable = new Resizable(this.element, false, this.column.resizeable, false, true);
+    this.resizable = new Resizable(this.element, { south: false, east: this.column.resizeable, southEast: false, ghost: true });
     this.resizable.addEventListeners();
   }
 

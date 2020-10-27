@@ -13,7 +13,7 @@ export default class ResizableDemo implements Page {
 
   load() {
     const box = document.querySelector('#box1') as HTMLElement;
-    this.resizable = new Resizable(box, true, true, true);
+    this.resizable = new Resizable(box, { south: true, east: true, southEast: true });
     this.resizable.addEventListeners();
   }
 
