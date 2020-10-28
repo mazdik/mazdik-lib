@@ -15,6 +15,7 @@
     "b": "webpack"
   },
   "dependencies": {
+    "@mazdik-lib/chart-slider": "0.1.0",
     "@mazdik-lib/common": "0.1.0",
     "@mazdik-lib/context-menu": "0.1.0",
     "@mazdik-lib/crud-table": "0.1.0",

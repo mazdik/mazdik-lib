@@ -37,6 +37,7 @@ export function getNavMenuNodes(): any[] {
         { id: 'simple-bar-chart', name: 'Simple bar chart' },
         { id: 'file-upload', name: 'File upload' },
         { id: 'drag-to-scroll', name: 'Drag to scroll' },
+        { id: 'chart-slider', name: 'Chart slider' },
       ]
     },
     {
