@@ -1,17 +1,34 @@
 import { isBlank, Listener } from '@mazdik-lib/common';
-import { DraggableEvent } from '@mazdik-lib/draggable';
-import { ResizableEvent } from '@mazdik-lib/resizable';
+import { Draggable, DraggableEvent } from '@mazdik-lib/draggable';
+import { Resizable, ResizableEvent } from '@mazdik-lib/resizable';
+import { DragToScroll } from '@mazdik-lib/drag-to-scroll';
 import { ChartInterval, AxisLabel, ChartSliderData } from './types';
 import {
   createChartSliderData, createXAxisLabels, calcHandleDates, calcDatePercentage, getMinMaxHandleTimes, calcPositionPercent, getDiffTime
- } from './chart-slider.data';
+} from './chart-slider.data';
 
 export class ChartSliderComponent extends HTMLElement {
 
-  dateFrom: Date;
-  dateTo: Date;
-  intervals: ChartInterval[];
-  handleMultiplier = 2;
+  get dateFrom(): Date { return this._dateFrom }
+  set dateFrom(val: Date) {
+    this._dateFrom = val;
+    this.onInputChanges();
+  }
+  private _dateFrom: Date;
+
+  get dateTo(): Date { return this._dateTo }
+  set dateTo(val: Date) {
+    this._dateTo = val;
+    this.onInputChanges();
+  }
+  private _dateTo: Date;
+
+  get intervals(): ChartInterval[] { return this._intervals; }
+  set intervals(val: ChartInterval[]) {
+    this._intervals = val;
+    this.onInputChanges();
+  }
+  private _intervals: ChartInterval[];
 
   get zoom(): number { return this._zoom; }
   set zoom(val: number) {
@@ -22,22 +39,29 @@ export class ChartSliderComponent extends HTMLElement {
   }
   private _zoom = 1;
 
-  xAxisLabels: AxisLabel[] = [];
-  chartSliderData: ChartSliderData[] = [];
-  dragEventTarget: MouseEvent | TouchEvent;
-  handleWidth: number;
-  handleMinWidth: number;
-  handleMaxWidth: number;
-  handleLeftPos = 0;
-  chartSliderWidth = 100;
+  private handleMultiplier = 2;
+  private xAxisLabels: AxisLabel[] = [];
+  private chartSliderData: ChartSliderData[] = [];
+  private dragEventTarget: MouseEvent | TouchEvent;
+  private handleWidth: number;
+  private handleMinWidth: number;
+  private handleMaxWidth: number;
+  private handleLeftPos = 0;
+  private chartSliderWidth = 100;
 
   private countAxisLabels = 15;
   private minHandleTime: number;
   private maxHandleTime: number;
 
-  private element: HTMLElement;
+  private slider: HTMLElement;
   private sliderLine: HTMLElement;
   private sliderAxis: HTMLElement;
+  private sliderHandle: HTMLElement;
+  private sliderHandleBody: HTMLElement;
+  private unit = '%';
+  private draggableDirective: Draggable;
+  private resizableDirective: Resizable;
+  private dragToScroll: DragToScroll;
 
   private listeners: Listener[] = [];
   private isInitialized: boolean;
@@ -55,23 +79,13 @@ export class ChartSliderComponent extends HTMLElement {
 
   disconnectedCallback() {
     this.removeEventListeners();
+    this.draggableDirective.destroy();
+    this.resizableDirective.destroy();
+    this.dragToScroll.destroy();
   }
 
   private onInit() {
-    this.classList.add('chart-slider-wrapper');
-
-    this.element = document.createElement('div');
-    this.element.classList.add('chart-slider');
-    this.append(this.element);
-
-    this.sliderLine = document.createElement('div');
-    this.sliderLine.classList.add('chart-slider__line');
-    this.element.append(this.sliderLine);
-
-    this.sliderAxis = document.createElement('div');
-    this.sliderAxis.classList.add('chart-slider__axis');
-    this.element.append(this.sliderAxis);
-
+    this.renderInit();
     this.addEventListeners();
   }
 
@@ -95,11 +109,12 @@ export class ChartSliderComponent extends HTMLElement {
     });
   }
 
-  ngOnChanges(): void {
+  private onInputChanges(): void {
     if (this.dateFrom && this.dateTo && this.intervals) {
       this.handleLeftPos = 0;
       [this.minHandleTime, this.maxHandleTime] = getMinMaxHandleTimes(this.dateFrom, this.dateTo, this.handleMultiplier);
       this.createChartSlider();
+      this.render();
     }
   }
 
@@ -109,6 +124,7 @@ export class ChartSliderComponent extends HTMLElement {
     } else if (event.key === 'ArrowRight') {
       this.incrementHandleLeftPos();
     }
+    this.updateStyles();
   }
 
   private createChartSlider(): void {
@@ -171,14 +187,84 @@ export class ChartSliderComponent extends HTMLElement {
     this.handleLeftPos = calcPositionPercent(this.dateFrom, this.dateTo, dateFrom, this.handleWidth);
     this.createChartSlider();
 
-    requestAnimationFrame (() => {
-      const left = (this.element.scrollWidth - this.element.clientWidth) * this.handleLeftPos / 100;
-      this.element.scrollLeft = left;
+    requestAnimationFrame(() => {
+      const left = (this.scrollWidth - this.clientWidth) * this.handleLeftPos / 100;
+      this.scrollLeft = left;
     });
   }
 
+  private renderInit() {
+    this.classList.add('chart-slider-wrapper');
+
+    this.slider = document.createElement('div');
+    this.slider.classList.add('chart-slider');
+    this.append(this.slider);
+
+    this.sliderLine = document.createElement('div');
+    this.sliderLine.classList.add('chart-slider__line');
+    this.slider.append(this.sliderLine);
+
+    this.sliderAxis = document.createElement('div');
+    this.sliderAxis.classList.add('chart-slider__axis');
+    this.slider.append(this.sliderAxis);
+
+    this.sliderHandle = document.createElement('div');
+    this.sliderHandle.classList.add('chart-slider__handle');
+
+    this.sliderHandleBody = document.createElement('div');
+    this.sliderHandleBody.classList.add('chart-slider__handle__body');
+    this.sliderHandle.append(this.sliderHandleBody);
+
+    this.draggableDirective = new Draggable(this.sliderHandle);
+    this.resizableDirective = new Resizable(this.sliderHandle);
+    this.dragToScroll = new DragToScroll(this);
+  }
+
+  private render() {
+    const lineCols = this.chartSliderData.map(data => {
+      const lineCol = document.createElement('div');
+      lineCol.classList.add('chart-slider__line__col');
+      lineCol.style.width = data.widthPercent + this.unit;
+      lineCol.style.left = data.positionPercent + this.unit;
+
+      const lineColItems = data.items.map(item => {
+        const lineColItem = document.createElement('div');
+        lineColItem.classList.add('chart-slider__line__col__item');
+        lineColItem.style.height = item.heightPercent + this.unit;
+        lineColItem.style.backgroundColor = item.color;
+        return lineColItem;
+      });
+      lineCol.append(...lineColItems);
+
+      return lineCol;
+    });
+    this.sliderLine.innerHTML = '';
+    this.sliderLine.append(...lineCols);
+    this.sliderLine.append(this.sliderHandle);
+
+    const axisItems = this.xAxisLabels.map((xAxisLabel, index) => {
+      const element = document.createElement('div');
+      element.classList.add('chart-slider__axis__item');
+      if (index === this.xAxisLabels.length - 1) {
+        element.classList.add('last');
+      }
+      element.style.width = xAxisLabel.widthPercent + this.unit;
+      element.style.left = xAxisLabel.positionPercent + this.unit;
+      element.textContent = xAxisLabel.name;
+      return element;
+    });
+    this.sliderAxis.innerHTML = '';
+    this.sliderAxis.append(...axisItems);
+
+    this.updateStyles();
+  }
+
   private updateStyles() {
-    this.element.style.width = this.chartSliderWidth + '%';
+    this.slider.style.width = this.chartSliderWidth + this.unit;
+    this.sliderHandle.style.width =  this.handleWidth + this.unit;
+    this.sliderHandle.style.minWidth = this.handleMinWidth + this.unit;
+    this.sliderHandle.style.maxWidth = this.handleMaxWidth + this.unit;
+    this.sliderHandle.style.left = this.handleLeftPos + this.unit;
   }
 
 }
