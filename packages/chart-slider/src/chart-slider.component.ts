@@ -1,6 +1,6 @@
 import { isBlank, Listener } from '@mazdik-lib/common';
-import { Draggable, DraggableEvent } from '@mazdik-lib/draggable';
-import { Resizable, ResizableEvent } from '@mazdik-lib/resizable';
+import { Draggable, DraggableOptions, DraggableEvent } from '@mazdik-lib/draggable';
+import { Resizable, ResizableOptions, ResizableEvent } from '@mazdik-lib/resizable';
 import { DragToScroll } from '@mazdik-lib/drag-to-scroll';
 import { ChartInterval, AxisLabel, ChartSliderData } from './types';
 import {
@@ -96,6 +96,26 @@ export class ChartSliderComponent extends HTMLElement {
         target: window,
         handler: this.onKeyDown.bind(this)
       },
+      {
+        eventName: 'mousedown',
+        target: this.sliderHandleBody,
+        handler: this.onMouseDown.bind(this)
+      },
+      {
+        eventName: 'touchstart',
+        target: this.sliderHandleBody,
+        handler: this.onTouchStart.bind(this)
+      },
+      {
+        eventName: 'dragEnd',
+        target: this.sliderHandle,
+        handler: this.onDragEnd.bind(this)
+      },
+      {
+        eventName: 'resizeEnd',
+        target: this.sliderHandle,
+        handler: this.onResizeEnd.bind(this)
+      },
     ];
 
     this.listeners.forEach(x => {
@@ -135,18 +155,18 @@ export class ChartSliderComponent extends HTMLElement {
     this.chartSliderData = createChartSliderData(this.dateFrom, this.dateTo, this.intervals);
   }
 
-  private onDragEnd(event: DraggableEvent): void {
-    if (event && !isBlank(event.left)) {
-      this.handleLeftPos = event.left;
+  private onDragEnd(event: CustomEvent<DraggableEvent>): void {
+    if (event && !isBlank(event.detail.left)) {
+      this.handleLeftPos = event.detail.left;
       this.calcDates();
     }
   }
 
-  private onResizeEnd(event: ResizableEvent): void {
-    if (event && !isBlank(event.width)) {
-      this.handleWidth = event.width;
-      if (!isBlank(event.left)) {
-        this.handleLeftPos = event.left;
+  private onResizeEnd(event: CustomEvent<ResizableEvent>): void {
+    if (event && !isBlank(event.detail.width)) {
+      this.handleWidth = event.detail.width;
+      if (!isBlank(event.detail.left)) {
+        this.handleLeftPos = event.detail.left;
       }
       this.calcDates();
     }
@@ -215,9 +235,25 @@ export class ChartSliderComponent extends HTMLElement {
     this.sliderHandleBody.classList.add('chart-slider__handle__body');
     this.sliderHandle.append(this.sliderHandleBody);
 
-    this.draggableDirective = new Draggable(this.sliderHandle);
-    this.resizableDirective = new Resizable(this.sliderHandle);
-    this.dragToScroll = new DragToScroll(this);
+    const draggableOptions: DraggableOptions = {
+      dragX: true,
+      dragY: false,
+      inViewport: true,
+      relative: true,
+      inPercentage: true,
+      stopPropagation: true,
+    }
+    this.draggableDirective = new Draggable(this.sliderHandle, draggableOptions);
+    const resizableOptions: ResizableOptions = {
+      south: false,
+      east: true,
+      southEast: false,
+      west: true,
+      inPercentage: true,
+    };
+    this.resizableDirective = new Resizable(this.sliderHandle, resizableOptions);
+    this.resizableDirective.addEventListeners();
+    this.dragToScroll = new DragToScroll(this, { dragX: true, dragY: false });
   }
 
   private render() {
@@ -261,10 +297,18 @@ export class ChartSliderComponent extends HTMLElement {
 
   private updateStyles() {
     this.slider.style.width = this.chartSliderWidth + this.unit;
-    this.sliderHandle.style.width =  this.handleWidth + this.unit;
+    this.sliderHandle.style.width = this.handleWidth + this.unit;
     this.sliderHandle.style.minWidth = this.handleMinWidth + this.unit;
     this.sliderHandle.style.maxWidth = this.handleMaxWidth + this.unit;
     this.sliderHandle.style.left = this.handleLeftPos + this.unit;
+  }
+
+  private onMouseDown(event: MouseEvent) {
+    this.draggableDirective.start(event);
+  }
+
+  private onTouchStart(event: TouchEvent) {
+    this.draggableDirective.start(event);
   }
 
 }

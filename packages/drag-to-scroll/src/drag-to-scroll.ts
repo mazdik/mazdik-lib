@@ -1,9 +1,13 @@
+import { DragToScrollOptions } from './types';
+
 export class DragToScroll {
 
+  private options: DragToScrollOptions;
   private handler: (event) => void;
 
-  constructor(private element: HTMLElement, dragX: boolean = true, dragY: boolean = true) {
-    this.handler = dragToScroll(this.element, dragX, dragY);
+  constructor(private element: HTMLElement, options?: DragToScrollOptions) {
+    this.options = new DragToScrollOptions(options);
+    this.handler = dragToScroll(this.element, this.options.dragX, this.options.dragY);
   }
 
   destroy(): void {

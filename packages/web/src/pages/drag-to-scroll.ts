@@ -14,7 +14,7 @@ export default class DragToScrollDemo implements Page {
 
   load() {
     const element = document.querySelector('.drag-to-scroll-demo') as HTMLElement;
-    this.dragToScroll = new DragToScroll(element, true, true);
+    this.dragToScroll = new DragToScroll(element, { dragX: true, dragY: true });
   }
 
   onDestroy() {
