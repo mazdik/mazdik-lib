@@ -5,7 +5,9 @@ import { ChartSliderComponent, ChartInterval } from '@mazdik-lib/chart-slider';
 export default class ChartSliderDemo implements Page {
 
   get template(): string {
-    return `<web-chart-slider></web-chart-slider>`;
+    return `<web-chart-slider></web-chart-slider>
+    <button class="dt-button" id="button-zoom">zoom 2</button>
+    <button class="dt-button" id="button-offset">set offset</button>`;
   }
 
   load() {
@@ -14,6 +16,21 @@ export default class ChartSliderDemo implements Page {
     component.dateFrom = new Date(now.getFullYear(), now.getMonth(), 1);
     component.dateTo = new Date(now.getFullYear(), now.getMonth() + 1, 1);
     component.intervals = getTestChartIntervals();
+
+    component.addEventListener('sliderChange', (event: CustomEvent) => {
+      console.log(event.detail);
+    });
+
+    const buttonZoom = document.querySelector('#button-zoom') as HTMLButtonElement;
+    buttonZoom.addEventListener('click', () => {
+      component.zoom = 2;
+    });
+    const buttonOffset = document.querySelector('#button-offset') as HTMLButtonElement;
+    buttonOffset.addEventListener('click', () => {
+      const dateFrom = new Date(now.getFullYear(), now.getMonth(), 5);
+      const dateTo = new Date(now.getFullYear(), now.getMonth(), 7)
+      component.setOffsetX(dateFrom, dateTo, component.zoom);
+    });
   }
 
 }

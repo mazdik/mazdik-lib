@@ -42,7 +42,6 @@ export class ChartSliderComponent extends HTMLElement {
   private handleMultiplier = 2;
   private xAxisLabels: AxisLabel[] = [];
   private chartSliderData: ChartSliderData[] = [];
-  private dragEventTarget: MouseEvent | TouchEvent;
   private handleWidth: number;
   private handleMinWidth: number;
   private handleMaxWidth: number;
@@ -134,7 +133,6 @@ export class ChartSliderComponent extends HTMLElement {
       this.handleLeftPos = 0;
       [this.minHandleTime, this.maxHandleTime] = getMinMaxHandleTimes(this.dateFrom, this.dateTo, this.handleMultiplier);
       this.createChartSlider();
-      this.render();
     }
   }
 
@@ -153,6 +151,7 @@ export class ChartSliderComponent extends HTMLElement {
     this.handleWidth = this.handleMinWidth;
     this.xAxisLabels = createXAxisLabels(this.dateFrom, this.dateTo, this.countAxisLabels, this.zoom);
     this.chartSliderData = createChartSliderData(this.dateFrom, this.dateTo, this.intervals);
+    this.render();
   }
 
   private onDragEnd(event: CustomEvent<DraggableEvent>): void {
@@ -200,7 +199,7 @@ export class ChartSliderComponent extends HTMLElement {
     this.createChartSlider();
   }
 
-  private setOffsetX(dateFrom: Date, dateTo: Date, zoom: number): void {
+  setOffsetX(dateFrom: Date, dateTo: Date, zoom: number): void {
     this._zoom = zoom;
     this.chartSliderWidth = 100 * this.zoom;
     this.minHandleTime = getDiffTime(dateFrom, dateTo);

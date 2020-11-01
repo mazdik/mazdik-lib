@@ -35,7 +35,7 @@ npm install @mazdik-lib/modal
         Lorem Ipsum has been the industry’s standard dummy text ever since the 1500s.</p>
     </template>
     <template select="app-modal-footer">
-      <button class="dt-button dt-red">Delete</button>&nbsp;
+      <button class="dt-button dt-red">Delete</button>
       <button class="dt-button dt-green">Save</button>
       <button id="close-button" class="dt-button dt-blue" style="float: right;">Close</button>
     </template>
