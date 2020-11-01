@@ -2,6 +2,9 @@
   "files": [],
   "references": [
     {
+      "path": "./chart-slider/tsconfig.package.json"
+    },
+    {
       "path": "./common/tsconfig.package.json"
     },
     {
@@ -15,6 +18,9 @@
     },
     {
       "path": "./drag-drop/tsconfig.package.json"
+    },
+    {
+      "path": "./drag-to-scroll/tsconfig.package.json"
     },
     {
       "path": "./draggable/tsconfig.package.json"

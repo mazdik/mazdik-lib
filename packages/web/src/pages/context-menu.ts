@@ -6,7 +6,7 @@ import { MenuItem } from '@mazdik-lib/common';
 export default class ContextMenuDemo implements Page {
 
   get template(): string {
-    return `<button class="dt-button" id="button">context menu</button>&nbsp;
+    return `<button class="dt-button" id="button">context menu</button>
     <web-context-menu id="contextMenu"></web-context-menu>`;
   }
 

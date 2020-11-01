@@ -7,6 +7,15 @@
   top: 0;
 }
 
+.resize-handle-w {
+  position: absolute;
+  cursor: w-resize;
+  height: 100%;
+  width: .4375rem;
+  left: -.3125rem;
+  top: 0;
+}
+
 .resize-handle-se {
   position:absolute;
   cursor: se-resize;

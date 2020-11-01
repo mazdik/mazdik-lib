@@ -1,6 +1,11 @@
 import { isLeftButton, getEvent } from '@mazdik-lib/common';
+import { DraggableEvent, DraggableOptions } from './types';
 
 export class Draggable {
+
+  set inViewport(val: boolean) {
+    this.options.inViewport = val;
+  }
 
   private isDragging: boolean;
   private lastPageX: number;
@@ -14,11 +19,12 @@ export class Draggable {
   private elementHeight: number;
   private vw: number;
   private vh: number;
+  private resultLeftPos: number;
+  private resultTopPos: number;
+  private options: DraggableOptions
 
-  constructor(private element: HTMLElement,
-    private dragX: boolean = true,
-    private dragY: boolean = true,
-    public inViewport: boolean = false) {
+  constructor(private element: HTMLElement, options?: DraggableOptions) {
+    this.options = new DraggableOptions(options);
   }
 
   start(dragEventTarget: MouseEvent | TouchEvent): void {
@@ -30,10 +36,13 @@ export class Draggable {
   }
 
   onMousedown(event: MouseEvent | TouchEvent): void {
+    if (this.options.stopPropagation) {
+      event.stopPropagation();
+    }
     if (!isLeftButton(event)) {
       return;
     }
-    if (this.dragX || this.dragY) {
+    if (this.options.dragX || this.options.dragY) {
       const evt = getEvent(event);
       this.initDrag(evt.pageX, evt.pageY);
       this.addEventListeners(event);
@@ -50,7 +59,8 @@ export class Draggable {
   onMouseup(event: MouseEvent | TouchEvent): void {
     this.endDrag();
     this.removeEventListeners();
-    this.element.dispatchEvent(new CustomEvent('dragEnd', { detail: event }));
+    const data: DraggableEvent = { event: getEvent(event), left: this.resultLeftPos, top: this.resultTopPos };
+    this.element.dispatchEvent(new CustomEvent('dragEnd', { detail: data }));
   }
 
   addEventListeners(event: MouseEvent | TouchEvent) {
@@ -89,18 +99,28 @@ export class Draggable {
     this.elementHeight = this.element.offsetHeight;
     this.vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
     this.vh = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0);
+    if (this.options.relative) {
+      this.vw = this.element.parentElement.clientWidth;
+      this.vh = this.element.parentElement.clientHeight;
+    }
   }
 
   onDrag(pageX: number, pageY: number) {
     if (this.isDragging) {
       const deltaX = pageX - this.lastPageX;
       const deltaY = pageY - this.lastPageY;
-      const coords = this.element.getBoundingClientRect();
-      let leftPos = coords.left + deltaX;
-      let topPos = coords.top + deltaY;
+      let left = this.element.offsetLeft;
+      let top = this.element.offsetTop;
+      if (!this.options.relative) {
+        const coords = this.element.getBoundingClientRect();
+        left = coords.left;
+        top = coords.top;
+      }
+      let leftPos = left + deltaX;
+      let topPos = top + deltaY;
 
-      const overWidth = !this.inViewport || leftPos >= 0 && (leftPos + this.elementWidth) <= this.vw;
-      const overHeight = !this.inViewport || topPos >= 0 && (topPos + this.elementHeight) <= this.vh;
+      const overWidth = !this.options.inViewport || leftPos >= 0 && (leftPos + this.elementWidth) <= this.vw;
+      const overHeight = !this.options.inViewport || topPos >= 0 && (topPos + this.elementHeight) <= this.vh;
       if (overWidth) {
         this.lastPageX = pageX;
       }
@@ -108,7 +128,7 @@ export class Draggable {
         this.lastPageY = pageY;
       }
 
-      if (this.inViewport) {
+      if (this.options.inViewport) {
         if (leftPos < 0) {
           leftPos = 0;
         }
@@ -122,8 +142,19 @@ export class Draggable {
           topPos = this.vh - this.elementHeight;
         }
       }
-      this.element.style.left = leftPos + 'px';
-      this.element.style.top = topPos + 'px';
+
+      if (this.options.dragX) {
+        const leftPosPercent = (leftPos / this.vw) * 100;
+        this.element.style.left = this.options.inPercentage ? leftPosPercent + '%' : leftPos + 'px';
+        this.resultLeftPos = this.options.inPercentage ? leftPosPercent : leftPos;
+      }
+      if (this.options.dragY) {
+        const topPosPercent = (topPos / this.vh) * 100;
+        this.element.style.top = this.options.inPercentage ? topPosPercent + '%' : topPos + 'px';
+        this.resultTopPos = this.options.inPercentage ? topPosPercent : topPos;
+      }
+      this.lastPageX = pageX;
+      this.lastPageY = pageY;
     }
   }
 

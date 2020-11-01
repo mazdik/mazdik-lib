@@ -36,6 +36,8 @@ export function getNavMenuNodes(): any[] {
         { id: 'states-line-interval', name: 'States line interval' },
         { id: 'simple-bar-chart', name: 'Simple bar chart' },
         { id: 'file-upload', name: 'File upload' },
+        { id: 'drag-to-scroll', name: 'Drag to scroll' },
+        { id: 'chart-slider', name: 'Chart slider' },
       ]
     },
     {
