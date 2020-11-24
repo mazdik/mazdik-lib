@@ -5,6 +5,7 @@
   height: 10rem;
   overflow-x: auto;
   overflow-y: hidden;
+  padding: 0 .5rem; /* resize-handle */
 }
 
 .chart-slider {
@@ -67,6 +68,36 @@
   height: 100%;
 }
 
-.dragging {
+.dragging,
+.resizing {
   user-select: none;
+}
+
+.chart-slider__handle .resize-e {
+  position: absolute;
+  cursor: e-resize;
+  height: 100%;
+  width: .8rem;
+  right: -.4rem;
+  top: 0;
+}
+
+.chart-slider__handle .resize-w {
+  position: absolute;
+  cursor: w-resize;
+  height: 100%;
+  width: .8rem;
+  left: -.4rem;
+  top: 0;
+}
+
+.resize-handle {
+  height: 2.4rem;
+  width: 1rem;
+  position: absolute;
+  left: -0.1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  border: 1px solid #2FB4E9;
+  background: linear-gradient(to bottom, #EDF5FA 20%, transparent 20%), linear-gradient(to top, #EDF5FA 20%, transparent 20%), linear-gradient(to right, #EDF5FA 20%, #2FB4E9 20% 40%, #EDF5FA 40% 60%, #2FB4E9 60% 80%, #EDF5FA 80%);
 }

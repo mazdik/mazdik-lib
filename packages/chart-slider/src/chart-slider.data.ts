@@ -93,15 +93,11 @@ function createLabel(dateFrom: Date, dateTo: Date, date: Date, zoom: number): st
 export function getMinMaxHandleTimes(dateFrom: Date, dateTo: Date, multiplier: number): [number, number] {
   const dayTime = 86400;
   const diffTime = getDiffTime(dateFrom, dateTo);
-  let minTime = 0;
-  if (diffTime <= dayTime) {
-    minTime = 3600;
-  } else if (diffTime > dayTime && diffTime <= (dayTime * multiplier * 2)) {
-    minTime = 3600;
+  if (diffTime >= dayTime * 28) {
+    return [dayTime, dayTime * multiplier];
   } else {
-    minTime = dayTime;
+    return [3600, dayTime];
   }
-  return [minTime, minTime * multiplier];
 }
 
 function calcDates(dateFrom: Date, dateTo: Date, percentFrom: number, percentTo: number): ChartSliderHandleDates {

@@ -1,11 +1,11 @@
 import { isBlank, Listener } from '@mazdik-lib/common';
 import { Draggable, DraggableOptions, DraggableEvent } from '@mazdik-lib/draggable';
-import { Resizable, ResizableOptions, ResizableEvent } from '@mazdik-lib/resizable';
 import { DragToScroll } from '@mazdik-lib/drag-to-scroll';
-import { ChartInterval, AxisLabel, ChartSliderData } from './types';
+import { ChartInterval, AxisLabel, ChartSliderData, ChartSliderResizableEvent } from './types';
 import {
   createChartSliderData, createXAxisLabels, calcHandleDates, calcDatePercentage, getMinMaxHandleTimes, calcPositionPercent, getDiffTime
 } from './chart-slider.data';
+import { ChartSliderResizable } from './chart-slider-resizable';
 
 export class ChartSliderComponent extends HTMLElement {
 
@@ -39,7 +39,7 @@ export class ChartSliderComponent extends HTMLElement {
   }
   private _zoom = 1;
 
-  private handleMultiplier = 2;
+  handleMultiplier = 2;
   private xAxisLabels: AxisLabel[] = [];
   private chartSliderData: ChartSliderData[] = [];
   private handleWidth: number;
@@ -59,7 +59,7 @@ export class ChartSliderComponent extends HTMLElement {
   private sliderHandleBody: HTMLElement;
   private unit = '%';
   private draggableDirective: Draggable;
-  private resizableDirective: Resizable;
+  private resizableDirective: ChartSliderResizable;
   private dragToScroll: DragToScroll;
 
   private listeners: Listener[] = [];
@@ -161,7 +161,7 @@ export class ChartSliderComponent extends HTMLElement {
     }
   }
 
-  private onResizeEnd(event: CustomEvent<ResizableEvent>): void {
+  private onResizeEnd(event: CustomEvent<ChartSliderResizableEvent>): void {
     if (event && !isBlank(event.detail.width)) {
       this.handleWidth = event.detail.width;
       if (!isBlank(event.detail.left)) {
@@ -203,6 +203,9 @@ export class ChartSliderComponent extends HTMLElement {
     this._zoom = zoom;
     this.chartSliderWidth = 100 * this.zoom;
     this.minHandleTime = getDiffTime(dateFrom, dateTo);
+    if (this.minHandleTime < 3600) {
+      this.minHandleTime = 3600;
+    }
     this.handleLeftPos = calcPositionPercent(this.dateFrom, this.dateTo, dateFrom, this.handleWidth);
     this.createChartSlider();
 
@@ -243,15 +246,7 @@ export class ChartSliderComponent extends HTMLElement {
       stopPropagation: true,
     }
     this.draggableDirective = new Draggable(this.sliderHandle, draggableOptions);
-    const resizableOptions: ResizableOptions = {
-      south: false,
-      east: true,
-      southEast: false,
-      west: true,
-      inPercentage: true,
-    };
-    this.resizableDirective = new Resizable(this.sliderHandle, resizableOptions);
-    this.resizableDirective.addEventListeners();
+    this.resizableDirective = new ChartSliderResizable(this.sliderHandle, true);
     this.dragToScroll = new DragToScroll(this, { dragX: true, dragY: false });
   }
 

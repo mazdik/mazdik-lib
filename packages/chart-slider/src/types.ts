@@ -27,3 +27,8 @@ export interface ChartSliderHandleDates {
   dateFrom: Date;
   dateTo: Date;
 }
+
+export interface ChartSliderResizableEvent {
+  width: number;
+  left?: number;
+}

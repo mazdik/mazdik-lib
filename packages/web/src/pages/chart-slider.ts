@@ -1,24 +1,29 @@
 import { Page } from '../page';
 import '@mazdik-lib/chart-slider';
-import { ChartSliderComponent, ChartInterval } from '@mazdik-lib/chart-slider';
+import { ChartSliderComponent, ChartInterval, ChartSliderHandleDates } from '@mazdik-lib/chart-slider';
 
 export default class ChartSliderDemo implements Page {
 
   get template(): string {
     return `<web-chart-slider></web-chart-slider>
     <button class="dt-button" id="button-zoom">zoom 2</button>
-    <button class="dt-button" id="button-offset">set offset</button>`;
+    <button class="dt-button" id="button-offset">set offset</button>
+    <span id="result"></span>`;
   }
 
   load() {
     const component = document.querySelector('web-chart-slider') as ChartSliderComponent;
+    component.handleMultiplier = 4;
     const now = new Date();
     component.dateFrom = new Date(now.getFullYear(), now.getMonth(), 1);
     component.dateTo = new Date(now.getFullYear(), now.getMonth() + 1, 1);
     component.intervals = getTestChartIntervals();
 
-    component.addEventListener('sliderChange', (event: CustomEvent) => {
-      console.log(event.detail);
+    const resultElement = document.querySelector('#result') as HTMLElement;
+    component.addEventListener('sliderChange', (event: CustomEvent<ChartSliderHandleDates>) => {
+      const dateFrom = event.detail.dateFrom.toLocaleDateString([], { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' });
+      const dateTo = event.detail.dateTo.toLocaleDateString([], { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' });
+      resultElement.textContent = dateFrom + ' - ' + dateTo;
     });
 
     const buttonZoom = document.querySelector('#button-zoom') as HTMLButtonElement;
