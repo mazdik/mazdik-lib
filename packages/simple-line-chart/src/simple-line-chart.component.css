@@ -1,0 +1,15 @@
+.simple-line-chart {
+  background: rgb(229, 236, 246);
+}
+
+.simple-line-chart__guide {
+  fill: none;
+  stroke: white;
+  stroke-width: .5;
+}
+
+.simple-line-chart__line {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+}

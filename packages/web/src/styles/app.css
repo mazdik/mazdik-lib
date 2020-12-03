@@ -281,3 +281,11 @@
   align-items: center;
   justify-content: center;
 }
+
+/* SimpleLineChartDemo */
+.simple-line-chart-demo {
+  display: block;
+  width: 30rem;
+  height: 15rem;
+  color: darksalmon;
+}

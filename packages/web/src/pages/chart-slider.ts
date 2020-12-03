@@ -13,7 +13,7 @@ export default class ChartSliderDemo implements Page {
 
   load() {
     const component = document.querySelector('web-chart-slider') as ChartSliderComponent;
-    component.handleMultiplier = 4;
+    component.handleMultiplier = 6;
     const now = new Date();
     component.dateFrom = new Date(now.getFullYear(), now.getMonth(), 1);
     component.dateTo = new Date(now.getFullYear(), now.getMonth() + 1, 1);

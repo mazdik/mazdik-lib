@@ -83,6 +83,9 @@
       "path": "./simple-donut/tsconfig.package.json"
     },
     {
+      "path": "./simple-line-chart/tsconfig.package.json"
+    },
+    {
       "path": "./states-line/tsconfig.package.json"
     },
     {

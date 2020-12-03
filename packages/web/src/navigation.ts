@@ -31,13 +31,20 @@ export function getNavMenuNodes(): any[] {
         { id: 'tree-view', name: 'Tree view' },
         { id: 'dynamic-form', name: 'Dynamic forms' },
         { id: 'modal-edit-form', name: 'Modal edit form' },
-        { id: 'simple-donut', name: 'Simple donut' },
-        { id: 'states-line', name: 'States line' },
-        { id: 'states-line-interval', name: 'States line interval' },
-        { id: 'simple-bar-chart', name: 'Simple bar chart' },
         { id: 'file-upload', name: 'File upload' },
         { id: 'drag-to-scroll', name: 'Drag to scroll' },
+      ]
+    },
+    {
+      name: 'Chart',
+      expanded: true,
+      children: [
+        { id: 'states-line', name: 'States line' },
+        { id: 'states-line-interval', name: 'States line interval' },
         { id: 'chart-slider', name: 'Chart slider' },
+        { id: 'simple-donut', name: 'Simple donut' },
+        { id: 'simple-bar-chart', name: 'Simple bar chart' },
+        { id: 'simple-line-chart', name: 'Simple line chart' },
       ]
     },
     {
