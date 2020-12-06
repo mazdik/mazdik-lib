@@ -5,7 +5,7 @@ import { ChartSliderComponent, ChartInterval, ChartSliderHandleDates } from '@ma
 export default class ChartSliderDemo implements Page {
 
   get template(): string {
-    return `<web-chart-slider></web-chart-slider>
+    return `<web-chart-slider class="chart-slider-demo scrollbar"></web-chart-slider>
     <button class="dt-button" id="button-zoom">zoom 2</button>
     <button class="dt-button" id="button-offset">set offset</button>
     <span id="result"></span>`;

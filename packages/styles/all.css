@@ -10,6 +10,7 @@
 @import 'radio.css';
 @import 'resizable.css';
 @import 'spinners.css';
+@import 'scrollbar.css';
 @import '../dropdown-select/src/dropdown-select.component.css';
 @import '../dual-list-box/src/dual-list-box.component.css';
 @import '../inline-edit/src/inline-edit.component.css';

@@ -86,19 +86,11 @@
   border-radius: .25rem;
 }
 
-.dt-message-success {
-  color: #155724;
-  background-color: #d4edda;
-  border-color: #c3e6cb;
-}
+.dt-message-success { color: #155724; background-color: #d4edda; border-color: #c3e6cb; }
 
-.dt-pointer {
-  cursor: pointer;
-}
+.dt-pointer { cursor: pointer; }
 
-.display-none {
-  display: none !important;
-}
+.display-none { display: none !important; }
 
 /* PanelDemo */
 .panel-demo1 .ui-modal-header { background-color: red !important; }
@@ -263,7 +255,7 @@
 .dt-template-demo-img { width: 2.4rem; }
 
 /* DtColumnGroupDemo */
-.dt-column-group-demo .datatable-header-cell {justify-content: center;}
+.dt-column-group-demo .datatable-header-cell { justify-content: center; }
 
 /* DragToScrollDemo */
 .drag-to-scroll-demo {
@@ -282,10 +274,8 @@
   justify-content: center;
 }
 
+/* ChartSliderDemo */
+.chart-slider-demo { margin-bottom: 1rem; }
+
 /* SimpleLineChartDemo */
-.simple-line-chart-demo {
-  display: block;
-  width: 30rem;
-  height: 15rem;
-  color: darksalmon;
-}
+.simple-line-chart-demo { display: block; width: 30rem; height: 15rem; color: darksalmon; }

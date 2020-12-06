@@ -14,6 +14,7 @@ class App {
   header: Header;
   main: HTMLElement;
   navMenu: NavMenuComponent;
+  url: string;
 
   constructor() {
     this.header = new Header();
@@ -21,7 +22,8 @@ class App {
     this.navMenu = document.querySelector('#nav-menu');
     this.navMenu.nodes = getNavMenuNodes();
 
-    const page = location.hash.slice(1) || 'modal-basic';
+    this.url = window.location.href.split('#')[0];
+    const page = window.location.hash.slice(1) || 'modal-basic';
     this.setPage(page, '');
     this.navMenu.ensureVisible(page);
 
@@ -34,7 +36,7 @@ class App {
   async setPage(name: string, title: string) {
     try {
       const module = await import(`./pages/${name}.ts`);
-      history.replaceState({}, `${title}`, `/#${name}`);
+      history.replaceState({}, `${title}`, `${this.url}#${name}`);
       this.currentPage = new module.default;
       this.main.innerHTML = this.currentPage.template;
       this.currentPage.load();
