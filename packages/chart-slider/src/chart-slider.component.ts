@@ -92,7 +92,7 @@ export class ChartSliderComponent extends HTMLElement {
     this.listeners = [
       {
         eventName: 'keydown',
-        target: window,
+        target: this,
         handler: this.onKeyDown.bind(this)
       },
       {
@@ -217,6 +217,7 @@ export class ChartSliderComponent extends HTMLElement {
 
   private renderInit() {
     this.classList.add('chart-slider-wrapper');
+    this.tabIndex = 0;
 
     this.slider = document.createElement('div');
     this.slider.classList.add('chart-slider');
