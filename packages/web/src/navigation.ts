@@ -33,6 +33,7 @@ export function getNavMenuNodes(): any[] {
         { id: 'modal-edit-form', name: 'Modal edit form' },
         { id: 'file-upload', name: 'File upload' },
         { id: 'drag-to-scroll', name: 'Drag to scroll' },
+        { id: 'board', name: 'Board' },
       ]
     },
     {

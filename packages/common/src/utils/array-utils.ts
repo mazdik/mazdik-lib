@@ -1,18 +1,22 @@
-export function arrayMove<T = any>(array: T[], fromIndex: number, toIndex: number): void {
+export function arrayMove<T = any>(array: T[], fromIndex: number, toIndex: number): T {
   fromIndex = clamp(fromIndex, array.length - 1);
   toIndex = clamp(toIndex, array.length - 1);
 
   if (fromIndex !== toIndex) {
-    array.splice(toIndex, 0, array.splice(fromIndex, 1)[0]);
+    const fromItem = array.splice(fromIndex, 1)[0];
+    array.splice(toIndex, 0, fromItem);
+    return fromItem;
   }
 }
 
-export function arrayTransfer<T = any>(arrayFrom: T[], arrayTo: T[], fromIndex: number, toIndex: number): void {
+export function arrayTransfer<T = any>(arrayFrom: T[], arrayTo: T[], fromIndex: number, toIndex: number): T {
   fromIndex = clamp(fromIndex, arrayFrom.length - 1);
   toIndex = clamp(toIndex, arrayTo.length);
 
   if (arrayFrom.length) {
-    arrayTo.splice(toIndex, 0, arrayFrom.splice(fromIndex, 1)[0]);
+    const fromItem = arrayFrom.splice(fromIndex, 1)[0];
+    arrayTo.splice(toIndex, 0, fromItem);
+    return fromItem;
   }
 }
 

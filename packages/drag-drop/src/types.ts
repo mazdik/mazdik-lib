@@ -8,3 +8,9 @@ export interface DropElementEvent {
   currentIndex: number;
   type: 'move' | 'reorder';
 }
+
+export interface DropEventArgs {
+  target: HTMLElement;
+  movedItem: HTMLElement;
+  type: 'move' | 'reorder';
+}

@@ -1,96 +1,58 @@
 import { Page } from '../page';
-import { DragDrop } from '@mazdik-lib/drag-drop';
-
-class Item {
-  name: string;
-  text: string;
-}
+import { DragDrop, DropEventArgs } from '@mazdik-lib/drag-drop';
+import { Listener } from '@mazdik-lib/common';
 
 export default class DragDropDemo implements Page {
 
   get template(): string {
-    return `<div class="drag-drop-demo" id="drag-drop-demo"></div>`;
+    return `<div class="drag-drop-demo">
+      <div class="dd-column">
+        <div class="dd-box box1"></div>
+        <div class="dd-box box2"></div>
+      </div>
+      <div class="dd-column">
+        <div class="dd-box box3"></div>
+        <div class="dd-box box4"></div>
+      </div>
+    </div>`;
   }
 
   private dragDrop: DragDrop;
+  private listeners: Listener[] = [];
 
   load() {
-    const data: Item[][] = [
-      [
-        { name: 'Task 1', text: 'Write a program that prints ‘Hello World’ to the screen' },
-        { name: 'Task 2', text: 'Write a program that asks the user for their name and greets them with their name' },
-        { name: 'Task 3', text: 'Modify the previous program such that only the users Alice and Bob are greeted with their names' },
-      ],
-      [
-        { name: 'Task 4', text: 'Write a program that asks the user for a number n and prints the sum of the numbers 1 to n' },
-        { name: 'Task 5', text: 'Modify the previous program such that only multiples of three or five are considered in the sum' },
-        { name: 'Task 6', text: 'Write a program that prints a multiplication table for numbers up to 12' },
-      ],
-      [
-        { name: 'Task 7', text: 'Write a function that returns the largest element in a list' },
-        { name: 'Task 8', text: 'Write function that reverses a list, preferably in place' },
-        { name: 'Task 9', text: 'Write a function that checks whether an element occurs in a list' },
-      ],
-      [
-        { name: 'Task 10', text: 'Write a function that returns the elements on odd positions in a list' },
-        { name: 'Task 11', text: 'Write a function that computes the running total of a list' },
-        { name: 'Task 12', text: 'Write a function that tests whether a string is a palindrome' },
-      ],
-      [
-        { name: 'Task 13', text: 'Write a program that prints all prime numbers' },
-        { name: 'Task 14', text: 'Write a guessing game where the user has to guess a secret number' },
-        { name: 'Task 15', text: 'Write a program that prints the next 20 leap years' },
-      ]
-    ];
+    const droppableElements: HTMLElement[] = Array.from(document.querySelectorAll('.dd-column'));
+    const draggableElements: HTMLElement[] = Array.from(document.querySelectorAll('.dd-box'));
 
-    function createIssues(items: Item[]): HTMLElement[] {
-      const elements = [];
-
-      items.forEach(option => {
-        const issue = document.createElement('div');
-        issue.classList.add('dd-issue');
-
-        const title = document.createElement('div');
-        title.classList.add('dd-title');
-        title.textContent = option.name;
-        issue.append(title);
-
-        const text = document.createElement('div');
-        text.classList.add('dd-text');
-        text.textContent = option.text;
-        issue.append(text);
-
-        elements.push(issue);
-      });
-
-      return elements;
-    }
-
-    function createColumns() {
-      const columnElements = [];
-      let issueElements = [];
-
-      data.forEach(item => {
-        const column = document.createElement('div');
-        column.classList.add('dd-column');
-        const issues = createIssues(item);
-        column.append(...issues);
-
-        issueElements = issueElements.concat(issues);
-        columnElements.push(column);
-      });
-      return { columnElements, issueElements };
-    }
-
-    const div = document.querySelector('#drag-drop-demo') as HTMLDivElement;
-    const { columnElements, issueElements } = createColumns();
-    div.append(...columnElements);
-
-    this.dragDrop = new DragDrop(columnElements, issueElements);
+    this.dragDrop = new DragDrop(droppableElements, draggableElements);
+    this.addEventListeners(droppableElements);
   }
 
   onDestroy() {
+    this.removeEventListeners();
     this.dragDrop.destroy();
+  }
+
+  private addEventListeners(droppableElements: HTMLElement[]) {
+    droppableElements.forEach(droppableElement => {
+      const listener = {
+        eventName: 'droppableElementChange',
+        target: droppableElement,
+        handler: this.onDroppableElementChange.bind(this)
+      };
+      this.listeners.push(listener);
+      listener.target.addEventListener(listener.eventName, listener.handler);
+    });
+  }
+
+  private removeEventListeners() {
+    this.listeners.forEach(x => {
+      x.target.removeEventListener(x.eventName, x.handler);
+    });
+  }
+
+  private onDroppableElementChange(event: CustomEvent<DropEventArgs>) {
+    console.log(event.detail);
   }
 
 }

@@ -1,6 +1,6 @@
 import { arrayMove, arrayTransfer, Listener } from '@mazdik-lib/common';
 import { Droppable } from './droppable';
-import { DragElementEvent, DropElementEvent } from './types';
+import { DragElementEvent, DropElementEvent, DropEventArgs } from './types';
 
 export class DragDrop {
 
@@ -81,18 +81,20 @@ export class DragDrop {
     const sourceChildrens = Array.from(this.source.children);
     const targetChildrens = Array.from(target.children);
 
+    let movedItem;
     if (event.type === 'reorder') {
-      arrayMove(targetChildrens, event.previousIndex, event.currentIndex);
+      movedItem = arrayMove(targetChildrens, event.previousIndex, event.currentIndex);
       targetChildrens.forEach((x: HTMLElement, i) => x.dataset.index = i.toString());
       target.append(...targetChildrens);
     } else {
-      arrayTransfer(sourceChildrens, targetChildrens, event.previousIndex, event.currentIndex);
+      movedItem = arrayTransfer(sourceChildrens, targetChildrens, event.previousIndex, event.currentIndex);
       sourceChildrens.forEach((x: HTMLElement, i) => x.dataset.index = i.toString());
       targetChildrens.forEach((x: HTMLElement, i) => x.dataset.index = i.toString());
       this.source.append(...sourceChildrens);
       target.append(...targetChildrens);
     }
-    target.dispatchEvent(new CustomEvent('droppableElementChange'));
+    const result: DropEventArgs = { target, movedItem, type: event.type };
+    target.dispatchEvent(new CustomEvent('droppableElementChange', { detail: result }));
   }
 
 }

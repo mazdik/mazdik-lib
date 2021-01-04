@@ -1,0 +1,65 @@
+.board {
+  display: flex;
+  height: 100%;
+}
+
+.board-column {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  background: white;
+  border: 1px solid #d3e0e9;
+  border-radius: .25rem;
+}
+
+.board-column + .board-column {
+  margin-left: .625rem;
+}
+
+.board-column-header {
+  display: flex;
+  flex-shrink: 0;
+  height: 2rem;
+  align-items: center;
+  padding: 0 .625rem;
+  font-weight: bold;
+  user-select: none;
+}
+
+.board-column-body {
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  height: calc(100% - 2rem);
+  overflow: auto;
+  padding: .625rem;
+}
+
+.board-card {
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  padding: .625rem;
+  border: 1px solid #d3e0e9;
+  border-radius: .25rem;
+  cursor: move;
+  position: relative;
+  overflow: hidden;
+}
+
+.board-card + .board-card {
+  margin-top: .625rem;
+}
+
+.board-card:hover {
+  background: #F3FAFF;
+}
+
+.board-card-title {
+  padding-bottom: .25rem;
+  font-weight: bold;
+}
+
+.board-card-text {
+  padding-bottom: .25rem;
+}

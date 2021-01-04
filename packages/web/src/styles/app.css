@@ -192,26 +192,13 @@
 .dropdown-select-demo .sl-column {margin-right: 1.875rem; width: 15.625rem;}
 
 /* DragDropDemo */
-.drag-drop-demo { display: flex; }
-.drag-drop-demo .dd-column { width: 20%; min-height: 31.25rem; }
-.drag-drop-demo .dd-column + .dd-column { margin-left: .625rem; }
-.drag-drop-demo .dd-column:nth-child(1) { background: rgb(255, 255, 219); }
-.drag-drop-demo .dd-column:nth-child(2) { background: rgb(236, 236, 191); }
-.drag-drop-demo .dd-column:nth-child(3) { background: rgb(253, 214, 162); }
-.drag-drop-demo .dd-column:nth-child(4) { background: rgb(162, 226, 253); }
-.drag-drop-demo .dd-column:nth-child(5) { background: rgb(162, 253, 200); }
-.drag-drop-demo .dd-issue {
-  background: rgba(0, 0, 0, .1);
-  border-radius: .25rem;
-  margin-bottom: .25rem;
-  cursor: move;
-  position: relative;
-  color: #000;
-  overflow: hidden;
-}
-.drag-drop-demo .dd-issue:hover { background: rgba(0, 0, 0, .15); }
-.drag-drop-demo .dd-title { background: rgba(0, 0, 0, .1); padding: .125rem .25rem; }
-.drag-drop-demo .dd-text { padding: .1875rem .25rem .0625rem; line-height: 1.2; }
+.drag-drop-demo { display: flex; height: 100%; justify-content: space-between; }
+.drag-drop-demo .dd-column { display: flex; width: 40%; border: dashed 3px #eee; }
+.drag-drop-demo .dd-box { width: 7rem; height: 7rem; cursor: move; }
+.drag-drop-demo .box1 { background-color: #009ccc; }
+.drag-drop-demo .box2 { background-color: #f2cb1d; }
+.drag-drop-demo .box3 { background-color: darksalmon; }
+.drag-drop-demo .box4 { background-color: darkseagreen; }
 
 /* DropdownDirectiveDemo */
 .dropdown-directive-demo .navbar,
@@ -279,3 +266,10 @@
 
 /* SimpleLineChartDemo */
 .simple-line-chart-demo { display: block; width: 30rem; height: 15rem; color: darksalmon; }
+
+/* BoardDemo */
+.board-demo .board-column:nth-child(1) .board-column-header { background: rgb(255, 255, 219); }
+.board-demo .board-column:nth-child(2) .board-column-header { background: rgb(236, 236, 191); }
+.board-demo .board-column:nth-child(3) .board-column-header { background: rgb(253, 214, 162); }
+.board-demo .board-column:nth-child(4) .board-column-header { background: rgb(162, 226, 253); }
+.board-demo .board-column:nth-child(5) .board-column-header { background: rgb(162, 253, 200); }
